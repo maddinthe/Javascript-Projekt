@@ -1,0 +1,35 @@
+*{
+    padding: 0px;
+    margin: 0px;
+}
+
+#all{
+    margin: auto;
+    max-width: 1000px;
+    border: solid black 1px;
+    background-color: lightgrey;
+}
+#main{
+    display: flex;
+    flex-flow: row;
+}
+header, footer{
+    background-color: white;
+    clear: both;
+}
+
+header{
+    display: flex;
+    flex-flow: row;
+}
+
+nav{
+    padding: 10px;
+    border-right: solid black 1px;
+    flex: 1;
+    margin: 0;
+}
+section{
+    padding: 10px;
+    flex: 4;
+}

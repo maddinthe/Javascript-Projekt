@@ -7,7 +7,7 @@
     margin: auto;
     max-width: 1000px;
     border: solid black 1px;
-    background-color: lightgrey;
+    background-color: lightgray;
 }
 #main{
     display: flex;

@@ -4,6 +4,7 @@
 "use strict"
 var spielfeld = document.getElementById('spielFeld');
 var context = spielfeld.getContext("2d");
+
 var lvl = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -17,7 +18,7 @@ var lvl = [
     [1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1],
     [3, 3, 3, 1, 0, 1, 3, 1, 0, 1, 1, 2, 2, 2, 1, 1, 0, 1, 3, 1, 0, 1, 3, 3, 3],
     [1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 4, 4, 4, 4, 4, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1],
-    [2, 2, 2, 2, 0, 0, 0, 0, 0, 1, 4, 4, 4, 4, 4, 1, 0, 0, 0, 0, 0, 2, 2, 2, 2],
+    [2, 2, 2, 2, 0, 0, 0, 0, 0, 1, 4, 4, 5, 4, 4, 1, 0, 0, 0, 0, 0, 2, 2, 2, 2],
     [1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 4, 4, 4, 4, 4, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1],
     [3, 3, 3, 1, 0, 1, 3, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 3, 1, 0, 1, 3, 3, 3],
     [1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1],
@@ -39,7 +40,7 @@ var factorY = spielfeld.height / sizeY;
 var offsetX = factorX / 2;
 var offsetY = factorY / 2;
 var dotsize = (offsetX + offsetY) / 8;
-
+var pacman=document.getElementById("pacman");
 lvlZeichen();
 function lvlZeichen() {
     for (var i = 0; i < sizeX; i++) {
@@ -64,6 +65,10 @@ function lvlZeichen() {
                     context.fillStyle = "#808080";
                     context.fillRect(j * factorX, i * factorY, factorX, factorY);
                     break;
+                }
+                case 5:{
+                    context.drawImage(pacman,j*factorX,j*factorY,factorX,factorY);
+
                 }
             }
 

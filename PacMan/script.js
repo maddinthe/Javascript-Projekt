@@ -17,9 +17,9 @@ var lvl = [
     [1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1],
-    [3, 3, 3, 1, 0, 1, 3, 1, 0, 1, 1, 2, 2, 2, 1, 1, 0, 1, 3, 1, 0, 1, 3, 3, 3],
+    [3, 3, 3, 1, 0, 1, 3, 1, 0, 1, 1, 8, 8, 8, 1, 1, 0, 1, 3, 1, 0, 1, 3, 3, 3],
     [1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 4, 4, 4, 4, 4, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1],
-    [2, 2, 2, 2, 0, 0, 0, 0, 0, 1, 4, 5, 4, 6, 4, 1, 0, 0, 0, 0, 0, 2, 2, 2, 2],
+    [2, 2, 2, 5, 0, 0, 0, 0, 0, 1, 4, 4, 4, 6, 4, 1, 0, 0, 0, 0, 0, 2, 2, 2, 2],
     [1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 4, 4, 4, 4, 4, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1],
     [3, 3, 3, 1, 0, 1, 3, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 3, 1, 0, 1, 3, 3, 3],
     [1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1],
@@ -47,91 +47,186 @@ var geistX = 0;
 var geistY = 0;
 var altGeistX = 0;
 var altGeistY = 0;
+var pacManX;
+var pacManY;
+var altPacManX;
+var altPacManY;
 var back;
 var altBack;
 var geistImageData;
+var pacmanVisitedImageData;
+var pacmanImageData;
+var movable = true;
+var richtung = 1; //default rechts
+var moveInterval;
+var changeableInterval;
+var changeable=false;
 window.addEventListener("load", function () {
     lvlZeichen();
+    moveInterval = setInterval(function () {
+        //move sperre zurücksetzten und pacman bewegen lassen
+        movable = true;
+        pacmanMove();
+    }, 50);
+    changeableInterval=setInterval(function(){changeable=true},200);
 });
 window.addEventListener("keydown", function (e) {
-    var flag = false;
-    altGeistX = geistX;
-    altGeistY = geistY;
-    altBack = back;
-    switch (e.keyCode) {
-        case 37:
-        {//pfeil links
-            if (--geistX < 0) {
-                geistX = 0;
-                flag = true;
+    if (movable) {
+        var flag = false;
+        altGeistX = geistX;
+        altGeistY = geistY;
+        altBack = back;
+        switch (e.keyCode) {
+            case 37:
+            {//pfeil links
+                if (--geistX < 0) {
+                    geistX = sizeX - 1;
+                }
+                if (lvl[geistY][geistX] == 1) {
+                    geistX++;
+                    flag = true
+                }
+                break;
             }
-            if (lvl[geistY][geistX] == 1) {
-                geistX++;
-                flag = true
+            case 38:
+            {//pfeil hoch
+                if (--geistY < 0) {
+                    geistY = sizeY - 1;
+                }
+                if (lvl[geistY][geistX] == 1) {
+                    geistY++;
+                    flag = true
+                }
+                break;
             }
-            break;
+            case 39:
+            {//pfeil rechts
+                if (++geistX >= sizeX) {
+                    geistX = 0;
+
+                }
+                if (lvl[geistY][geistX] == 1) {
+                    geistX--;
+                    flag = true
+                }
+                break;
+            }
+            case 40:
+            {//pfeil runter
+                if (++geistY >= sizeY) {
+                    geistY = 0;
+                }
+                if (lvl[geistY][geistX] == 1) {
+                    geistY--;
+                    flag = true
+                }
+                break;
+            }
         }
-        case 38:
-        {//pfeil hoch
-            if (--geistY < 0) {
-                geistY = 0;
-                flag = true;
-            }
-            if (lvl[geistY][geistX] == 1) {
-                geistY++;
-                flag = true
-            }
-            break;
-        }
-        case 39:
-        {//pfeil rechts
-            if (++geistX >= sizeX) {
-                geistX = sizeX;
-                flag = true;
-            }
-            if (lvl[geistY][geistX] == 1) {
-                geistX--;
-                flag = true
-            }
-            break;
-        }
-        case 40:
-        {//pfeil runter
-            if (++geistY >= sizeY) {
-                geistY = sizeY;
-                flag = true;
-            }
-            if (lvl[geistY][geistX] == 1) {
-                geistY--;
-                flag = true
-            }
-            break;
+        if (flag) {
+            geistX = altGeistX;
+            geistY = altGeistY;
+            back = altBack;
+
+        } else  back = context.getImageData(geistX * factorX, geistY * factorY, factorX, factorY);
+
+        //alten hintergrund wieder einsetzen
+        context.putImageData(altBack, altGeistX * factorY, altGeistY * factorY);
+        //geist zeichnen
+        context.putImageData(geistImageData, geistX * factorX, geistY * factorY);
+        if (lvl[geistY][geistX] == 5) {
+            clearInterval(interval);
+            zeit = new Date(Math.floor((new Date().getTime() - zeit.getTime())));
+            window.alert("Gewonnen! deine Zeit: " + zeit.toUTCString().substring(20, 25));
         }
     }
-    if (flag) {
-        geistX = altGeistX;
-        geistY = altGeistY;
-        back = altBack;
-
-    } else  back = context.getImageData(geistX * factorX, geistY * factorY, factorX, factorY);
-
-    //alten hintergrund wieder einsetzen
-    context.putImageData(altBack, altGeistX * factorY, altGeistY * factorY);
-    //geist zeichnen
-    context.putImageData(geistImageData, geistX * factorX, geistY * factorY);
-    if(lvl[geistY][geistX]==5){
-        clearInterval(interval);
-        zeit=new Date(Math.floor((new Date().getTime() - zeit.getTime())));
-        window.alert("Gewonnen! deine Zeit: "+zeit.toUTCString().substring(20,25));
-    }
-
+    movable = false;
 });
 
 var zeit = new Date();
 var interval = setInterval(function () {
     var sekunden = new Date(Math.floor((new Date().getTime() - zeit.getTime())));
     document.getElementById("zeit").innerText = "Zeit: " + sekunden.toUTCString().substring(20, 25);
+
+
 }, 1000);
+
+function pacmanMove() {
+    if(changeable){
+        richtung = Math.floor(Math.random() * 5);
+        changeable=false;
+    }
+    var flag = false;
+    altPacManX = pacManX;
+    altPacManY = pacManY;
+    switch (richtung) {
+        case 0:
+        {//hoch
+            if (--pacManY < 0) {
+                pacManY = sizeY - 1;
+            }
+            if (lvl[pacManY][pacManX] == 1|| lvl[pacManY][pacManX] == 8) {
+                pacManY++;
+                flag = true
+            }
+            break;
+        }
+        case 1:
+        {//rechts
+            if (++pacManX > sizeX - 1) {
+                pacManX = sizeX - 1;
+            }
+            if (lvl[pacManY][pacManX] == 1 || lvl[pacManY][pacManX] == 8) {
+                pacManX--
+                flag=true;
+            }
+            break;
+        }
+        case 2:
+        {//runter
+            if (++pacManY > sizeX - 1) {
+                pacManY = 0;
+            }
+            if (lvl[pacManY][pacManX] == 1|| lvl[pacManY][pacManX] == 8) {
+                pacManY--;
+                flag = true
+            }
+            break;
+        }
+        case 3:
+        {//links
+            if (--pacManX < 0) {
+                pacManX = sizeX - 1;
+            }
+            if (lvl[pacManY][pacManX] == 1 || lvl[pacManY][pacManX] == 8) {
+                pacManX++;
+                flag = true
+            }
+            break;
+        }
+    }
+    if (flag) {
+        pacManX = altPacManX;
+        pacManY = altPacManY;
+    }
+    else {
+        lvl[pacManY][pacManX] = 5;
+        lvl[altPacManY][pacManX] = 2;
+    }
+    //alten hintergrund wieder einsetzen
+    context.putImageData(pacmanVisitedImageData, altPacManX * factorX, altPacManY * factorY);
+    //geist zeichnen
+    context.putImageData(pacmanImageData, pacManX * factorX, pacManY * factorY);
+}
+
+
+function isKreuzung(X, Y) {
+    if (lvl[X][Y + 1] != 1 && lvl[X][Y + 1] != 8 && lvl[X][Y - 1] != 1 && lvl[X][Y - 1] != 8 && lvl[X + 1][Y] != 1 && lvl[X + 1][Y] != 8)return true;
+    else if (lvl[X][Y + 1] != 1 && lvl[X][Y + 1] != 8 && lvl[X][Y - 1] != 1 && lvl[X][Y - 1] != 8 && lvl[X - 1][Y] != 1 && lvl[X - 1][Y] != 8)return true;
+    else if (lvl[X + 1][Y] != 1 && lvl[X + 1][Y] != 8 && lvl[X - 1][Y] != 1 && lvl[X - 1][Y] != 8 && lvl[X][Y + 1] != 1 && lvl[X][Y + 1] != 8)return true;
+    else if (lvl[X + 1][Y] != 1 && lvl[X + 1][Y] != 8 && lvl[X - 1][Y] != 1 && lvl[X - 1][Y] != 8 && lvl[X][Y - 1] != 1 && lvl[X][Y - 1] != 8)return true;
+    return false
+}
 
 function lvlZeichen() {
     for (var i = 0; i < sizeX; i++) {
@@ -161,6 +256,10 @@ function lvlZeichen() {
                 {
                     //pacman zeichnen
                     context.drawImage(pacman, j * factorX, i * factorY, factorX, factorY);
+                    pacmanImageData = context.getImageData(j * factorX, i * factorY, factorX, factorY);
+                    pacmanVisitedImageData = context.getImageData((j - 1) + factorX, i * factorY, factorX, factorY);
+                    pacManX = j;
+                    pacManY = i;
                     break;
 
                 }

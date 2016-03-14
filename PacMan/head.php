@@ -1,3 +1,3 @@
 <header>
-    kopf
+    Tolles Bild und Schriftzug
 </header>

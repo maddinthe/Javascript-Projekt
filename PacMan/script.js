@@ -7,7 +7,7 @@ var context = spielfeld.getContext("2d");
 
 var lvl = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 1],
     [1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1],
     [1, 0, 1, 1, 0, 1, 3, 3, 3, 3, 1, 0, 1, 0, 1, 3, 3, 3, 3, 1, 0, 1, 1, 0, 1],
     [1, 0, 1, 1, 0, 1, 1, 1, 3, 3, 1, 0, 1, 0, 1, 3, 3, 1, 1, 1, 0, 1, 1, 0, 1],
@@ -29,7 +29,7 @@ var lvl = [
     [1, 0, 0, 1, 0, 1, 0, 1, 3, 3, 1, 0, 1, 0, 1, 3, 3, 1, 0, 1, 0, 1, 0, 0, 1],
     [1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1],
     [1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]];
 
 
@@ -42,7 +42,16 @@ var offsetY = factorY / 2;
 var dotsize = (offsetX + offsetY) / 8;
 var pacman = document.getElementById("pacman");
 var geist = document.getElementById("geist");
-lvlZeichen();
+window.addEventListener("load", function(){
+    lvlZeichen();
+})
+
+var zeit=new Date();
+var interval=setInterval(function(){
+    var sekunden=new Date(Math.floor((new Date().getTime()-zeit.getTime())));
+    document.getElementById("zeit").innerText="Zeit: "+sekunden.toUTCString().substring(20,25);
+},1000);
+
 function lvlZeichen() {
     for (var i = 0; i < sizeX; i++) {
         for (var j = 0; j < sizeY; j++) {
@@ -70,12 +79,22 @@ function lvlZeichen() {
                 case 5:
                 {
                     //pacman zeichnen
-                    context.drawImage(pacman, j * factorX, j * factorY, factorX, factorY);
+                    context.drawImage(pacman, j * factorX, i * factorY, factorX, factorY);
+                    break;
 
                 }
                 case 6:
                 {//geist zeichnen
-                    context.drawImage(geist, j * factorX, j * factorY, factorX, factorY);
+                    context.drawImage(geist, j * factorX, i * factorY, factorX, factorY);
+                    break;
+                }
+                case 7:{
+                    //große pillen zeichnen
+                    context.fillStyle = "yellow";
+                    context.arc(j * factorX + offsetX, i * factorY + offsetY, dotsize*2, 0, 2 * Math.PI);
+                    context.fill();
+                    context.closePath();
+                    break;
                 }
             }
         }

@@ -1,3 +1,3 @@
 <footer>
-    fuß
+    Reverse PacMan by OFRzS DREHER|KERTZ|THEILEN
 </footer>

@@ -33,3 +33,6 @@ section{
     padding: 10px;
     flex: 4;
 }
+canvas{
+    background-color: black;
+}

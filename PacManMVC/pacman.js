@@ -199,7 +199,6 @@ class Spielfigur {
     }
 
     figurBewegen(richtung) {
-        let flag = false;
         this.altPosX = this.posX;
         this.altPosY = this.posY;
         this.altHintergrund = this.hintergrund;

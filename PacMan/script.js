@@ -19,7 +19,7 @@ var lvl = [
     [1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1],
     [3, 3, 3, 1, 0, 1, 3, 1, 0, 1, 1, 8, 8, 8, 1, 1, 0, 1, 3, 1, 0, 1, 3, 3, 3],
     [1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 4, 4, 4, 4, 4, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1],
-    [2, 2, 2, 5, 0, 0, 0, 0, 0, 1, 4, 4, 4, 6, 4, 1, 0, 0, 0, 0, 0, 2, 2, 2, 2],
+    [2, 2, 2, 5, 0, 0, 0, 0, 0, 1, 4, 4, 6, 4, 4, 1, 0, 0, 0, 0, 0, 2, 2, 2, 2],
     [1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 4, 4, 4, 4, 4, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1],
     [3, 3, 3, 1, 0, 1, 3, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 3, 1, 0, 1, 3, 3, 3],
     [1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1],
@@ -61,13 +61,18 @@ var richtung = 1; //default rechts
 var moveInterval;
 var changeableInterval;
 var changeable=false;
+var restpillen=0;
+var rauf=0;
+var rechts=1;
+var runter=2;
+var links=3;
 window.addEventListener("load", function () {
     lvlZeichen();
     moveInterval = setInterval(function () {
         //move sperre zurücksetzten und pacman bewegen lassen
         movable = true;
         pacmanMove();
-    }, 50);
+    }, 250);
     changeableInterval=setInterval(function(){changeable=true},200);
 });
 window.addEventListener("keydown", function (e) {
@@ -135,9 +140,7 @@ window.addEventListener("keydown", function (e) {
         //geist zeichnen
         context.putImageData(geistImageData, geistX * factorX, geistY * factorY);
         if (lvl[geistY][geistX] == 5) {
-            clearInterval(interval);
-            zeit = new Date(Math.floor((new Date().getTime() - zeit.getTime())));
-            window.alert("Gewonnen! deine Zeit: " + zeit.toUTCString().substring(20, 25));
+            gewonnen(true);
         }
     }
     movable = false;
@@ -150,17 +153,42 @@ var interval = setInterval(function () {
 
 
 }, 1000);
+function gewonnen(bool){
+    clearInterval(interval);
+    zeit = new Date(Math.floor((new Date().getTime() - zeit.getTime())));
+    clearInterval(moveInterval);
+    clearInterval(changeableInterval);
+    if(window.confirm(((bool) ?"Gewonnen!":"Verloren!")+" deine Zeit: " + zeit.toUTCString().substring(20, 25)+" Neustarten?"))location.reload();
+}
+function isWand(value){
+    return(value==1||value==8)
+
+}
+function isKreuzung(X,Y){
+    var ret=[];
+    var count=0;
+    if(!isWand(lvl[Y-1][X]))ret[count++]=rauf;//oben
+    if(!isWand(lvl[Y][X+1]))ret[count++]=rechts;//rechts
+    if(!isWand(lvl[Y+1][X]))ret[count++]=runter;//unten
+    if(!isWand(lvl[Y][X-1]))ret[count]=links;//links
+    if(ret.length>2){
+        return [true,ret];
+    }else return [false,ret];
+}
 
 function pacmanMove() {
-    if(changeable){
-        richtung = Math.floor(Math.random() * 5);
-        changeable=false;
+    var kreuzung=isKreuzung(pacManX,pacManY);
+    var richtungNeu=richtung;
+    var zurueck=(richtung+2)%4;
+    if (kreuzung[0]){
+        while((richtungNeu=kreuzung[1][Math.floor(Math.random()*kreuzung[1].length)])==zurueck);
+        richtung=richtungNeu;
     }
     var flag = false;
     altPacManX = pacManX;
     altPacManY = pacManY;
     switch (richtung) {
-        case 0:
+        case rauf:
         {//hoch
             if (--pacManY < 0) {
                 pacManY = sizeY - 1;
@@ -171,18 +199,18 @@ function pacmanMove() {
             }
             break;
         }
-        case 1:
+        case rechts:
         {//rechts
             if (++pacManX > sizeX - 1) {
-                pacManX = sizeX - 1;
+                pacManX = 0;
             }
             if (lvl[pacManY][pacManX] == 1 || lvl[pacManY][pacManX] == 8) {
-                pacManX--
+                pacManX--;
                 flag=true;
             }
             break;
         }
-        case 2:
+        case runter:
         {//runter
             if (++pacManY > sizeX - 1) {
                 pacManY = 0;
@@ -193,7 +221,7 @@ function pacmanMove() {
             }
             break;
         }
-        case 3:
+        case links:
         {//links
             if (--pacManX < 0) {
                 pacManX = sizeX - 1;
@@ -205,27 +233,49 @@ function pacmanMove() {
             break;
         }
     }
+
     if (flag) {
-        pacManX = altPacManX;
-        pacManY = altPacManY;
+        richtung=findeAusweg(richtung);
     }
     else {
+        if( lvl[pacManY][pacManX]==0||lvl[pacManY][pacManX]==7)restpillen--;
         lvl[pacManY][pacManX] = 5;
-        lvl[altPacManY][pacManX] = 2;
+        lvl[altPacManY][altPacManX] = 2;
+
     }
+    if(pacManX==geistX&&pacManY==geistY){
+        gewonnen(true);
+    }else if (restpillen<1)
+        gewonnen(false);
     //alten hintergrund wieder einsetzen
     context.putImageData(pacmanVisitedImageData, altPacManX * factorX, altPacManY * factorY);
     //geist zeichnen
     context.putImageData(pacmanImageData, pacManX * factorX, pacManY * factorY);
+    if(flag)pacmanMove();
 }
-
-
-function isKreuzung(X, Y) {
-    if (lvl[X][Y + 1] != 1 && lvl[X][Y + 1] != 8 && lvl[X][Y - 1] != 1 && lvl[X][Y - 1] != 8 && lvl[X + 1][Y] != 1 && lvl[X + 1][Y] != 8)return true;
-    else if (lvl[X][Y + 1] != 1 && lvl[X][Y + 1] != 8 && lvl[X][Y - 1] != 1 && lvl[X][Y - 1] != 8 && lvl[X - 1][Y] != 1 && lvl[X - 1][Y] != 8)return true;
-    else if (lvl[X + 1][Y] != 1 && lvl[X + 1][Y] != 8 && lvl[X - 1][Y] != 1 && lvl[X - 1][Y] != 8 && lvl[X][Y + 1] != 1 && lvl[X][Y + 1] != 8)return true;
-    else if (lvl[X + 1][Y] != 1 && lvl[X + 1][Y] != 8 && lvl[X - 1][Y] != 1 && lvl[X - 1][Y] != 8 && lvl[X][Y - 1] != 1 && lvl[X][Y - 1] != 8)return true;
-    return false
+function findeAusweg(alteRichtung){
+    switch (alteRichtung){
+        case rauf:{
+            if(lvl[pacManY][pacManX+1]!=1)return rechts;
+            if(lvl[pacManY][pacManX-1]!=1)return links;
+            return runter;
+        }
+        case rechts:{
+            if(lvl[pacManY-1][pacManX]!=1)return rauf;
+            if(lvl[pacManY+1][pacManX]!=1)return runter;
+            return links;
+        }
+        case runter:{
+            if(lvl[pacManY][pacManX+1]!=1)return rechts;
+            if(lvl[pacManY][pacManX-1]!=1)return links;
+            return rauf;
+        }
+        case links:{
+            if(lvl[pacManY-1][pacManX]!=1)return rauf;
+            if(lvl[pacManY+1][pacManX]!=1)return runter;
+            return rechts;
+        }
+    }
 }
 
 function lvlZeichen() {
@@ -238,6 +288,7 @@ function lvlZeichen() {
                     context.arc(j * factorX + offsetX, i * factorY + offsetY, dotsize, 0, 2 * Math.PI);
                     context.fill();
                     context.closePath();
+                    restpillen++;
                     break;
                 }
                 case 1:
@@ -246,9 +297,21 @@ function lvlZeichen() {
                     context.fillRect(j * factorX, i * factorY, factorX, factorY);
                     break;
                 }
+                case 2:{
+                    //gang freimachen
+                    context.clearRect(j * factorX, i * factorY, factorX, factorY);
+
+                    break;
+                }
                 case 3 :
                 { //leeren raum zeichen
                     context.fillStyle = "#808080";
+                    context.fillRect(j * factorX, i * factorY, factorX, factorY);
+                    break;
+                }
+                case 4:{
+                    //haus blau machen
+                    context.fillStyle = "#0000FF";
                     context.fillRect(j * factorX, i * factorY, factorX, factorY);
                     break;
                 }
@@ -280,6 +343,14 @@ function lvlZeichen() {
                     context.arc(j * factorX + offsetX, i * factorY + offsetY, dotsize * 2, 0, 2 * Math.PI);
                     context.fill();
                     context.closePath();
+                    restpillen++;
+                    break;
+                }
+                case 8:{
+                    context.fillStyle = "#FF0000";
+                    context.fillRect(j * factorX, i * factorY, factorX, offsetY);
+                    context.fillStyle = "#0000FF";
+                    context.fillRect(j * factorX, i * factorY+offsetY, factorX, offsetY);
                     break;
                 }
             }

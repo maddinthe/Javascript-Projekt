@@ -69,25 +69,25 @@ function controller_spielen() {
         switch (e.keyCode) {
             case 37:
             {
-                spielFlaeche.geist.richtung = Richtungen.links;
+                spielFlaeche.geist.richtungNeu = Richtungen.links;
                 console.log("links");
                 break;
             }
             case 38:
             {
-                spielFlaeche.geist.richtung = Richtungen.hoch;
+                spielFlaeche.geist.richtungNeu = Richtungen.hoch;
                 console.log("hoch");
                 break;
             }
             case 39:
             {
-                spielFlaeche.geist.richtung = Richtungen.rechts;
+                spielFlaeche.geist.richtungNeu = Richtungen.rechts;
                 console.log("rechts");
                 break;
             }
             case 40:
             {
-                spielFlaeche.geist.richtung = Richtungen.runter;
+                spielFlaeche.geist.richtungNeu = Richtungen.runter;
                 console.log("runter");
                 break;
             }
@@ -162,6 +162,7 @@ class PacMan extends SpielObjekt {
         super(posX, posY, groesse);
         this.imageData = this.ImageToImageData(document.getElementById("pacman"), groesse);
         this.richtung = Richtungen.rechts;
+        this.richtungNeu = this.richtung;
         this.verboteneFelder = 2;
     }
 
@@ -171,6 +172,7 @@ class Geist extends SpielObjekt {
         super(posX, posY, groesse);
         this.imageData = this.ImageToImageData(document.getElementById("geist"), groesse);
         this.richtung = null;
+        this.richtungNeu = null;
         this.verboteneFelder = 1;
     }
 }
@@ -269,8 +271,50 @@ class SpielFlaeche {
         spielFlaeche.figurenZeichnen();
     }
 
-    bewegenGeist() {
+    isWand(value, figur) {
+        if (figur instanceof PacMan) {
+            return (value == Feldtyen.wand || value == Feldtyen.tuer);
+        }
+        else if (figur instanceof Geist) {
+            return (value == Feldtyen.wand);
+        }
+        return true;
 
+    }
+
+    isKreuzung(X, Y, figur) {
+        var ret = [];
+        var count = 0;
+        if (!(spielFlaeche.isWand(spielFlaeche.level[Y - 1][X], figur)))ret[count++] = Richtungen.hoch;//oben
+        if (!(spielFlaeche.isWand(spielFlaeche.level[Y][X + 1], figur)))ret[count++] = Richtungen.rechts;//rechts
+        if (!(spielFlaeche.isWand(spielFlaeche.level[Y + 1][X], figur)))ret[count++] = Richtungen.runter;//unten
+        if (!(spielFlaeche.isWand(spielFlaeche.level[Y][X - 1], figur)))ret[count] = Richtungen.links;//links
+        if (ret.length > 2) {
+            return [true, ret];
+        } else return [false, ret];
+    }
+    //todo: hier ist noch ein fehler drin
+    isInEcke(figur) {
+        var ret = [];
+        var count = 0;
+        if (!(spielFlaeche.isWand(spielFlaeche.level[figur.posY - 1][figur.posX], figur)))ret[count++] = Richtungen.runter;//oben ist wand
+        if (!(spielFlaeche.isWand(spielFlaeche.level[figur.posY][figur.posX + 1], figur)))ret[count++] = Richtungen.links;//rechts ist wand
+        if (!(spielFlaeche.isWand(spielFlaeche.level[figur.posY + 1][figur.posX], figur)))ret[count++] = Richtungen.hoch;//unten ist wand
+        if (!(spielFlaeche.isWand(spielFlaeche.level[figur.posY][figur.posX - 1], figur)))ret[count] = Richtungen.rechts;//links ist wand
+        if (ret.length == 2&&ret[0]==(ret[1]+2)%3) {
+            return [true, (ret[0] == figur.richtung) ? ret[1] : ret[0]];
+        } else return [false, ret];
+    }
+
+
+    bewegenGeist() {
+        if (spielFlaeche.isKreuzung(this.geist.posX, this.geist.posY, this.geist)[0]) {
+            this.geist.richtung = this.geist.richtungNeu;
+            console.log("anpassung");
+        } else {
+            let inEcke = spielFlaeche.isInEcke(this.geist);
+            if (inEcke[0])this.geist.richtung = inEcke[1];
+        }
         switch (this.geist.richtung) {
             case Richtungen.hoch:
             {

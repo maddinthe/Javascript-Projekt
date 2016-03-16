@@ -174,7 +174,6 @@ class Geist extends SpielObjekt {
         this.verboteneFelder = 1;
     }
 }
-
 class SpielFlaeche {
     constructor(levelCanvas, pacManCanvas, geistCanvas, level) {
         this.levelContext = levelCanvas.getContext("2d");

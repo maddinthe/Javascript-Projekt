@@ -6,7 +6,7 @@ canvas{
 #canvascontainer{
     position: relative;
 }
-#spielfeld{
+#spielFeld{
     background-color: #202020;
     position: absolute;
 }

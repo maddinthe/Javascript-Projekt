@@ -66,6 +66,8 @@ class Level {
         this.offsetY = this.factorY / 2;
         this.dotsize = (this.offsetX + this.offsetY) / 8;
         this.figuren = [];
+        this.pacman;
+        this.geist;
         this.verboteneFelderPacman = 2;
         this.verboteneFelderGeist = 1;
     }
@@ -91,7 +93,7 @@ class Level {
                         break;
                     }
                     case Feldtyen.pacManSpawn:
-                        figurenZuordnung[figurenZuordnung.length] = [Feldtyen.pacManSpawn, j, i];
+                    //    figurenZuordnung[figurenZuordnung.length] = [Feldtyen.pacManSpawn, j, i];
                     case Feldtyen.leerFlaeche:
                     {
                         //gang freimachen
@@ -106,7 +108,7 @@ class Level {
                         break;
                     }
                     case Feldtyen.geistSpawn:
-                        figurenZuordnung[figurenZuordnung.length] = [Feldtyen.geistSpawn, j, i];
+                    //    figurenZuordnung[figurenZuordnung.length] = [Feldtyen.geistSpawn, j, i];
                     case Feldtyen.geiserHaus:
                     {
                         //haus blau machen
@@ -139,21 +141,21 @@ class Level {
         for (let k = 0; k < figurenZuordnung.length; k++) {
             switch (figurenZuordnung[k][0]) {
                 case Feldtyen.pacManSpawn:
-                {
-                    this.figuren[this.figuren.length] = new Spielfigur(document.getElementById("pacman"), figurenZuordnung[k][1], figurenZuordnung[k][2], this, this.verboteneFelderPacman);
-
+                {  this.pacman = new Spielfigur(document.getElementById("pacman"), figurenZuordnung[k][1], figurenZuordnung[k][2], this, this.verboteneFelderPacman);
+                    this.spielfigurZeichnen(this.pacman);
                     break;
                 }
                 case Feldtyen.geistSpawn:
                 {
-                    this.figuren[this.figuren.length] = new Spielfigur(document.getElementById("geist"), figurenZuordnung[k][1], figurenZuordnung[k][2], this, this.verboteneFelderGeist);
+                    this.geist = new Spielfigur(document.getElementById("geist"), figurenZuordnung[k][1], figurenZuordnung[k][2], this, this.verboteneFelderGeist);
+                    this.spielfigurZeichnen(this.geist);
                     break;
                 }
             }
         }
-        for (let l = 0; l < this.figuren.length; l++) {
-            this.spielfigurZeichnen(this.figuren[l]);
-        }
+
+
+
     }
 
     spielfigurZeichnen(figur) {
@@ -163,19 +165,6 @@ class Level {
         figur.hintergrund=this.context.getImageData(figur.posX * this.factorX, figur.posY * this.factorY,this.factorX,this.factorY);
         this.context.putImageData(figur.bild, figur.posX * this.factorX, figur.posY * this.factorY);
 
-    }
-
-    get pacman(){
-        for (let i=0;i<this.figuren.length;i++){
-            if (this.figuren[i].verboteneFelder==this.verboteneFelderPacman)return this.figuren[i];
-        }
-        return null;
-    }
-    get geist(){
-        for (let i=0;i<this.figuren.length;i++){
-            if (this.figuren[i].verboteneFelder==this.verboteneFelderGeist)return this.figuren[i];
-        }
-        return null;
     }
 }
 class Spielfigur {

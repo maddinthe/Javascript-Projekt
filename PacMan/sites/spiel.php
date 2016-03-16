@@ -13,4 +13,4 @@ if(isset($_POST["size"])&&(!is_nan($_POST["size"])))
 <span id="zeit">Zeit: 00:00</span>
 
 
-<script src="../script.js"></script>
+<script src="./script.js"></script>

@@ -12,11 +12,11 @@ var Richtungen = {
     rechts: 2,
     links: 3
 };
-var Feldtyen = {
+var Feldtypen = {
     wand: 0,
     hohlraum: 1,
     tuer: 2,
-    geiserHaus: 3,
+    geisterHaus: 3,
     pille: 4,
     grPille: 5,
     pacManSpawn: 6,
@@ -27,7 +27,7 @@ var Farben = {
     wand: "#696969",
     hohlraum: "#808080",
     tuer: "#FF0000",
-    geiserHaus: "#0000FF",
+    geisterHaus: "#0000FF",
     pille: "yellow",
     grPille: "yellow",
     geistSpawn: "#0000FF"
@@ -118,6 +118,68 @@ var load = window.addEventListener("load", function () {
     zustand.status = 1;
 });
 //<<------------------Klassendefinition------------------>>
+class Knoten {
+    constructor(knotenOben, knotenLinks, posX, posY, pille) {
+        this.knotenOben = knotenOben;
+        this.knotenUnten = null;
+        this.knotenLinks = knotenLinks;
+        this.knotenRechts = null;
+        this.posX = posX;
+        this.posY = posY;
+        this.pille = pille;
+        if (knotenOben instanceof Knoten) {
+            knotenOben.knotenUnten = this;
+        }
+        if (knotenLinks instanceof Knoten) {
+            knotenLinks.knotenRechts = this;
+        }
+    }
+
+    get weg() {
+        let ret = [];
+        if (this.knotenLinks instanceof Knoten)ret[ret.length] = Richtungen.links;
+        if (this.knotenOben instanceof Knoten)ret[ret.length] = Richtungen.hoch;
+        if (this.knotenRechts instanceof Knoten)ret[ret.length] = Richtungen.rechts;
+        if (this.knotenUnten instanceof Knoten)ret[ret.length] = Richtungen.runter;
+        return ret;
+    }
+
+    nexthop(richtung) {
+        switch (richtung) {
+            case Richtungen.hoch:
+            {
+                if (this.knotenOben instanceof Knoten)return Richtungen.hoch;
+                if (this.knotenLinks instanceof Knoten) return Richtungen.links;
+                if (this.knotenRechts instanceof Knoten) return Richtungen.rechts;
+                return Richtungen.runter;
+            }
+            case Richtungen.rechts:
+            {
+                if (this.knotenRechts instanceof Knoten)return Richtungen.rechts;
+                if (this.knotenOben instanceof Knoten) return Richtungen.hoch;
+                if (this.knotenUnten instanceof Knoten) return Richtungen.runter;
+                return Richtungen.links;
+            }
+            case Richtungen.runter:
+            {
+                if (this.knotenUnten instanceof Knoten)return Richtungen.runter;
+                if (this.knotenLinks instanceof Knoten) return Richtungen.links;
+                if (this.knotenRechts instanceof Knoten) return Richtungen.rechts;
+                return Richtungen.hoch;
+            }
+            case Richtungen.links:
+            {
+                if (this.knotenLinks instanceof Knoten)return Richtungen.links;
+                if (this.knotenOben instanceof Knoten) return Richtungen.hoch;
+                if (this.knotenUnten instanceof Knoten) return Richtungen.runter;
+                return Richtungen.rechts;
+            }
+        }
+
+    }
+
+
+}
 class SpielObjekt {
     constructor(posX, posY, groesse) {
         this.posX = posX;
@@ -188,6 +250,7 @@ class SpielFlaeche {
         this.geist = null;
         this.pacMan = null;
         this.factor = this.width / lvl.length;
+        this.knoten = [];
         this.zeichnen();
         this.figurenZeichnen();
         zustand.status = 2;
@@ -195,63 +258,74 @@ class SpielFlaeche {
     }
 
     zeichnen() {
-        for (let i = 0; i < lvl.length; i++)
+        for (let i = 0; i < lvl.length; i++) {
+            this.knoten[i] = [];
             for (let j = 0; j < lvl[i].length; j++) {
                 switch (lvl[i][j]) {
-                    case Feldtyen.wand:
+                    case Feldtypen.wand:
                     {
                         this.levelContext.fillStyle = Farben.wand;
                         this.levelContext.fillRect(j * this.factor, i * this.factor, this.factor, this.factor);
                         break;
                     }
 
-                    case Feldtyen.geistSpawn:
+                    case Feldtypen.geistSpawn:
                     {
                         this.geist = new Geist(j, i, this.factor);
                     }
-                    case Feldtyen.geiserHaus:
+                    case Feldtypen.geisterHaus:
                     {
-                        this.levelContext.fillStyle = Farben.geiserHaus;
+                        this.levelContext.fillStyle = Farben.geisterHaus;
                         this.levelContext.fillRect(j * this.factor, i * this.factor, this.factor, this.factor);
-
+                        this.knoten[i][j] = new Knoten(this.knoten[i - 1][j], this.knoten[i][j - 1], j, i, null);
                         break;
                     }
-                    case Feldtyen.pacManSpawn:
+                    case Feldtypen.pacManSpawn:
                     {
                         this.pacMan = new PacMan(j, i, this.factor);
                     }
-                    case Feldtyen.leerFlaeche:
+                    case Feldtypen.leerFlaeche:
                     {
                         this.levelContext.clearRect(j * this.factor, i * this.factor, this.factor, this.factor);
+                        this.knoten[i][j] = new Knoten(this.knoten[i - 1][j], this.knoten[i][j - 1], j, i, null);
                         break;
                     }
-                    case Feldtyen.hohlraum:
+                    case Feldtypen.hohlraum:
                     {
                         this.levelContext.fillStyle = Farben.hohlraum;
                         this.levelContext.fillRect(j * this.factor, i * this.factor, this.factor, this.factor);
                         break;
                     }
-                    case Feldtyen.tuer:
+                    case Feldtypen.tuer:
                     {
 
                         this.levelContext.fillStyle = Farben.tuer;
                         this.levelContext.fillRect(j * this.factor, i * this.factor, this.factor, this.factor / 2);
                         this.levelContext.fillStyle = Farben.geistSpawn;
                         this.levelContext.fillRect(j * this.factor, i * this.factor + this.factor / 2, this.factor, this.factor / 2);
+                        this.knoten[i][j] = new Knoten(this.knoten[i - 1][j], this.knoten[i][j - 1], j, i, null);
                         break;
                     }
-                    case Feldtyen.pille:
+                    case Feldtypen.pille:
                     {
-                        this.pillen[this.pillen.length] = new Pille(j, i, this.factor, false);
+                        let pille = new Pille(j, i, this.factor, false);
+                        this.pillen[this.pillen.length] = pille;
+                        this.knoten[i][j] = new Knoten(this.knoten[i - 1][j], this.knoten[i][j - 1], j, i, pille);
                         break;
                     }
-                    case Feldtyen.grPille:
+                    case Feldtypen.grPille:
                     {
-                        this.pillen[this.pillen.length] = new Pille(j, i, this.factor, true);
+                        let pille = new Pille(j, i, this.factor, true);
+                        this.pillen[this.pillen.length] = pille;
+                        this.knoten[i][j] = new Knoten(this.knoten[i - 1][j], this.knoten[i][j - 1], j, i, pille);
                         break;
                     }
+                    //    default :{
+                    //this.knoten[i][j]=undefined;
+                    //}
                 }
             }
+        }
     }
 
     figurenZeichnen() {
@@ -273,10 +347,10 @@ class SpielFlaeche {
 
     isWand(value, figur) {
         if (figur instanceof PacMan) {
-            return (value == Feldtyen.wand || value == Feldtyen.tuer);
+            return (value == Feldtypen.wand || value == Feldtypen.tuer);
         }
         else if (figur instanceof Geist) {
-            return (value == Feldtyen.wand);
+            return (value == Feldtypen.wand);
         }
         return true;
 
@@ -293,6 +367,7 @@ class SpielFlaeche {
             return [true, ret];
         } else return [false, ret];
     }
+
     //todo: hier ist noch ein fehler drin
     isInEcke(figur) {
         var ret = [];
@@ -301,7 +376,7 @@ class SpielFlaeche {
         if (!(spielFlaeche.isWand(spielFlaeche.level[figur.posY][figur.posX + 1], figur)))ret[count++] = Richtungen.links;//rechts ist wand
         if (!(spielFlaeche.isWand(spielFlaeche.level[figur.posY + 1][figur.posX], figur)))ret[count++] = Richtungen.hoch;//unten ist wand
         if (!(spielFlaeche.isWand(spielFlaeche.level[figur.posY][figur.posX - 1], figur)))ret[count] = Richtungen.rechts;//links ist wand
-        if (ret.length == 2&&ret[0]==(ret[1]+2)%3) {
+        if (ret.length == 2 && ret[0] == (ret[1] + 2) % 3) {
             return [true, (ret[0] == figur.richtung) ? ret[1] : ret[0]];
         } else return [false, ret];
     }
@@ -310,9 +385,9 @@ class SpielFlaeche {
     bewegenGeist() {
         if (spielFlaeche.isKreuzung(this.geist.posX, this.geist.posY, this.geist)[0]) {
             this.geist.richtung = this.geist.richtungNeu;
-            console.log("anpassung");
         } else {
             let inEcke = spielFlaeche.isInEcke(this.geist);
+            if (inEcke[0])console.log(inEcke);
             if (inEcke[0])this.geist.richtung = inEcke[1];
         }
         switch (this.geist.richtung) {

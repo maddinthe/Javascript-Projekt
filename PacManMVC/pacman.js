@@ -109,7 +109,7 @@ class Level {
                     }
                     case Feldtyen.geistSpawn:
                     //    figurenZuordnung[figurenZuordnung.length] = [Feldtyen.geistSpawn, j, i];
-                    case Feldtyen.geiserHaus:
+                    case Feldtyen.geisterHaus:
                     {
                         //haus blau machen
                         this.context.fillStyle = "#0000FF";

@@ -118,14 +118,19 @@ var load = window.addEventListener("load", function () {
     zustand.status = 1;
 });
 //<<------------------Klassendefinition------------------>>
+class Pos{
+    constructor(x,y){
+        this.x=x;
+        this.y=y;
+    }
+}
 class Knoten {
     constructor(knotenOben, knotenLinks, posX, posY, pille) {
         this.knotenOben = knotenOben;
         this.knotenUnten = null;
         this.knotenLinks = knotenLinks;
         this.knotenRechts = null;
-        this.posX = posX;
-        this.posY = posY;
+        this.pos=new Pos(posX,posY);
         this.pille = pille;
         if (knotenOben instanceof Knoten) {
             knotenOben.knotenUnten = this;
@@ -141,6 +146,15 @@ class Knoten {
         if (this.knotenOben instanceof Knoten)ret[ret.length] = Richtungen.hoch;
         if (this.knotenRechts instanceof Knoten)ret[ret.length] = Richtungen.rechts;
         if (this.knotenUnten instanceof Knoten)ret[ret.length] = Richtungen.runter;
+        return ret;
+    }
+
+    get nachbarn(){
+        let ret=[];
+        if (this.knotenLinks instanceof Knoten)ret.push(this.knotenLinks);
+        if (this.knotenOben instanceof Knoten)ret.push(this.knotenOben);
+        if (this.knotenRechts instanceof Knoten)ret.push(this.knotenRechts);
+        if (this.knotenUnten instanceof Knoten)ret.push(this.knotenUnten);
         return ret;
     }
 
@@ -338,109 +352,200 @@ class SpielFlaeche {
         this.geistContext.putImageData(this.geist.imageData, this.geist.posX * this.factor, this.geist.posY * this.factor);
 
     }
+    bewegen(){
+        //Geist Bewegen
 
-    bewegen() {
-        spielFlaeche.bewegenGeist();
-        spielFlaeche.bewegenPacMan();
-        spielFlaeche.figurenZeichnen();
-    }
 
-    isWand(value, figur) {
-        if (figur instanceof PacMan) {
-            return (value == Feldtypen.wand || value == Feldtypen.tuer);
-        }
-        else if (figur instanceof Geist) {
-            return (value == Feldtypen.wand);
-        }
-        return true;
+
+
+        //Geist Bewegen Ende
+        //PacMan bewegen
+
+        //PacMan Bewegen Ende
+
+        //änderungen Zeichnen
 
     }
 
-    isKreuzung(X, Y, figur) {
-        var ret = [];
-        var count = 0;
-        if (!(spielFlaeche.isWand(spielFlaeche.level[Y - 1][X], figur)))ret[count++] = Richtungen.hoch;//oben
-        if (!(spielFlaeche.isWand(spielFlaeche.level[Y][X + 1], figur)))ret[count++] = Richtungen.rechts;//rechts
-        if (!(spielFlaeche.isWand(spielFlaeche.level[Y + 1][X], figur)))ret[count++] = Richtungen.runter;//unten
-        if (!(spielFlaeche.isWand(spielFlaeche.level[Y][X - 1], figur)))ret[count] = Richtungen.links;//links
-        if (ret.length > 2) {
-            return [true, ret];
-        } else return [false, ret];
+
+    //
+    //bewegen() {
+    //    spielFlaeche.bewegenGeist();
+    //    spielFlaeche.bewegenPacMan();
+    //    spielFlaeche.figurenZeichnen();
+    //}
+    //isWand(value, figur) {
+    //    if (figur instanceof PacMan) {
+    //        return (value == Feldtypen.wand || value == Feldtypen.tuer);
+    //    }
+    //    else if (figur instanceof Geist) {
+    //        return (value == Feldtypen.wand);
+    //    }
+    //    return true;
+    //
+    //}
+    //isKreuzung(X, Y, figur) {
+    //    var ret = [];
+    //    var count = 0;
+    //    if (!(spielFlaeche.isWand(spielFlaeche.level[Y - 1][X], figur)))ret[count++] = Richtungen.hoch;//oben
+    //    if (!(spielFlaeche.isWand(spielFlaeche.level[Y][X + 1], figur)))ret[count++] = Richtungen.rechts;//rechts
+    //    if (!(spielFlaeche.isWand(spielFlaeche.level[Y + 1][X], figur)))ret[count++] = Richtungen.runter;//unten
+    //    if (!(spielFlaeche.isWand(spielFlaeche.level[Y][X - 1], figur)))ret[count] = Richtungen.links;//links
+    //    if (ret.length > 2) {
+    //        return [true, ret];
+    //    } else return [false, ret];
+    //}
+    ////todo: hier ist noch ein fehler drin
+    //isInEcke(figur) {
+    //    var ret = [];
+    //    var count = 0;
+    //    if (!(spielFlaeche.isWand(spielFlaeche.level[figur.posY - 1][figur.posX], figur)))ret[count++] = Richtungen.runter;//oben ist wand
+    //    if (!(spielFlaeche.isWand(spielFlaeche.level[figur.posY][figur.posX + 1], figur)))ret[count++] = Richtungen.links;//rechts ist wand
+    //    if (!(spielFlaeche.isWand(spielFlaeche.level[figur.posY + 1][figur.posX], figur)))ret[count++] = Richtungen.hoch;//unten ist wand
+    //    if (!(spielFlaeche.isWand(spielFlaeche.level[figur.posY][figur.posX - 1], figur)))ret[count] = Richtungen.rechts;//links ist wand
+    //    if (ret.length == 2 && ret[0] == (ret[1] + 2) % 3) {
+    //        return [true, (ret[0] == figur.richtung) ? ret[1] : ret[0]];
+    //    } else return [false, ret];
+    //}
+    //bewegenGeist() {
+    //    if (spielFlaeche.isKreuzung(this.geist.posX, this.geist.posY, this.geist)[0]) {
+    //        this.geist.richtung = this.geist.richtungNeu;
+    //    } else {
+    //        let inEcke = spielFlaeche.isInEcke(this.geist);
+    //        if (inEcke[0])console.log(inEcke);
+    //        if (inEcke[0])this.geist.richtung = inEcke[1];
+    //    }
+    //    switch (this.geist.richtung) {
+    //        case Richtungen.hoch:
+    //        {
+    //
+    //            if (this.level[this.geist.posY - 1] == undefined || this.level[this.geist.posY - 1][this.geist.posX] > this.geist.verboteneFelder) {
+    //                this.geist.posY--;
+    //                if (this.geist.posY < 0) {
+    //                    this.geist.posY = this.level.length - 1
+    //                }
+    //            }
+    //            break;
+    //        }
+    //        case Richtungen.rechts:
+    //        {
+    //
+    //            if (this.level[this.geist.posY][this.geist.posX + 1] > this.geist.verboteneFelder || this.level[this.geist.posY][this.geist.posX + 1] == undefined) {
+    //                this.geist.posX++;
+    //                if (this.geist.posX > this.level.length - 1) {
+    //                    this.geist.posX = 0
+    //                }
+    //            }
+    //            break;
+    //        }
+    //        case Richtungen.runter:
+    //        {
+    //
+    //            if (this.level[this.geist.posY + 1] == undefined || this.level[this.geist.posY + 1][this.geist.posX] > this.geist.verboteneFelder) {
+    //                this.geist.posY++;
+    //                if (this.geist.posY > this.level.length - 1) {
+    //                    this.geist.posY = 0
+    //                }
+    //            }
+    //            break;
+    //        }
+    //        case Richtungen.links:
+    //        {
+    //
+    //            if (this.level[this.geist.posY][this.geist.posX - 1] > this.geist.verboteneFelder || this.level[this.geist.posY][this.geist.posX - 1] == undefined) {
+    //                this.geist.posX--;
+    //                if (this.geist.posX < 0) {
+    //                    this.geist.posX = this.level.length - 1
+    //                }
+    //            }
+    //            break;
+    //        }
+    //    }
+    //
+    //}
+
+}
+//todo: astar eingebaut funzt aber noch nicht ganz
+class astar{
+  static init(grid){
+      for(let y=0;y<grid.length;y++){
+          for(let x=0;x<grid[y].length;x++){
+              let node=grid[x][y];
+              if(node instanceof Knoten) {
+                  node.f = 0;
+                  node.g = 0;
+                  node.h = 0;
+                  node.parent = null;
+              }
+          }
+      }
+}
+   static search(grid,start,end){
+       astar.init(grid);
+       let openlist=[];
+       let closedlist=[];
+       openlist.push(grid[start.y][start.x]);
+       while(openlist.length>0){
+           //kleinsten f(x) raussuchen zum weiterarbeiten
+           let kleinsInd=0;
+           for (let i in openlist){
+               if(openlist[i].f<openlist[kleinsInd].f)kleinsInd=i;
+           }
+           let aktKnoten=openlist[kleinsInd];
+           //ende <-- ergebnis gefunden emittelten pfad zurückgeben
+           if (aktKnoten.pos==end){
+               let akt=aktKnoten;
+               let ret=[];
+               while(akt.parent){
+                   ret.push(akt);
+                   akt=akt.parent
+               }
+               return ret.reverse();
+
+           }
+           //normalfall <-- aktNode von open ind closedlist und alle nachbarn abklappern;
+           openlist.splice(openlist.indexOf(aktKnoten),1);
+           closedlist.push(aktKnoten);
+           let nachbarn=aktKnoten.nachbarn;
+           for (let i=0;i<nachbarn.length;i++){
+               let nachbar=nachbarn[i];
+               if(closedlist.indexOf(nachbar)>-1){
+                   //schon abgegraster knoten
+                   continue;
+               }
+               //die gPunkte geben die Distanz vom Start zum aktuellen knoten an
+               //nun müssen wir prüfen ob der pfad über den wir diesen nachbarn erreicht haben
+               //der kürzeste ist den wir bis jetzt kennen;
+               let gPunkte=aktKnoten.g+1;
+               let gPunkteIsBester=false;
+               if(!openlist.indexOf(nachbar)>(-1)){
+                   //diesen Knoten erreichen wir das erste mal alse muss es der aktuell beste weg sein
+                   //ausserdem müssen wir nun die Manhatttandistanz=h nehmen
+                   gPunkteIsBester=true;
+                   nachbar.h=astar.manhattan(nachbar.pos,end);
+                   openlist.push(nachbar);
+               }else if(gPunkte<nachbar.g){
+                   //diesen Knoten haben wir gesehen aber beim letzten war die distanz schlechter
+                   gPunkteIsBester=true;
+               }
+               if(gPunkteIsBester){
+                   nachbar.parent=aktKnoten;
+                   nachbar.g=gPunkte;
+                   nachbar.f=nachbar.g+nachbar.h;
+                   nachbar.debug="F: "+nachbar.f+"<br>G: "+nachbar.g+"<br>H: "+nachbar.h;
+
+               }
+           }
+       }
+       //kein ergebnis gefunden leeres array=fehler;
+       return[];
+
+   }
+    static manhattan(posStart,posEnde){
+        var dx=Math.abs(posStart.x-posEnde.x);
+        var dy=Math.abs(posStart.y-posEnde.y);
+        return dx+dy;
     }
 
-    //todo: hier ist noch ein fehler drin
-    isInEcke(figur) {
-        var ret = [];
-        var count = 0;
-        if (!(spielFlaeche.isWand(spielFlaeche.level[figur.posY - 1][figur.posX], figur)))ret[count++] = Richtungen.runter;//oben ist wand
-        if (!(spielFlaeche.isWand(spielFlaeche.level[figur.posY][figur.posX + 1], figur)))ret[count++] = Richtungen.links;//rechts ist wand
-        if (!(spielFlaeche.isWand(spielFlaeche.level[figur.posY + 1][figur.posX], figur)))ret[count++] = Richtungen.hoch;//unten ist wand
-        if (!(spielFlaeche.isWand(spielFlaeche.level[figur.posY][figur.posX - 1], figur)))ret[count] = Richtungen.rechts;//links ist wand
-        if (ret.length == 2 && ret[0] == (ret[1] + 2) % 3) {
-            return [true, (ret[0] == figur.richtung) ? ret[1] : ret[0]];
-        } else return [false, ret];
-    }
-
-
-    bewegenGeist() {
-        if (spielFlaeche.isKreuzung(this.geist.posX, this.geist.posY, this.geist)[0]) {
-            this.geist.richtung = this.geist.richtungNeu;
-        } else {
-            let inEcke = spielFlaeche.isInEcke(this.geist);
-            if (inEcke[0])console.log(inEcke);
-            if (inEcke[0])this.geist.richtung = inEcke[1];
-        }
-        switch (this.geist.richtung) {
-            case Richtungen.hoch:
-            {
-
-                if (this.level[this.geist.posY - 1] == undefined || this.level[this.geist.posY - 1][this.geist.posX] > this.geist.verboteneFelder) {
-                    this.geist.posY--;
-                    if (this.geist.posY < 0) {
-                        this.geist.posY = this.level.length - 1
-                    }
-                }
-                break;
-            }
-            case Richtungen.rechts:
-            {
-
-                if (this.level[this.geist.posY][this.geist.posX + 1] > this.geist.verboteneFelder || this.level[this.geist.posY][this.geist.posX + 1] == undefined) {
-                    this.geist.posX++;
-                    if (this.geist.posX > this.level.length - 1) {
-                        this.geist.posX = 0
-                    }
-                }
-                break;
-            }
-            case Richtungen.runter:
-            {
-
-                if (this.level[this.geist.posY + 1] == undefined || this.level[this.geist.posY + 1][this.geist.posX] > this.geist.verboteneFelder) {
-                    this.geist.posY++;
-                    if (this.geist.posY > this.level.length - 1) {
-                        this.geist.posY = 0
-                    }
-                }
-                break;
-            }
-            case Richtungen.links:
-            {
-
-                if (this.level[this.geist.posY][this.geist.posX - 1] > this.geist.verboteneFelder || this.level[this.geist.posY][this.geist.posX - 1] == undefined) {
-                    this.geist.posX--;
-                    if (this.geist.posX < 0) {
-                        this.geist.posX = this.level.length - 1
-                    }
-                }
-                break;
-            }
-        }
-
-    }
-
-    bewegenPacMan() {
-
-    }
 
 }

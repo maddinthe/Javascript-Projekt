@@ -21,7 +21,7 @@ if (isset($_POST['datensatz'])) {
     pg_query($spiel) or die('Abfrage fehlgeschlagen: ' . pg_last_error());
 } else {
 
-
+//Ansonsten Gib den Highscore als Array zurück
     $highscore = pg_query("SELECT * FROM t_highscore ORDER BY punkte DESC LIMIT(10)") or die('Abfrage fehlgeschlagen: ' . pg_last_error());
 
 

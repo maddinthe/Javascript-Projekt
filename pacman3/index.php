@@ -11,7 +11,6 @@ if (isset($_GET["size"]) && (!is_nan($_GET["size"])))
     <title>PacMan</title>
     <link rel="stylesheet" href="style.css"/>
     <script src="observer.js"></script>
-
     <script>
         function show(id) {
             if(document.getElementById) {
@@ -20,10 +19,6 @@ if (isset($_GET["size"]) && (!is_nan($_GET["size"])))
             }
         }
     </script>
-
-
-
-
 </head>
 <body>
 <img src="./grafik/pacman.png" id="pacman" alt="" style="display: none">
@@ -34,15 +29,15 @@ if (isset($_GET["size"]) && (!is_nan($_GET["size"])))
     </header>
     <nav style="width:<?= $size ?>px;">
         <ul>
-            <li><a href="" onclick="javascript:show('divText'); return false">Arcade</a>
-                <div style="display: none" id="divText">
+            <li><a href="" onclick="javascript:show('divArcadeText'); return false">Arcade</a>
+                <div style="display: none" id="divArcadeText">
                     <input type="text" placeholder="Username eingeben" id="usernameEingabe"/>
                     <input class="button" type="button" value="Spiel starten" id="spielStart"/>
                 </div></li>
 
             <li><a href="#">Highscore</a></li>
             <li><a href="#">Einstellungen</a></li>
-            <li><a href="#">Hilfe</a><div style="display: none" id="divText">
+            <li><a href="" onclick="javascript:show('divHilfeText'); return false">Hilfe</a><div style="display: none" id="divHilfeText">
                     <h2>So spielt man Reverse Pacman</h2>
 
                         <p>Man steuert den Pacman mit Hilfe eines Joysticks (oder den Pfeiltasten) durch ein Labyrinth und muss alle darin verteilten Pillen fressen, um eine Ebene (ein Level) höher, weiter zu kommen. Das Originalspiel besitzt 255 Level (und den berühmten SplitScreen).

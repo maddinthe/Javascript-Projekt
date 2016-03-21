@@ -53,13 +53,13 @@ var lvl = [
     [0, 4, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 4, 0],
     [0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0],
     [0, 0, 4, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 4, 0, 0],
-    [0, 4, 4, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 4, 4, 0],
+    [0, 4, 4, 0, 4, 0, 4, 0, 1, 1, 0, 4, 0, 4, 0, 1, 1, 0, 4, 0, 4, 0, 4, 4, 0],
     [0, 4, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 4, 0],
-    [0, 4, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 4, 0],
+    [0, 4, 0, 0, 4, 0, 4, 0, 0, 5, 0, 4, 0, 4, 0, 5, 0, 0, 4, 0, 4, 0, 0, 4, 0],
     [0, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
 var spielFlaeche;
-
+var intervalle = [];
 
 function controller_start() {
     spielFlaeche = new SpielFlaeche(document.getElementById("spielFeld"), document.getElementById("pacmanFeld"), document.getElementById("geisterFeld"), lvl)
@@ -98,7 +98,14 @@ function controller_spielen() {
             }
         }
     });
-    //var interval = setInterval(spielFlaeche.bewegen, 200);
+    intervalle.push(setInterval(spielFlaeche.bewegen, 200));
+    intervalle.push(setInterval(function(){
+        spielFlaeche.pacMan.darfwegglaufen=!spielFlaeche.pacMan.darfwegglaufen;
+        console.log(spielFlaeche.pacMan.darfwegglaufen);
+    },5000));
+}
+function controller_verloren() {
+    alert("Verloren!");
 }
 //observer
 Object.observe(zustand, function (changes) {
@@ -114,6 +121,13 @@ Object.observe(zustand, function (changes) {
                 {
                     controller_spielen();
                     break;
+                }
+                case 3:
+                {
+                    for (let i in intervalle) {
+                        clearInterval(intervalle[i])
+                    }
+                    controller_verloren();
                 }
             }
         }
@@ -246,6 +260,7 @@ class PacMan extends SpielObjekt {
         this.richtung = Richtungen.rechts;
         this.richtungNeu = this.richtung;
         this.verboteneFelder = 2;
+        this.darfwegglaufen = true;
     }
 
 }
@@ -285,6 +300,7 @@ class SpielFlaeche {
                     {
                         this.levelContext.fillStyle = Farben.wand;
                         this.levelContext.fillRect(j * this.factor, i * this.factor, this.factor, this.factor);
+                        this.knoten[i][j] = null;
                         break;
                     }
 
@@ -313,6 +329,7 @@ class SpielFlaeche {
                     {
                         this.levelContext.fillStyle = Farben.hohlraum;
                         this.levelContext.fillRect(j * this.factor, i * this.factor, this.factor, this.factor);
+                        this.knoten[i][j] = null
                         break;
                     }
                     case Feldtypen.tuer:
@@ -339,6 +356,8 @@ class SpielFlaeche {
                         this.knoten[i][j] = new Knoten(this.knoten[i - 1][j], this.knoten[i][j - 1], j, i, pille);
                         break;
                     }
+                        this.knoten[i][j] = null
+
 
                 }
             }
@@ -355,32 +374,58 @@ class SpielFlaeche {
         this.geistContext.putImageData(this.geist.imageData, this.geist.posX * this.factor, this.geist.posY * this.factor);
 
     }
+
     //todo:funktioniert weitestgehend ein/zwei bugs müssen noch drin sein
     bewegen() {
         //Geist Bewegen
+        let knoten=spielFlaeche.knoten;
+        let geist=spielFlaeche.geist;
+
+
+
         //Geist Bewegen Ende
         //PacMan bewegen
-        //--nächste pille rausfinden mittels manhattan distanz rausfinden;
-        let pillen = spielFlaeche.pillen;
+        //prüfen ob geist in der nähe ist und pacman flüchten darf
         let pacman = spielFlaeche.pacMan;
-        let nahestPille = 0;
-        let nahestPilleManhattan = 1000;
-        if(pillen.length==0)alert("verloren");
-        for (let i in pillen) {
-            let manhattan = astar.manhattan(pacman.posX, pacman.posY, pillen[i].posX, pillen[i].posY);
-            if (manhattan < nahestPilleManhattan) {
-                nahestPilleManhattan = manhattan;
-                nahestPille = i;
-            }
-        }
+        let pillen = spielFlaeche.pillen;
+        if(pacman.darfwegglaufen&&astar.manhattan(geist.posX,geist.posY,pacman.posX,pacman.posY)<6){
+            let zielX=1;
+            let zielY=1;
+            if(geist.posX<spielFlaeche.level[0].length/2)zielX=spielFlaeche.level[0].length-2;
+            if(geist.posY<spielFlaeche.level.length/2)zielY=spielFlaeche.level.length-2;
+            let route=astar.search(knoten,pacman.posX,pacman.posY,zielX,zielY);
+            pacman.posX=route[0].posX;
+            pacman.posY=route[0].posY;
 
-        let zielPille = pillen[nahestPille];
-        let zielRoute = astar.search(spielFlaeche.knoten, pacman.posX, pacman.posY, zielPille.posX, zielPille.posY);
-        console.log(zielPille);
-        pacman.posX = zielRoute[0].posX;
-        pacman.posY = zielRoute[0].posY;
-        if (pacman.posX == zielPille.posX && pacman.posY == zielPille.posY)
-        pillen.splice(nahestPille, 1);
+        }
+        else {
+            //--nächste pille rausfinden mittels manhattan distanz rausfinden;
+
+
+            let nahestPille = 0;
+            let nahestPilleManhattan = 1000;
+            if (pillen.length == 0) {
+                zustand.status = 3;
+                return;
+            }
+            for (let i in pillen) {
+                let manhattan = astar.manhattan(pacman.posX, pacman.posY, pillen[i].posX, pillen[i].posY);
+                if (manhattan < nahestPilleManhattan) {
+                    nahestPilleManhattan = manhattan;
+                    nahestPille = i;
+                }
+            }
+
+            let zielPille = pillen[nahestPille];
+            let zielRoute = astar.search(knoten, pacman.posX, pacman.posY, zielPille.posX, zielPille.posY);
+            pacman.posX = zielRoute[0].posX;
+            pacman.posY = zielRoute[0].posY;
+        }
+        if(knoten[pacman.posY][pacman.posX].pille!=null){
+            let pille=knoten[pacman.posY][pacman.posX].pille;
+            knoten[pacman.posY][pacman.posX].pille=null;
+            pillen.splice(pillen.indexOf(pille),1);
+        }
         //PacMan Bewegen Ende
         //änderungen Zeichnen
         spielFlaeche.figurenZeichnen();

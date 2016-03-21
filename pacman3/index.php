@@ -20,5 +20,6 @@ if(isset($_GET["size"])&&(!is_nan($_GET["size"])))
     <canvas id="geisterFeld" width="<?=$size?>" height="<?=$size?>">Ihr Browser kann kein HTML 5</canvas>
 </div>
 <script src="pacman.js"></script>
+
 </body>
 </html>

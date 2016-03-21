@@ -1,19 +1,42 @@
-canvas{
-    margin: 50px;
-    border: solid black 1px;
+div {
+    width: 1000px;
+    margin:auto;
+    background-color: orange;
 }
 
-#canvascontainer{
-    position: relative;
+div>header>img{
+    margin:auto;
 }
-#spielFeld{
+
+canvas {
+    /*border: solid black 1px;*/
+}
+
+section{
+    margin: auto;
+}
+#canvascontainer {
+    position: relative;
+    margin: auto;
+}
+
+#spielFeld {
     background-color: #202020;
     position: absolute;
 }
-#pacmanFeld{
+
+#pacmanFeld {
     position: absolute;
 
 }
-#geisterFeld{
+
+#geisterFeld {
     position: absolute;
+}
+
+@media screen and(width: 500px){
+    div>header>img{
+    width: 500px;
+}
+
 }

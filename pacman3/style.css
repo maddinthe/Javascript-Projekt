@@ -22,6 +22,7 @@ nav > ul > li > a {
     padding: 12px;
     text-align: center;
     text-decoration: none;
+    z-index: 10001;
 }
 
 
@@ -34,7 +35,7 @@ header {
 }
 
 header>img {
-    padding-top:1%;
+    padding-top:0.5%;
 }
 
 canvas {
@@ -43,15 +44,18 @@ canvas {
 
 nav {
     margin: auto;
+    z-index: 10001;
 
 }
 
 nav ul {
     list-style: none;
+    z-index: 10001;
 }
 
 nav ul li {
     display: inline-block;
+    z-index: 10001;
 }
 
 section {
@@ -118,7 +122,7 @@ footer {
 
 #divArcadeText{
     position: absolute;
-    top: 300px;
+    top: 50px;
     width: 200px;
     height: 100px;
     z-index: 1000;
@@ -129,7 +133,7 @@ footer {
 }
 #divHilfeText{
     position: absolute;
-    top: 300px;
+    top: 50px;
     width: 45%;
     height: 100%;
     z-index: 1000;

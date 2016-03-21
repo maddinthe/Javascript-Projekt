@@ -39,7 +39,7 @@ var lvl = [
     [0, 4, 0, 0, 4, 0, 1, 1, 1, 1, 0, 4, 0, 4, 0, 1, 1, 1, 1, 0, 4, 0, 0, 4, 0],
     [0, 4, 0, 0, 4, 0, 0, 0, 1, 1, 0, 4, 0, 4, 0, 1, 1, 0, 0, 0, 4, 0, 0, 4, 0],
     [0, 4, 0, 0, 4, 4, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 4, 4, 0, 0, 4, 0],
-    [0, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 0],
+    [0, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 0],
     [0, 4, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 4, 0],
     [0, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 0],
     [0, 0, 0, 0, 4, 0, 0, 0, 4, 4, 4, 4, 5, 4, 4, 4, 4, 0, 0, 0, 4, 0, 0, 0, 0],
@@ -55,7 +55,7 @@ var lvl = [
     [0, 0, 4, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 4, 0, 0],
     [0, 4, 4, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 4, 4, 0],
     [0, 4, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 4, 0],
-    [0, 4, 0, 0, 4, 0, 4, 0, 0, 5, 0, 4, 0, 4, 0, 5, 0, 0, 4, 0, 4, 0, 0, 4, 0],
+    [0, 4, 0, 0, 4, 0, 4, 0, 0, 4, 0, 4, 0, 4, 0, 4, 0, 0, 4, 0, 4, 0, 0, 4, 0],
     [0, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
 var spielFlaeche;
@@ -91,6 +91,11 @@ function controller_spielen() {
                 console.log("runter");
                 break;
             }
+            case 32:
+            {
+                spielFlaeche.bewegen();
+                break;
+            }
         }
     });
     var interval = setInterval(spielFlaeche.bewegen, 200);
@@ -118,19 +123,20 @@ var load = window.addEventListener("load", function () {
     zustand.status = 1;
 });
 //<<------------------Klassendefinition------------------>>
-class Pos{
-    constructor(x,y){
-        this.x=x;
-        this.y=y;
-    }
-}
+
 class Knoten {
     constructor(knotenOben, knotenLinks, posX, posY, pille) {
         this.knotenOben = knotenOben;
         this.knotenUnten = null;
         this.knotenLinks = knotenLinks;
         this.knotenRechts = null;
-        this.pos=new Pos(posX,posY);
+        this.f = 0;
+        this.g = 0;
+        this.h = 0;
+        this.debug = "";
+        this.parent = null;
+        this.posX = posX;
+        this.posY = posY;
         this.pille = pille;
         if (knotenOben instanceof Knoten) {
             knotenOben.knotenUnten = this;
@@ -149,8 +155,8 @@ class Knoten {
         return ret;
     }
 
-    get nachbarn(){
-        let ret=[];
+    get nachbarn() {
+        let ret = [];
         if (this.knotenLinks instanceof Knoten)ret.push(this.knotenLinks);
         if (this.knotenOben instanceof Knoten)ret.push(this.knotenOben);
         if (this.knotenRechts instanceof Knoten)ret.push(this.knotenRechts);
@@ -323,20 +329,18 @@ class SpielFlaeche {
                     case Feldtypen.pille:
                     {
                         let pille = new Pille(j, i, this.factor, false);
-                        this.pillen[this.pillen.length] = pille;
+                        this.pillen.push(pille);
                         this.knoten[i][j] = new Knoten(this.knoten[i - 1][j], this.knoten[i][j - 1], j, i, pille);
                         break;
                     }
                     case Feldtypen.grPille:
                     {
                         let pille = new Pille(j, i, this.factor, true);
-                        this.pillen[this.pillen.length] = pille;
+                        this.pillen.push(pille);
                         this.knoten[i][j] = new Knoten(this.knoten[i - 1][j], this.knoten[i][j - 1], j, i, pille);
                         break;
                     }
-                    //    default :{
-                    //this.knoten[i][j]=undefined;
-                    //}
+
                 }
             }
         }
@@ -352,19 +356,38 @@ class SpielFlaeche {
         this.geistContext.putImageData(this.geist.imageData, this.geist.posX * this.factor, this.geist.posY * this.factor);
 
     }
-    bewegen(){
+    //todo:funktioniert weitestgehend ein/zweio bugs müssen noch drin sein
+    bewegen() {
         //Geist Bewegen
 
-
-
-
+        //
+        //
+        //
         //Geist Bewegen Ende
         //PacMan bewegen
+        //nächste pille rausfinden mittels manhattan distanz rausfinden;
+        let pillen = spielFlaeche.pillen;
+        let pacman = spielFlaeche.pacMan;
+        let nahestPille = 0;
+        let nahestPilleManhattan = 1000;
+        if(pillen.length==0)alert("verloren");
+        for (let i in pillen) {
+            let manhattan = astar.manhattan(pacman.posX, pacman.posY, pillen[i].posX, pillen[i].posY);
+            if (manhattan < nahestPilleManhattan) {
+                nahestPilleManhattan = manhattan;
+                nahestPille = i;
+            }
+        }
 
+        let zielPille = pillen[nahestPille];
+        let zielRoute = astar.search(spielFlaeche.knoten, pacman.posX, pacman.posY, zielPille.posX, zielPille.posY);
+        pacman.posX = zielRoute[0].posX;
+        pacman.posY = zielRoute[0].posY;
+        if (pacman.posX == zielPille.posX && pacman.posY == zielPille.posY)
+        pillen.splice(nahestPille, 1);
         //PacMan Bewegen Ende
-
         //änderungen Zeichnen
-
+        spielFlaeche.figurenZeichnen();
     }
 
 
@@ -465,86 +488,87 @@ class SpielFlaeche {
     //}
 
 }
-//todo: astar eingebaut funzt aber noch nicht ganz
-class astar{
-  static init(grid){
-      for(let y=0;y<grid.length;y++){
-          for(let x=0;x<grid[y].length;x++){
-              let node=grid[x][y];
-              if(node instanceof Knoten) {
-                  node.f = 0;
-                  node.g = 0;
-                  node.h = 0;
-                  node.parent = null;
-              }
-          }
-      }
-}
-   static search(grid,start,end){
-       astar.init(grid);
-       let openlist=[];
-       let closedlist=[];
-       openlist.push(grid[start.y][start.x]);
-       while(openlist.length>0){
-           //kleinsten f(x) raussuchen zum weiterarbeiten
-           let kleinsInd=0;
-           for (let i in openlist){
-               if(openlist[i].f<openlist[kleinsInd].f)kleinsInd=i;
-           }
-           let aktKnoten=openlist[kleinsInd];
-           //ende <-- ergebnis gefunden emittelten pfad zurückgeben
-           if (aktKnoten.pos==end){
-               let akt=aktKnoten;
-               let ret=[];
-               while(akt.parent){
-                   ret.push(akt);
-                   akt=akt.parent
-               }
-               return ret.reverse();
+class astar {
+    static init(grid) {
+        for (let y = 0; y < grid.length; y++) {
+            for (let x = 0; x < grid[y].length; x++) {
+                let node = grid[x][y];
+                if (node instanceof Knoten) {
+                    node.f = 0;
+                    node.g = 0;
+                    node.h = 0;
+                    node.parent = null;
+                }
+            }
+        }
+    }
 
-           }
-           //normalfall <-- aktNode von open ind closedlist und alle nachbarn abklappern;
-           openlist.splice(openlist.indexOf(aktKnoten),1);
-           closedlist.push(aktKnoten);
-           let nachbarn=aktKnoten.nachbarn;
-           for (let i=0;i<nachbarn.length;i++){
-               let nachbar=nachbarn[i];
-               if(closedlist.indexOf(nachbar)>-1){
-                   //schon abgegraster knoten
-                   continue;
-               }
-               //die gPunkte geben die Distanz vom Start zum aktuellen knoten an
-               //nun müssen wir prüfen ob der pfad über den wir diesen nachbarn erreicht haben
-               //der kürzeste ist den wir bis jetzt kennen;
-               let gPunkte=aktKnoten.g+1;
-               let gPunkteIsBester=false;
-               if(!openlist.indexOf(nachbar)>(-1)){
-                   //diesen Knoten erreichen wir das erste mal alse muss es der aktuell beste weg sein
-                   //ausserdem müssen wir nun die Manhatttandistanz=h nehmen
-                   gPunkteIsBester=true;
-                   nachbar.h=astar.manhattan(nachbar.pos,end);
-                   openlist.push(nachbar);
-               }else if(gPunkte<nachbar.g){
-                   //diesen Knoten haben wir gesehen aber beim letzten war die distanz schlechter
-                   gPunkteIsBester=true;
-               }
-               if(gPunkteIsBester){
-                   nachbar.parent=aktKnoten;
-                   nachbar.g=gPunkte;
-                   nachbar.f=nachbar.g+nachbar.h;
-                   nachbar.debug="F: "+nachbar.f+"<br>G: "+nachbar.g+"<br>H: "+nachbar.h;
+    static search(grid, startX, startY, endX, endY) {
+        astar.init(grid);
+        let openlist = [];
+        let closedlist = [];
+        openlist.push(grid[startY][startX]);
+        while (openlist.length > 0) {
+            //kleinsten f(x) raussuchen zum weiterarbeiten
+            let kleinsInd = 0;
+            for (let i in openlist) {
+                if (openlist[i].f < openlist[kleinsInd].f)kleinsInd = i;
+            }
+            let aktKnoten = openlist[kleinsInd];
+            //ende <-- ergebnis gefunden ermittelten pfad zurückgeben
+            if (aktKnoten.posX == endX && aktKnoten.posY == endY) {
+                let akt = aktKnoten;
+                let ret = [];
+                while (akt.parent != null) {
+                    ret.push(akt);
+                    akt = akt.parent
+                }
+                return ret.reverse();
 
-               }
-           }
-       }
-       //kein ergebnis gefunden leeres array=fehler;
-       return[];
+            }
+            //normalfall <-- aktNode von open ind closedlist und alle nachbarn abklappern;
+            openlist.splice(openlist.indexOf(aktKnoten), 1);
+            closedlist.push(aktKnoten);
+            let nachbarn = aktKnoten.nachbarn;
+            for (let i = 0; i < nachbarn.length; i++) {
+                let nachbar = nachbarn[i];
+                if (closedlist.indexOf(nachbar) > -1) {
+                    //schon abgegraster knoten
+                    continue;
+                }
+                //die gPunkte geben die Distanz vom Start zum aktuellen knoten an
+                //nun müssen wir prüfen ob der pfad über den wir diesen nachbarn erreicht haben
+                //der kürzeste ist den wir bis jetzt kennen;
+                let gPunkte = aktKnoten.g + 1;
+                let gPunkteIsBester = false;
+                if (!(openlist.indexOf(nachbar) > -1)) {
+                    //diesen Knoten erreichen wir das erste mal alse muss es der aktuell beste weg sein
+                    //ausserdem müssen wir nun die Manhatttandistanz=h nehmen
+                    gPunkteIsBester = true;
+                    nachbar.h = astar.manhattan(nachbar.posX, nachbar.posY, endX, endY);
+                    openlist.push(nachbar);
+                } else if (gPunkte < nachbar.g) {
+                    //diesen Knoten haben wir gesehen aber beim letzten war die distanz schlechter
+                    gPunkteIsBester = true;
+                }
+                if (gPunkteIsBester) {
+                    nachbar.parent = aktKnoten;
+                    nachbar.g = gPunkte;
+                    nachbar.f = nachbar.g + nachbar.h;
+                    nachbar.debug = "F: " + nachbar.f + "<br>G: " + nachbar.g + "<br>H: " + nachbar.h;
 
-   }
-    static manhattan(posStart,posEnde){
-        var dx=Math.abs(posStart.x-posEnde.x);
-        var dy=Math.abs(posStart.y-posEnde.y);
-        return dx+dy;
+                }
+            }
+        }
+        //kein ergebnis gefunden leeres array=fehler;
+        return [];
+
+    }
+
+    static manhattan(posStartX, posStartY, posEndeX, posEndeY) {
+        var dx = Math.abs(posStartX - posEndeX);
+        var dy = Math.abs(posStartY - posEndeY);
+        return dx + dy;
     }
 
 

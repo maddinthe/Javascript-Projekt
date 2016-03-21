@@ -112,7 +112,7 @@ footer {
 
 }
 
-#divText{
+#divArcadeText{
     position: absolute;
     top: 300px;
     width: 200px;
@@ -123,3 +123,14 @@ footer {
     border-radius: 5px;
 
 }
+#divHilfeText{
+    position: absolute;
+    top: 300px;
+    width: 200px;
+    height: 100px;
+    z-index: 1000;
+    background-color: lightgray;
+    padding: 10px;
+    border-radius: 5px;
+}
+

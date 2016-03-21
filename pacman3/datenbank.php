@@ -11,19 +11,26 @@
 $dbconn = pg_connect("host=localhost dbname=db_pacman user=postgres password=root")
 or die('Verbindungsaufbau fehlgeschlagen: ' . pg_last_error());
 
-// Eine SQL-Abfrage ausführen
-//$zeit = ;
+
+$datensatz = [
+    'name' => 'Maddin',
+    'zeit' => '00:12:13',
+    'punkte' => '255',
+];
+//$zeit = if (datensatz.);
 //$punkte = ;
-//$name = ;
+//$name = $username;
 //$platz ;
-$spiel = "INSERT INTO t_highscore (platz, name, zeit, punkte) VALUES (4,'Turner',TIME '00:25:12',-255)";
-$platzierung = "UPDATE t_highscore SET platz = 1 WHERE punkte = MAX()";
-$anzeige = "SELECT * FROM t_highscore";
-$reset = "DROP TABLE t_highscore";
-$neu = "CREATE TABLE t_highscore(platz INTEGER, name VARCHAR(30),zeit TIME,punkte INTEGER)";
+
+
+
+//Nach Beendigung des Spiels füge die Spieldaten als Datensatz hinzu:
+if(isset($_POST['datensatz'])){
+    $spiel = "INSERT INTO t_highscore (name, zeit, punkte) VALUES ('Turner',TIME '00:25:12',255)";
+}
+
 pg_query($spiel) or die('Abfrage fehlgeschlagen: ' . pg_last_error());
-pg_query($platzierung) or die('Abfrage fehlgeschlagen: ' . pg_last_error());
-$highscore = pg_query($anzeige) or die('Abfrage fehlgeschlagen: ' . pg_last_error());
+$highscore = pg_query("SELECT * FROM t_highscore ORDER BY punkte DESC") or die('Abfrage fehlgeschlagen: ' . pg_last_error());
 
 
 
@@ -37,8 +44,10 @@ echo "<table>\n";
         echo "\t</tr>\n";
     }
     echo "</table>\n";
-
+//Highscore resetten
 if (isset($_GET['Reset'])) {
+    $reset = "DROP TABLE t_highscore";
+    $neu = "CREATE TABLE t_highscore(name VARCHAR(30),zeit TIME,punkte INTEGER)";
     pg_query($reset) or die('Abfrage fehlgeschlagen: ' . pg_last_error());
     pg_query($neu) or die('Abfrage fehlgeschlagen: ' . pg_last_error());
 }

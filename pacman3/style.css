@@ -140,18 +140,20 @@ footer {
 
 .pacman img{
     transform: rotate(25deg);
-    width: 15%;
-    position:absolute;
-    top:150px;
-    left:320px;
+    width: 10%;
+    position:relative;
+    top:-70px;
+    left:-50px;
+    z-index: 1001;
 }
 
 .geist img{
     width: 15%;
-    position:absolute;
-    top:550px;
-    right:280px;
+    position:relative;
+    top:300px;
+    right:-510px;
     transform: rotate(25deg);
+    z-index: 1001;
 }
 
 #werbung{
@@ -172,6 +174,7 @@ footer {
     box-shadow: 5px 5px 50px 50px yellow;
     animation: blicken 1s linear;
     animation-iteration-count: 3;
+    z-index: 1001;
 }
 
 @keyframes blicken {

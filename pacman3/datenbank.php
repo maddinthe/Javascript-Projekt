@@ -1,11 +1,3 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>Datenbank</title>
-</head>
-<body>
-
 <?php
 // Verbindungsaufbau und Auswahl der Datenbank
 $dbconn = pg_connect("host=localhost dbname=db_pacman user=postgres password=root")
@@ -15,53 +7,41 @@ or die('Verbindungsaufbau fehlgeschlagen: ' . pg_last_error());
 $datensatz = [
     'name' => 'Maddin',
     'zeit' => '00:12:13',
-    'punkte' => '255',
+    'punkte' => '265'
 ];
-//$zeit = if (datensatz.);
-//$punkte = ;
-//$name = $username;
-//$platz ;
-
+//$_POST["datensatz"]=$datensatz;
 
 
 //Nach Beendigung des Spiels füge die Spieldaten als Datensatz hinzu:
-if(isset($_POST['datensatz'])){
-    $spiel = "INSERT INTO t_highscore (name, zeit, punkte) VALUES ('Turner',TIME '00:25:12',255)";
-}
+if (isset($_POST['datensatz'])) {
+    $name = $_POST["datensatz"]["name"];
+    $zeit = $_POST["datensatz"]["zeit"];
+    $punkte = $_POST["datensatz"]["punkte"];
+    $spiel = "INSERT INTO t_highscore (name, zeit, punkte) VALUES ('$name',TIME '$zeit',$punkte)";
+    pg_query($spiel) or die('Abfrage fehlgeschlagen: ' . pg_last_error());
+} else {
 
-pg_query($spiel) or die('Abfrage fehlgeschlagen: ' . pg_last_error());
-$highscore = pg_query("SELECT * FROM t_highscore ORDER BY punkte DESC") or die('Abfrage fehlgeschlagen: ' . pg_last_error());
+
+    $highscore = pg_query("SELECT * FROM t_highscore ORDER BY punkte DESC LIMIT(10)") or die('Abfrage fehlgeschlagen: ' . pg_last_error());
 
 
-
-// Ergebnisse in HTML ausgeben
-echo "<table>\n";
-    while ($line = pg_fetch_array($highscore, null, PGSQL_ASSOC)) {
-    echo "\t<tr>\n";
-        foreach ($line as $col_value) {
-        echo "\t\t<td>$col_value</td>\n";
-        }
-        echo "\t</tr>\n";
-    }
-    echo "</table>\n";
+    echo json_encode(pg_fetch_all($highscore));
 //Highscore resetten
-if (isset($_GET['Reset'])) {
-    $reset = "DROP TABLE t_highscore";
-    $neu = "CREATE TABLE t_highscore(name VARCHAR(30),zeit TIME,punkte INTEGER)";
-    pg_query($reset) or die('Abfrage fehlgeschlagen: ' . pg_last_error());
-    pg_query($neu) or die('Abfrage fehlgeschlagen: ' . pg_last_error());
+    if (isset($_POST['Reset'])) {
+        $reset = "DROP TABLE t_highscore";
+        $neu = "CREATE TABLE t_highscore(name VARCHAR(30),zeit TIME,punkte INTEGER)";
+        pg_query($reset) or die('Abfrage fehlgeschlagen: ' . pg_last_error());
+        pg_query($neu) or die('Abfrage fehlgeschlagen: ' . pg_last_error());
+    }
+    // Speicher freigeben
+    pg_free_result($highscore);
 }
 
-// Speicher freigeben
-pg_free_result($highscore);
 
 // Verbindung schließen
 pg_close($dbconn);
 ?>
-<br>
-<form action="datenbank.php" method="get">
-<input type="button" id="Reset" value="Reset">
-</form>
 
-</body>
-</html>
+
+
+

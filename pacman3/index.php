@@ -37,7 +37,7 @@ if (isset($_GET["size"]) && (!is_nan($_GET["size"])))
         <nav style="width:<?= $size ?>px;">
             <ul>
                 <li>Username: <?= $username ?> | </li>
-                <li>Zeit: <?= time()?></li> //Diese Zeit müsste für die Datenbank (vielleicht als Variable) vorgehalten werden ---Anmerkung: Dreher
+                <li>Zeit: <?= time()?></li>
             </ul>
         </nav>
     </section>

@@ -39,7 +39,7 @@ var lvl = [
     [0, 4, 0, 0, 4, 0, 1, 1, 1, 1, 0, 4, 0, 4, 0, 1, 1, 1, 1, 0, 4, 0, 0, 4, 0],
     [0, 4, 0, 0, 4, 0, 0, 0, 1, 1, 0, 4, 0, 4, 0, 1, 1, 0, 0, 0, 4, 0, 0, 4, 0],
     [0, 4, 0, 0, 4, 4, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 4, 4, 0, 0, 4, 0],
-    [0, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 0],
+    [0, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 0],
     [0, 4, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 4, 0],
     [0, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 0],
     [0, 0, 0, 0, 4, 0, 0, 0, 4, 4, 4, 4, 5, 4, 4, 4, 4, 0, 0, 0, 4, 0, 0, 0, 0],
@@ -55,7 +55,7 @@ var lvl = [
     [0, 0, 4, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 4, 0, 0],
     [0, 4, 4, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 4, 4, 0],
     [0, 4, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 4, 0],
-    [0, 4, 0, 0, 4, 0, 4, 0, 0, 4, 0, 4, 0, 4, 0, 4, 0, 0, 4, 0, 4, 0, 0, 4, 0],
+    [0, 4, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 4, 0],
     [0, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
 var spielFlaeche;
@@ -98,7 +98,7 @@ function controller_spielen() {
             }
         }
     });
-    var interval = setInterval(spielFlaeche.bewegen, 200);
+    //var interval = setInterval(spielFlaeche.bewegen, 200);
 }
 //observer
 Object.observe(zustand, function (changes) {
@@ -274,7 +274,6 @@ class SpielFlaeche {
         this.zeichnen();
         this.figurenZeichnen();
         zustand.status = 2;
-        this.geistContext.putImageData(this.geist.imageData, 2 * this.factor, 2 * this.factor);
     }
 
     zeichnen() {
@@ -356,16 +355,12 @@ class SpielFlaeche {
         this.geistContext.putImageData(this.geist.imageData, this.geist.posX * this.factor, this.geist.posY * this.factor);
 
     }
-    //todo:funktioniert weitestgehend ein/zweio bugs müssen noch drin sein
+    //todo:funktioniert weitestgehend ein/zwei bugs müssen noch drin sein
     bewegen() {
         //Geist Bewegen
-
-        //
-        //
-        //
         //Geist Bewegen Ende
         //PacMan bewegen
-        //nächste pille rausfinden mittels manhattan distanz rausfinden;
+        //--nächste pille rausfinden mittels manhattan distanz rausfinden;
         let pillen = spielFlaeche.pillen;
         let pacman = spielFlaeche.pacMan;
         let nahestPille = 0;
@@ -381,6 +376,7 @@ class SpielFlaeche {
 
         let zielPille = pillen[nahestPille];
         let zielRoute = astar.search(spielFlaeche.knoten, pacman.posX, pacman.posY, zielPille.posX, zielPille.posY);
+        console.log(zielPille);
         pacman.posX = zielRoute[0].posX;
         pacman.posY = zielRoute[0].posY;
         if (pacman.posX == zielPille.posX && pacman.posY == zielPille.posY)

@@ -92,6 +92,6 @@ if (isset($_GET["size"]) && (!is_nan($_GET["size"])))
     </section>
     <footer></footer>
 </div>
-<script src="pacman1.js"></script>
+<script src="pacman.js"></script>
 </body>
 </html>

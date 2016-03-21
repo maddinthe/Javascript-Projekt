@@ -60,6 +60,8 @@ var lvl = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
 var spielFlaeche;
 var intervalle = [];
+var startZeit=0;
+var zeitSpanne=0;
 
 function controller_start() {
     spielFlaeche = new SpielFlaeche(document.getElementById("spielFeld"), document.getElementById("pacmanFeld"), document.getElementById("geisterFeld"), lvl)
@@ -98,6 +100,7 @@ function controller_spielen() {
             }
         }
     });
+    startZeit=new Date().getTime();
     intervalle.push(setInterval(spielFlaeche.bewegen, 200));
     intervalle.push(setInterval(function(){
         spielFlaeche.pacMan.darfwegglaufen=!spielFlaeche.pacMan.darfwegglaufen;
@@ -105,6 +108,7 @@ function controller_spielen() {
     },5000));
 }
 function controller_verloren() {
+    zeitSpanne=new Date().getTime()-startZeit;
     alert("Verloren!");
 }
 //observer

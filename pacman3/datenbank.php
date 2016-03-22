@@ -4,21 +4,17 @@ $dbconn = pg_connect("host=localhost dbname=db_pacman user=postgres password=roo
 or die('Verbindungsaufbau fehlgeschlagen: ' . pg_last_error());
 
 
-$datensatz = [
-    'name' => 'Maddin',
-    'zeit' => '00:12:13',
-    'punkte' => '265'
-];
-//$_POST["datensatz"]=$datensatz;
 
 
 //Nach Beendigung des Spiels füge die Spieldaten als Datensatz hinzu:
-if (isset($_POST['datensatz'])) {
-    $name = ($_POST["datensatz"]["user"]);
-    $zeit = ($_POST["datensatz"]["zeit"]);
-    $punkte = ($_POST["datensatz"]["punkte"]);
-    $spiel = "INSERT INTO t_highscore (name, zeit, punkte) VALUES ('$name,TIME '$zeit',$punkte)";
+if (isset($_POST['user'])) {
+    $name = ($_POST ["user"]);
+    $zeit = ($_POST ["zeit"]);
+    $punkte = ($_POST ["punkte"]);
+    echo 'Name= '.$name.' Zeit= '.$zeit.' Punkte= '.$punkte;
+    $spiel = "INSERT INTO t_highscore (name, zeit, punkte) VALUES ($name,CAST($zeit AS TIME),$punkte)";
     pg_query($spiel) or die('Abfrage fehlgeschlagen: ' . pg_last_error());
+
 } else {
 
 //Ansonsten Gib den Highscore als Array zurück

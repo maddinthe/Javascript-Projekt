@@ -310,6 +310,7 @@ class SpielFlaeche {
         this.zeichnen();
         this.figurenZeichnen();
         zustand.gesamtpillen=this.pillen.length;
+        zustand.restpillen=zustand.gesamtpillen;
         zustand.status = 2;
     }
 
@@ -453,6 +454,7 @@ class SpielFlaeche {
                 let pille = knoten[pacman.posY][pacman.posX].pille;
                 knoten[pacman.posY][pacman.posX].pille = null;
                 pillen.splice(pillen.indexOf(pille), 1);
+                zustand.restpillen--;
             }
             //PacMan Bewegen Ende
             //änderungen Zeichnen

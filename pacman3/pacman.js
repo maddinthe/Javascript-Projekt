@@ -577,3 +577,12 @@ xmlhttp.addEventListener('readystatechange', function() {
 });
 xmlhttp.send();
 
+xmlhttp.open('POST', 'datenbank.php', true);
+xhr.responseType = 'arraybuffer';
+
+xhr.onload = function(e) {
+    var uInt8Array = new Uint8Array(datensatz);
+};
+
+
+

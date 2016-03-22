@@ -3,6 +3,7 @@
  * versuch 3 mit MVC
  */
 "use strict";
+
 var zustand = {
     status: 0
 };
@@ -623,30 +624,31 @@ class astar {
 
 var username=document.getElementById("usernameEingabe");
 var schwierigkeit = 10;
+var user = username.value;
+
 
 var punkte = zeitSpanne/schwierigkeit;
 
-function msToHMS( ms ) {
-    // 1- Convert to seconds:
-    var seconds = ms / 1000;
-    // 2- Extract hours:
-    var hours = parseInt( seconds / 3600 ); // 3,600 seconds in 1 hour
-    seconds = seconds % 3600; // seconds remaining after extracting hours
-    // 3- Extract minutes:
-    var minutes = parseInt( seconds / 60 ); // 60 seconds in 1 minute
-    // 4- Keep only seconds not extracted to minutes:
-    seconds = seconds % 60;
-    alert( hours+":"+minutes+":"+seconds);
-}
+var secDiff = zeitSpanne / 1000; //in s
+var minDiff = zeitSpanne / 60 / 1000; //in minutes
+var hDiff = zeitSpanne / 3600 / 1000; //in hours
 
 
-var zeit = msToHMS( zeitSpanne );
+var zeit = hDiff+":"+minDiff+":"+secDiff;
 
 var datensatz = {
-    username, zeit, punkte
+    user, zeit, punkte
 };
 
 var xmlhttp = new XMLHttpRequest();
 xmlhttp.open('POST', 'datenbank.php', true);
+xmlhttp.addEventListener('readystatechange', function() {
 
-xmlhttp.send(datensatz);
+    if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+        console.log(xmlhttp.responseText);
+    }
+
+});
+xmlhttp.send();
+
+

@@ -14,10 +14,10 @@ $datensatz = [
 
 //Nach Beendigung des Spiels füge die Spieldaten als Datensatz hinzu:
 if (isset($_POST['datensatz'])) {
-    $name = $_POST["datensatz"]["name"];
+    $name = $_POST["datensatz"]["username"];
     $zeit = $_POST["datensatz"]["zeit"];
     $punkte = $_POST["datensatz"]["punkte"];
-    $spiel = "INSERT INTO t_highscore (name, zeit, punkte) VALUES ('$name',TIME '$zeit',$punkte)";
+    $spiel = "INSERT INTO t_highscore (name, zeit, punkte) VALUES ('CONVERT(varchar(8), GetDate(), 108)',TIME '$zeit',$punkte)";
     pg_query($spiel) or die('Abfrage fehlgeschlagen: ' . pg_last_error());
 } else {
 

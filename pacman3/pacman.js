@@ -333,7 +333,7 @@ class SpielFlaeche {
                     {
                         this.levelContext.fillStyle = Farben.hohlraum;
                         this.levelContext.fillRect(j * this.factor, i * this.factor, this.factor, this.factor);
-                        this.knoten[i][j] = null
+                        this.knoten[i][j] = null;
                         break;
                     }
                     case Feldtypen.tuer:
@@ -618,3 +618,35 @@ class astar {
 
 
 }
+
+//---------------------------------------------------- Datenbank --------------------------------------------------------
+
+var username=document.getElementById("usernameEingabe");
+var schwierigkeit = 10;
+
+var punkte = zeitSpanne/schwierigkeit;
+
+function msToHMS( ms ) {
+    // 1- Convert to seconds:
+    var seconds = ms / 1000;
+    // 2- Extract hours:
+    var hours = parseInt( seconds / 3600 ); // 3,600 seconds in 1 hour
+    seconds = seconds % 3600; // seconds remaining after extracting hours
+    // 3- Extract minutes:
+    var minutes = parseInt( seconds / 60 ); // 60 seconds in 1 minute
+    // 4- Keep only seconds not extracted to minutes:
+    seconds = seconds % 60;
+    alert( hours+":"+minutes+":"+seconds);
+}
+
+
+var zeit = msToHMS( zeitSpanne );
+
+var datensatz = {
+    username, zeit, punkte
+};
+
+var xmlhttp = new XMLHttpRequest();
+xmlhttp.open('POST', 'datenbank.php', true);
+
+xmlhttp.send(datensatz);

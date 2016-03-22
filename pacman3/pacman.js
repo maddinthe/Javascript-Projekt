@@ -7,11 +7,11 @@ var zustand = {
     status: 0,
     pause: false,
     observer: null,
-    gesamtpillen:100,
-    startZeit:5,
-    restpillen:5,
-    spielerName:"platzhalter",
-    zeitSpanne:5
+    gesamtpillen: 100,
+    startZeit: 5,
+    restpillen: 5,
+    spielerName: "platzhalter",
+    zeitSpanne: 5
 };
 var Richtungen = {
     hoch: 0,
@@ -113,8 +113,11 @@ function controller_spielen() {
         console.log(spielFlaeche.pacMan.darfwegglaufen);
     }, 5000));
 }
-function controller_verloren() {
+function controller_spielende() {
     zustand.zeitSpanne = new Date().getTime() - zustand.startZeit;
+    if(zustand.restpillen>0){
+        alert("gewonnen");
+    }else
     alert("Verloren!");
 }
 //observer
@@ -137,18 +140,17 @@ Object.observe(zustand, function (changes) {
                     for (let i in intervalle) {
                         clearInterval(intervalle[i])
                     }
-                    controller_verloren();
+                    controller_spielende();
                 }
             }
         }
         else if (change.name === "pause") {
-            let pausediv=document.getElementsByClassName("pause");
+            let pausediv = document.getElementsByClassName("pause");
             console.log(pausediv);
-                for(let i=0;i<pausediv.length;i++){
-                    if(zustand.pause)pausediv[i].classList.remove("pause-inaktiv");
-                    else pausediv[i].classList.add("pause-inaktiv");
-                }
-
+            for (let i = 0; i < pausediv.length; i++) {
+                if (zustand.pause)pausediv[i].classList.remove("pause-inaktiv");
+                else pausediv[i].classList.add("pause-inaktiv");
+            }
 
 
         }
@@ -309,8 +311,8 @@ class SpielFlaeche {
         this.knoten = [];
         this.zeichnen();
         this.figurenZeichnen();
-        zustand.gesamtpillen=this.pillen.length;
-        zustand.restpillen=zustand.gesamtpillen;
+        zustand.gesamtpillen = this.pillen.length;
+        zustand.restpillen = zustand.gesamtpillen;
         zustand.status = 2;
     }
 
@@ -405,11 +407,40 @@ class SpielFlaeche {
             //Geist Bewegen
             let knoten = spielFlaeche.knoten;
             let geist = spielFlaeche.geist;
-            if (knoten[geist.posY][geist.posX].nexthop(geist.richtungNeu)==geist.richtungNeu)
-                geist.richtung=geist.richtungNeu;
+            if (geist.richtungNeu != 5) {
+                if (knoten[geist.posY][geist.posX].nexthop(geist.richtungNeu) == geist.richtungNeu) {
+                    geist.richtung = geist.richtungNeu;
+                    switch (geist.richtung) {
+                        case Richtungen.hoch:
+                        {
+                            geist.posY--;
+                            break;
+                        }
+                        case Richtungen.links:
+                        {
+                            geist.posX--;
+                            break;
+                        }
+                        case Richtungen.rechts:
+                        {
+                            geist.posX++;
+                            break;
+                        }
+                        case Richtungen.runter:
+                        {
+                            geist.posY++;
+                            break;
+                        }
+                    }
+                    if(geist.posX<0)geist.posX=knoten[0].length-1;
+                    if(geist.posY<0)geist.posY=knoten.length-1;
+                    if(geist.posX>knoten[0].length-1)geist.posX=0;
+                    if(geist.posY>knoten.length-1)geist.posY=0;
+                }
 
-
-
+            }
+            geist.richtung = 5;
+            geist.richtungNeu = 5;
 
 
             //Geist Bewegen Ende
@@ -457,8 +488,15 @@ class SpielFlaeche {
                 zustand.restpillen--;
             }
             //PacMan Bewegen Ende
+
+
             //änderungen Zeichnen
             spielFlaeche.figurenZeichnen();
+
+            //gewinnüberprüfung
+            if(pacman.posX==geist.posX&&pacman.posY==geist.posY){
+                zustand.status=3;
+            }
         }
     }
 }

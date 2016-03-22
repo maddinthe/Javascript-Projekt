@@ -7,6 +7,7 @@ var zustand = {
     status: 0,
     pause: false,
     observer: null,
+    aengstlich: false,
     gesamtpillen: 100,
     startZeit: 0,
     restpillen: 5,
@@ -104,7 +105,7 @@ function controller_spielen() {
 
             case 13:
             {
-                if(zustand.startZeit==0){
+                if (zustand.startZeit == 0) {
                     document.getElementById("start").classList.add("inaktiv");
                     zustand.startZeit = new Date().getTime();
                     intervalle.push(setInterval(function () {
@@ -125,7 +126,7 @@ function controller_spielen() {
 function controller_spielende() {
     zustand.zeitSpanne = new Date().getTime() - zustand.startZeit;
     let element = null;
-    if (zustand.restpillen > 0) {
+    if (zustand.restpillen > 0 && !zustand.aengstlich) {
 
         element = document.getElementById("gewonnen");
 
@@ -171,6 +172,9 @@ Object.observe(zustand, function (changes) {
                 }
             }
 
+        }
+        else if (change.name === "aengstlich"){
+            spielFlaeche.toggleAengstlichLevel();
         }
     });
 });
@@ -448,6 +452,24 @@ class SpielFlaeche {
     pacManWeglaufentoggle() {
         this.pacMan.darfwegglaufen = !this.pacMan.darfwegglaufen;
     }
+    toggleAengstlichLevel(){
+        negative(this.levelContext,this.width,this.height);
+        function negative(context,width,height){
+            var imageData = context.getImageData(0, 0, width, height);
+            var pixels = imageData.data;
+            for (var i = 0; i < pixels.length; i += 4) {
+                pixels[i]   = 255 - pixels[i];   // red
+                pixels[i+1] = 255 - pixels[i+1]; // green
+                pixels[i+2] = 255 - pixels[i+2]; // blue
+                // i+3 is alpha (the fourth element)
+            }
+
+            // overwrite original image
+            context.putImageData(imageData, 0, 0);
+        }
+
+
+    }
 
     figurenZeichnen() {
         this.pacManContext.clearRect(0, 0, this.width, this.height);
@@ -469,6 +491,7 @@ class SpielFlaeche {
             let geist = this.geist;
             let pacman = this.pacMan;
             let pillen = this.pillen;
+            let level=this.level;
             //Geist Bewegen
             if (geist.richtungNeu != 5) {
                 if (knoten[geist.posY][geist.posX].nexthop(geist.richtungNeu) == geist.richtungNeu) {
@@ -502,6 +525,7 @@ class SpielFlaeche {
                     if (pacman.posX == geist.posX && pacman.posY == geist.posY) {
                         gewonnen = true;
                     }
+                    if(level[geist.posY][geist.posX]==Feldtypen.geisterHaus||level[geist.posY][geist.posX]==Feldtypen.geistSpawn)zustand.aengstlich=false;
                 }
             }
             geist.richtung = 5;
@@ -511,7 +535,13 @@ class SpielFlaeche {
             //prüfen ob geist in der nähe ist und pacman flüchten darf
             //prüfen ob schon gewonnen
             if (!gewonnen) {
-                if (pacman.darfwegglaufen && pacman.getAbstand(geist.posX, geist.posY) < 6) {
+                if (zustand.aengstlich) {
+                    let zielRoute = astar.search(knoten, pacman.posX, pacman.posY, geist.posX, geist.posY);
+                    pacman.posX = zielRoute[0].posX;
+                    pacman.posY = zielRoute[0].posY;
+
+
+                } else if (pacman.darfwegglaufen && pacman.getAbstand(geist.posX, geist.posY) < 6) {
                     console.log("flüchten");
                     let aktKnoten = knoten[pacman.posY][pacman.posX];
                     let auswege = aktKnoten.nachbarn;
@@ -568,6 +598,12 @@ class SpielFlaeche {
                     let pille = knoten[pacman.posY][pacman.posX].pille;
                     knoten[pacman.posY][pacman.posX].pille = null;
                     pillen.splice(pillen.indexOf(pille), 1);
+                    if(pille.isGross){
+                        zustand.aengstlich=true;
+                        setTimeout(function(){
+                           zustand.aengstlich=false;
+                        },20000)
+                    }
                     zustand.restpillen--;
                 }
                 if (pacman.posX == geist.posX && pacman.posY == geist.posY) {

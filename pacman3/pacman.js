@@ -640,6 +640,7 @@ var datensatz = {
     user, zeit, punkte
 };
 
+
 var xmlhttp = new XMLHttpRequest();
 xmlhttp.open('POST', 'datenbank.php', true);
 xmlhttp.addEventListener('readystatechange', function() {
@@ -650,5 +651,13 @@ xmlhttp.addEventListener('readystatechange', function() {
 
 });
 xmlhttp.send();
+
+xmlhttp.open('POST', 'datenbank.php', true);
+xhr.responseType = 'arraybuffer';
+
+xhr.onload = function(e) {
+    var uInt8Array = new Uint8Array(datensatz);
+};
+
 
 

@@ -30,7 +30,7 @@ if (!isset($_POST["UserName"])){
     <header style="width:<?= $size ?>px;">
         <img src="./grafik/pacman_marque.gif" alt=""/>
 
-        <div id="werbung">Reverse!!!</div>
+        <div id="reverse-blinker">Reverse!!!</div>
         <div class="pacman">
             <img src="./grafik/pacman-161870_1280.png" alt=""/>
         </div>

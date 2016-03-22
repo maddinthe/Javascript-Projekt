@@ -160,7 +160,7 @@ footer {
     z-index: 1001;
 }
 
-#werbung{
+#reverse-blinker{
     transform: rotate(-25deg);
     color: red;
     background-color: #ababab;

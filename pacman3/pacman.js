@@ -78,25 +78,21 @@ function controller_spielen() {
             case 37:
             {
                 spielFlaeche.geist.richtungNeu = Richtungen.links;
-                console.log("links");
                 break;
             }
             case 38:
             {
                 spielFlaeche.geist.richtungNeu = Richtungen.hoch;
-                console.log("hoch");
                 break;
             }
             case 39:
             {
                 spielFlaeche.geist.richtungNeu = Richtungen.rechts;
-                console.log("rechts");
                 break;
             }
             case 40:
             {
                 spielFlaeche.geist.richtungNeu = Richtungen.runter;
-                console.log("runter");
                 break;
             }
             case 32:
@@ -107,7 +103,9 @@ function controller_spielen() {
         }
     });
     zustand.startZeit = new Date().getTime();
-    intervalle.push(setInterval(spielFlaeche.bewegen, 200));
+    intervalle.push(setInterval(function () {
+        spielFlaeche.bewegen()
+    }, 200));
     intervalle.push(setInterval(function () {
         spielFlaeche.pacMan.darfwegglaufen = !spielFlaeche.pacMan.darfwegglaufen;
         console.log(spielFlaeche.pacMan.darfwegglaufen);
@@ -115,10 +113,10 @@ function controller_spielen() {
 }
 function controller_spielende() {
     zustand.zeitSpanne = new Date().getTime() - zustand.startZeit;
-    if(zustand.restpillen>0){
+    if (zustand.restpillen > 0) {
         alert("gewonnen");
-    }else
-    alert("Verloren!");
+    } else
+        alert("Verloren!");
 }
 //observer
 Object.observe(zustand, function (changes) {
@@ -404,9 +402,13 @@ class SpielFlaeche {
     bewegen() {
         //überprüfen ob Pause ist. wenn ja dann garnichts machen.
         if (!zustand.pause) {
+            //variablen heranholen zur leichteren lesbarkeit
+            let gewonnen = false;
+            let knoten = this.knoten;
+            let geist = this.geist;
+            let pacman = this.pacMan;
+            let pillen = this.pillen;
             //Geist Bewegen
-            let knoten = spielFlaeche.knoten;
-            let geist = spielFlaeche.geist;
             if (geist.richtungNeu != 5) {
                 if (knoten[geist.posY][geist.posX].nexthop(geist.richtungNeu) == geist.richtungNeu) {
                     geist.richtung = geist.richtungNeu;
@@ -432,12 +434,14 @@ class SpielFlaeche {
                             break;
                         }
                     }
-                    if(geist.posX<0)geist.posX=knoten[0].length-1;
-                    if(geist.posY<0)geist.posY=knoten.length-1;
-                    if(geist.posX>knoten[0].length-1)geist.posX=0;
-                    if(geist.posY>knoten.length-1)geist.posY=0;
+                    if (geist.posX < 0)geist.posX = knoten[0].length - 1;
+                    if (geist.posY < 0)geist.posY = knoten.length - 1;
+                    if (geist.posX > knoten[0].length - 1)geist.posX = 0;
+                    if (geist.posY > knoten.length - 1)geist.posY = 0;
+                    if (pacman.posX == geist.posX && pacman.posY == geist.posY) {
+                        gewonnen = true;
+                    }
                 }
-
             }
             geist.richtung = 5;
             geist.richtungNeu = 5;
@@ -446,59 +450,61 @@ class SpielFlaeche {
             //Geist Bewegen Ende
             //PacMan bewegen
             //prüfen ob geist in der nähe ist und pacman flüchten darf
-            let pacman = spielFlaeche.pacMan;
-            let pillen = spielFlaeche.pillen;
-            if (pacman.darfwegglaufen && astar.manhattan(geist.posX, geist.posY, pacman.posX, pacman.posY) < 6) {
-                let zielX = 1;
-                let zielY = 1;
-                if (geist.posX < spielFlaeche.level[0].length / 2)zielX = spielFlaeche.level[0].length - 2;
-                if (geist.posY < spielFlaeche.level.length / 2)zielY = spielFlaeche.level.length - 2;
-                let route = astar.search(knoten, pacman.posX, pacman.posY, zielX, zielY);
-                pacman.posX = route[0].posX;
-                pacman.posY = route[0].posY;
+            //prüfen ob schon gewonnen
+            if (!gewonnen) {
+                if (pacman.darfwegglaufen && astar.manhattan(geist.posX, geist.posY, pacman.posX, pacman.posY) < 6) {
+                    let zielX = 1;
+                    let zielY = 1;
+                    if (geist.posX < this.level[0].length / 2)zielX = this.level[0].length - 2;
+                    if (geist.posY < this.level.length / 2)zielY = this.level.length - 2;
+                    let route = astar.search(knoten, pacman.posX, pacman.posY, zielX, zielY);
+                    pacman.posX = route[0].posX;
+                    pacman.posY = route[0].posY;
 
-            }
-            else {
-                //--nächste pille rausfinden mittels manhattan distanz rausfinden;
-
-
-                let nahestPille = 0;
-                let nahestPilleManhattan = 1000;
-                if (pillen.length == 0) {
-                    zustand.status = 3;
-                    return;
                 }
-                for (let i in pillen) {
-                    let manhattan = astar.manhattan(pacman.posX, pacman.posY, pillen[i].posX, pillen[i].posY);
-                    if (manhattan < nahestPilleManhattan) {
-                        nahestPilleManhattan = manhattan;
-                        nahestPille = i;
+                else {
+                    //--nächste pille rausfinden mittels manhattan distanz rausfinden;
+
+
+                    let nahestPille = 0;
+                    let nahestPilleManhattan = 1000;
+                    if (pillen.length == 0) {
+                        zustand.status = 3;
+                        return;
                     }
-                }
+                    for (let i in pillen) {
+                        let manhattan = astar.manhattan(pacman.posX, pacman.posY, pillen[i].posX, pillen[i].posY);
+                        if (manhattan < nahestPilleManhattan) {
+                            nahestPilleManhattan = manhattan;
+                            nahestPille = i;
+                        }
+                    }
 
-                let zielPille = pillen[nahestPille];
-                let zielRoute = astar.search(knoten, pacman.posX, pacman.posY, zielPille.posX, zielPille.posY);
-                pacman.posX = zielRoute[0].posX;
-                pacman.posY = zielRoute[0].posY;
+                    let zielPille = pillen[nahestPille];
+                    let zielRoute = astar.search(knoten, pacman.posX, pacman.posY, zielPille.posX, zielPille.posY);
+                    pacman.posX = zielRoute[0].posX;
+                    pacman.posY = zielRoute[0].posY;
+                }
+                if (knoten[pacman.posY][pacman.posX].pille != null) {
+                    let pille = knoten[pacman.posY][pacman.posX].pille;
+                    knoten[pacman.posY][pacman.posX].pille = null;
+                    pillen.splice(pillen.indexOf(pille), 1);
+                    zustand.restpillen--;
+                }
+                if (pacman.posX == geist.posX && pacman.posY == geist.posY) {
+                    gewonnen = true;
+                }
+                //PacMan Bewegen Ende
             }
-            if (knoten[pacman.posY][pacman.posX].pille != null) {
-                let pille = knoten[pacman.posY][pacman.posX].pille;
-                knoten[pacman.posY][pacman.posX].pille = null;
-                pillen.splice(pillen.indexOf(pille), 1);
-                zustand.restpillen--;
-            }
-            //PacMan Bewegen Ende
 
 
             //änderungen Zeichnen
-            spielFlaeche.figurenZeichnen();
-
+            this.figurenZeichnen();
             //gewinnüberprüfung
-            if(pacman.posX==geist.posX&&pacman.posY==geist.posY){
-                zustand.status=3;
-            }
+            if (gewonnen)zustand.status = 3;
         }
     }
+
 }
 class astar {
     static init(grid) {

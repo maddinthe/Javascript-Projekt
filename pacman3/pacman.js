@@ -106,10 +106,10 @@ function controller_spielen() {
     intervalle.push(setInterval(function () {
         spielFlaeche.bewegen()
     }, 200));
-    intervalle.push(setInterval(function () {
-        spielFlaeche.pacMan.darfwegglaufen = !spielFlaeche.pacMan.darfwegglaufen;
-        console.log(spielFlaeche.pacMan.darfwegglaufen);
-    }, 5000));
+    //intervalle.push(setInterval(function () {
+    //    spielFlaeche.pacMan.darfwegglaufen = !spielFlaeche.pacMan.darfwegglaufen;
+    //    console.log(spielFlaeche.pacMan.darfwegglaufen);
+    //}, 5000));
 }
 function controller_spielende() {
     zustand.zeitSpanne = new Date().getTime() - zustand.startZeit;
@@ -143,13 +143,13 @@ Object.observe(zustand, function (changes) {
             }
         }
         else if (change.name === "pause") {
-            let pausediv = document.getElementsByClassName("pause");
-            console.log(pausediv);
-            for (let i = 0; i < pausediv.length; i++) {
-                if (zustand.pause)pausediv[i].classList.remove("pause-inaktiv");
-                else pausediv[i].classList.add("pause-inaktiv");
+            if (zustand.status == 2) {
+                let pausediv = document.getElementsByClassName("pause");
+                for (let i = 0; i < pausediv.length; i++) {
+                    if (zustand.pause)pausediv[i].classList.remove("pause-inaktiv");
+                    else pausediv[i].classList.add("pause-inaktiv");
+                }
             }
-
 
         }
     });
@@ -249,11 +249,47 @@ class SpielObjekt {
         return Math.sqrt((abstandX * abstandX) + (abstandY * abstandY));
     }
 
-    ImageToImageData(Image, size) {
+    ImageToImageData(Image, size, farbe) {
+
         let canvas = document.createElement('canvas');
         let context = canvas.getContext("2d");
         context.drawImage(Image, 0, 0, size, size);
-        return context.getImageData(0, 0, size, size);
+        let data = context.getImageData(0, 0, size, size);
+        if (farbe != undefined) {
+            let red = 0;
+            let green = 0;
+            let blue = 0;
+            switch (farbe) {
+                case "red":
+                {
+                    red = 0;
+                    blue = 255;
+                    green = 255;
+                }
+                case "blue":
+                {
+                    red = 255;
+                    blue = 0;
+                    green = 255;
+                }
+                case "green":
+                {
+                    red = 255;
+                    blue = 255;
+                    green = 0;
+                }
+            }
+
+            for (let i = 0; i < data.data.length; i += 4) {
+                data.data[i + 0] = (data.data[i + 0] == 255) ? data.data[i + 0] : red;
+                data.data[i + 1] = (data.data[i + 1] == 255) ? data.data[i + 1] : green;
+                data.data[i + 2] = (data.data[i + 2] == 255) ? data.data[i + 2] : blue;
+                data.data[i + 3] = (data.data[i + 3] == 255) ? data.data[i + 3] : 0;
+
+
+            }
+        }
+        return data;
     }
 }
 class Pille extends SpielObjekt {
@@ -286,13 +322,14 @@ class PacMan extends SpielObjekt {
 
 }
 class Geist extends SpielObjekt {
-    constructor(posX, posY, groesse) {
+    constructor(posX, posY, groesse, farbe) {
         super(posX, posY, groesse);
-        this.imageData = this.ImageToImageData(document.getElementById("geist"), groesse);
+        this.imageData = this.ImageToImageData(document.getElementById("geist"), groesse, farbe);
         this.richtung = null;
         this.richtungNeu = null;
         this.verboteneFelder = 1;
     }
+
 }
 class SpielFlaeche {
     constructor(levelCanvas, pacManCanvas, geistCanvas, level) {
@@ -307,6 +344,7 @@ class SpielFlaeche {
         this.pacMan = null;
         this.factor = this.width / lvl.length;
         this.knoten = [];
+        this.toogleTimerAn = false;
         this.zeichnen();
         this.figurenZeichnen();
         zustand.gesamtpillen = this.pillen.length;
@@ -329,7 +367,7 @@ class SpielFlaeche {
 
                     case Feldtypen.geistSpawn:
                     {
-                        this.geist = new Geist(j, i, this.factor);
+                        this.geist = new Geist(j, i, this.factor, "red");
                     }
                     case Feldtypen.geisterHaus:
                     {
@@ -387,6 +425,10 @@ class SpielFlaeche {
         }
     }
 
+    pacManWeglaufentoggle() {
+        this.pacMan.darfwegglaufen = !this.pacMan.darfwegglaufen;
+    }
+
     figurenZeichnen() {
         this.pacManContext.clearRect(0, 0, this.width, this.height);
         this.geistContext.clearRect(0, 0, this.width, this.height);
@@ -398,7 +440,6 @@ class SpielFlaeche {
 
     }
 
-    //todo:funktioniert weitestgehend ein/zwei bugs müssen noch drin sein
     bewegen() {
         //überprüfen ob Pause ist. wenn ja dann garnichts machen.
         if (!zustand.pause) {
@@ -450,14 +491,34 @@ class SpielFlaeche {
             //prüfen ob geist in der nähe ist und pacman flüchten darf
             //prüfen ob schon gewonnen
             if (!gewonnen) {
-                if (pacman.darfwegglaufen && astar.manhattan(geist.posX, geist.posY, pacman.posX, pacman.posY) < 6) {
-                    let zielX = 1;
-                    let zielY = 1;
-                    if (geist.posX < this.level[0].length / 2)zielX = this.level[0].length - 2;
-                    if (geist.posY < this.level.length / 2)zielY = this.level.length - 2;
-                    let route = astar.search(knoten, pacman.posX, pacman.posY, zielX, zielY);
-                    pacman.posX = route[0].posX;
-                    pacman.posY = route[0].posY;
+                if (pacman.darfwegglaufen && pacman.getAbstand(geist.posX,geist.posY)< 6) {
+                    console.log("flüchten");
+                    let aktKnoten=knoten[pacman.posY][pacman.posX];
+                    let auswege=aktKnoten.nachbarn;
+                    let bestnachbar=auswege[0];
+                    let bestabstand=geist.getAbstand(bestnachbar.posX,bestnachbar.posY);
+                    for (let i=1;i<auswege.length;i++){
+                        let neuabstand=geist.getAbstand(auswege[i].posX,auswege[i].posY);
+                        if (neuabstand>bestabstand){
+                            bestabstand=neuabstand;
+                            bestnachbar=auswege[i];
+                        }
+                    }
+                    pacman.posX=bestnachbar.posX;
+                    pacman.posY=bestnachbar.posY;
+
+                    if (!this.toogleTimerAn) {
+                        setTimeout(function () {
+                            spielFlaeche.pacManWeglaufentoggle();
+                            console.log("darf nicht mehr flüchten");
+                        }, 5000);
+                        setTimeout(function () {
+                            spielFlaeche.pacManWeglaufentoggle();
+                            spielFlaeche.toogleTimerAn=false;
+                            console.log("darf wieder flüchten");
+                        }, 7000);
+                        this.toogleTimerAn=true;
+                    }
 
                 }
                 else {

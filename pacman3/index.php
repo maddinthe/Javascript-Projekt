@@ -4,9 +4,9 @@ $username;
 if (isset($_GET["size"]) && (!is_nan($_GET["size"])))
     $size = $_GET["size"];
 
-if (!isset($_POST["UserName"])){
+if (!isset($_POST["UserName"])) {
     $username = '';
-}else{
+} else {
     $username = $_POST["UserName"];
 }
 
@@ -18,9 +18,11 @@ if (!isset($_POST["UserName"])){
 <head>
     <meta charset="UTF-8">
     <title>PacMan</title>
-    <link rel="stylesheet" href="style.css"/>
+    <link rel="stylesheet" type="text/css" href="style.css" media="(min-width: 1024px)"/>
+    <link rel="stylesheet" type="text/css" href="responsive.css" media="(min-width: 320px)" />
     <script src="observer.js"></script>
     <script src="toni.js"></script>
+
 </head>
 <body>
 <img src="./grafik/pacman.png" id="pacman" alt="" style="display: none">
@@ -31,14 +33,14 @@ if (!isset($_POST["UserName"])){
         <img src="./grafik/pacman_marque.gif" alt=""/>
 
         <div id="reverse-blinker">Reverse!!!</div>
-        <div class="pacman">
-            <img src="./grafik/pacman-161870_1280.png" alt=""/>
-        </div>
-        <div class="geist">
-            <img src="./grafik/birg-149103_1280.png" alt=""/>
-        </div>
+<!--        <div class="pacman">-->
+<!--            <img src="./grafik/pacman-161870_1280.png" alt=""/>-->
+<!--        </div>-->
+<!--        <div class="geist">-->
+<!--            <img src="./grafik/birg-149103_1280.png" alt=""/>-->
+<!--        </div>-->
     </header>
-    <div style="position: absolute; top: 300px;">
+    <div>
         <nav style="width:<?= $size ?>px;">
             <ul>
                 <li><a href="" onclick="javascript:show('divArcadeText'); return false">Arcade</a>
@@ -50,7 +52,7 @@ if (!isset($_POST["UserName"])){
                         </form>
                     </div>
                 </li>
-                <li><a href="#">Highscore</a></li>
+                <li><a href="#" onclick="post();">Highscore</a></li>
                 <li><a href="#">Einstellungen</a></li>
                 <li><a href="" onclick="javascript:show('divHilfeText'); return false">Hilfe</a>
 
@@ -117,22 +119,21 @@ if (!isset($_POST["UserName"])){
                 </li>
             </ul>
         </nav>
-
+        <div id="result"></div>
         <section style="width:<?= $size ?>px; height:<?= $size ?>px;">
             <div class="pause pause-inaktiv">Pause</div>
             <canvas id="spielFeld" width="<?= $size ?>" height="<?= $size ?>">Ihr Browser kann kein HTML 5</canvas>
             <canvas id="pacmanFeld" width="<?= $size ?>" height="<?= $size ?>">Ihr Browser kann kein HTML 5</canvas>
             <canvas id="geisterFeld" width="<?= $size ?>" height="<?= $size ?>">Ihr Browser kann kein HTML 5</canvas>
         </section>
-        <section>
+        <footer>
             <nav style="width:<?= $size ?>px;">
                 <ul>
                     <li>Username: <?php echo $username; ?> |</li>
                     <li onclick="controller_spielen().startTime">Zeit: new Date().getTime()</li>
                 </ul>
             </nav>
-        </section>
-        <footer></footer>
+        </footer>
     </div>
 </div>
 <script src="pacman.js"></script>

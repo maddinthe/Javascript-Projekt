@@ -3,7 +3,7 @@ body{
 }
 
 div {
-    width: 1000px;
+
     margin: auto;
     background-color: orange;
 }
@@ -33,10 +33,10 @@ nav > ul > li > a {
 
 
 header {
-    /*margin-top:1%;*/
-    /*padding-top:50px;*/
-    margin-left: auto;
-    margin-right: auto;
+    /*/!*margin-top:1%;*!/*/
+    /*/!*padding-top:50px;*!/*/
+    /*margin-left: auto;*/
+    /*margin-right: auto;*/
 }
 
 header>img {
@@ -135,23 +135,23 @@ footer {
     border-radius: 5px;
 }
 
-.pacman img{
-    transform: rotate(25deg);
-    width: 10%;
-    position:relative;
-    top:-70px;
-    left:-50px;
-    z-index: 1001;
-}
+/*.pacman img{*/
+    /*transform: rotate(25deg);*/
+    /*width: 10%;*/
+    /*position:relative;*/
+    /*top:-70px;*/
+    /*left:-50px;*/
+    /*z-index: 1001;*/
+/*}*/
 
-.geist img{
-    width: 15%;
-    position:relative;
-    top:300px;
-    right:-510px;
-    transform: rotate(25deg);
-    z-index: 1001;
-}
+/*.geist img{*/
+    /*width: 15%;*/
+    /*position:relative;*/
+    /*top:300px;*/
+    /*right:-510px;*/
+    /*transform: rotate(25deg);*/
+    /*z-index: 1001;*/
+/*}*/
 
 #reverse-blinker{
     transform: rotate(-25deg);

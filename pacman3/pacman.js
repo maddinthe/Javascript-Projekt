@@ -6,7 +6,12 @@
 var zustand = {
     status: 0,
     pause: false,
-    observer: null
+    observer: null,
+    gesamtpillen:100,
+    startZeit:5,
+    restpillen:5,
+    spielerName:"platzhalter",
+    zeitSpanne:5
 };
 var Richtungen = {
     hoch: 0,
@@ -62,8 +67,7 @@ var lvl = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
 var spielFlaeche;
 var intervalle = [];
-var startZeit = 0;
-var zeitSpanne = 0;
+
 
 function controller_start() {
     spielFlaeche = new SpielFlaeche(document.getElementById("spielFeld"), document.getElementById("pacmanFeld"), document.getElementById("geisterFeld"), lvl)
@@ -102,7 +106,7 @@ function controller_spielen() {
             }
         }
     });
-    startZeit = new Date().getTime();
+    zustand.startZeit = new Date().getTime();
     intervalle.push(setInterval(spielFlaeche.bewegen, 200));
     intervalle.push(setInterval(function () {
         spielFlaeche.pacMan.darfwegglaufen = !spielFlaeche.pacMan.darfwegglaufen;
@@ -110,7 +114,7 @@ function controller_spielen() {
     }, 5000));
 }
 function controller_verloren() {
-    zeitSpanne = new Date().getTime() - startZeit;
+    zustand.zeitSpanne = new Date().getTime() - zustand.startZeit;
     alert("Verloren!");
 }
 //observer
@@ -305,6 +309,7 @@ class SpielFlaeche {
         this.knoten = [];
         this.zeichnen();
         this.figurenZeichnen();
+        zustand.gesamtpillen=this.pillen.length;
         zustand.status = 2;
     }
 
@@ -394,10 +399,16 @@ class SpielFlaeche {
 
     //todo:funktioniert weitestgehend ein/zwei bugs müssen noch drin sein
     bewegen() {
-        //Geist Bewegen
+        //überprüfen ob Pause ist. wenn ja dann garnichts machen.
         if (!zustand.pause) {
+            //Geist Bewegen
             let knoten = spielFlaeche.knoten;
             let geist = spielFlaeche.geist;
+            if (knoten[geist.posY][geist.posX].nexthop(geist.richtungNeu)==geist.richtungNeu)
+                geist.richtung=geist.richtungNeu;
+
+
+
 
 
             //Geist Bewegen Ende
@@ -448,103 +459,6 @@ class SpielFlaeche {
             spielFlaeche.figurenZeichnen();
         }
     }
-
-    //
-    //bewegen() {
-    //    spielFlaeche.bewegenGeist();
-    //    spielFlaeche.bewegenPacMan();
-    //    spielFlaeche.figurenZeichnen();
-    //}
-    //isWand(value, figur) {
-    //    if (figur instanceof PacMan) {
-    //        return (value == Feldtypen.wand || value == Feldtypen.tuer);
-    //    }
-    //    else if (figur instanceof Geist) {
-    //        return (value == Feldtypen.wand);
-    //    }
-    //    return true;
-    //
-    //}
-    //isKreuzung(X, Y, figur) {
-    //    var ret = [];
-    //    var count = 0;
-    //    if (!(spielFlaeche.isWand(spielFlaeche.level[Y - 1][X], figur)))ret[count++] = Richtungen.hoch;//oben
-    //    if (!(spielFlaeche.isWand(spielFlaeche.level[Y][X + 1], figur)))ret[count++] = Richtungen.rechts;//rechts
-    //    if (!(spielFlaeche.isWand(spielFlaeche.level[Y + 1][X], figur)))ret[count++] = Richtungen.runter;//unten
-    //    if (!(spielFlaeche.isWand(spielFlaeche.level[Y][X - 1], figur)))ret[count] = Richtungen.links;//links
-    //    if (ret.length > 2) {
-    //        return [true, ret];
-    //    } else return [false, ret];
-    //}
-    ////todo: hier ist noch ein fehler drin
-    //isInEcke(figur) {
-    //    var ret = [];
-    //    var count = 0;
-    //    if (!(spielFlaeche.isWand(spielFlaeche.level[figur.posY - 1][figur.posX], figur)))ret[count++] = Richtungen.runter;//oben ist wand
-    //    if (!(spielFlaeche.isWand(spielFlaeche.level[figur.posY][figur.posX + 1], figur)))ret[count++] = Richtungen.links;//rechts ist wand
-    //    if (!(spielFlaeche.isWand(spielFlaeche.level[figur.posY + 1][figur.posX], figur)))ret[count++] = Richtungen.hoch;//unten ist wand
-    //    if (!(spielFlaeche.isWand(spielFlaeche.level[figur.posY][figur.posX - 1], figur)))ret[count] = Richtungen.rechts;//links ist wand
-    //    if (ret.length == 2 && ret[0] == (ret[1] + 2) % 3) {
-    //        return [true, (ret[0] == figur.richtung) ? ret[1] : ret[0]];
-    //    } else return [false, ret];
-    //}
-    //bewegenGeist() {
-    //    if (spielFlaeche.isKreuzung(this.geist.posX, this.geist.posY, this.geist)[0]) {
-    //        this.geist.richtung = this.geist.richtungNeu;
-    //    } else {
-    //        let inEcke = spielFlaeche.isInEcke(this.geist);
-    //        if (inEcke[0])console.log(inEcke);
-    //        if (inEcke[0])this.geist.richtung = inEcke[1];
-    //    }
-    //    switch (this.geist.richtung) {
-    //        case Richtungen.hoch:
-    //        {
-    //
-    //            if (this.level[this.geist.posY - 1] == undefined || this.level[this.geist.posY - 1][this.geist.posX] > this.geist.verboteneFelder) {
-    //                this.geist.posY--;
-    //                if (this.geist.posY < 0) {
-    //                    this.geist.posY = this.level.length - 1
-    //                }
-    //            }
-    //            break;
-    //        }
-    //        case Richtungen.rechts:
-    //        {
-    //
-    //            if (this.level[this.geist.posY][this.geist.posX + 1] > this.geist.verboteneFelder || this.level[this.geist.posY][this.geist.posX + 1] == undefined) {
-    //                this.geist.posX++;
-    //                if (this.geist.posX > this.level.length - 1) {
-    //                    this.geist.posX = 0
-    //                }
-    //            }
-    //            break;
-    //        }
-    //        case Richtungen.runter:
-    //        {
-    //
-    //            if (this.level[this.geist.posY + 1] == undefined || this.level[this.geist.posY + 1][this.geist.posX] > this.geist.verboteneFelder) {
-    //                this.geist.posY++;
-    //                if (this.geist.posY > this.level.length - 1) {
-    //                    this.geist.posY = 0
-    //                }
-    //            }
-    //            break;
-    //        }
-    //        case Richtungen.links:
-    //        {
-    //
-    //            if (this.level[this.geist.posY][this.geist.posX - 1] > this.geist.verboteneFelder || this.level[this.geist.posY][this.geist.posX - 1] == undefined) {
-    //                this.geist.posX--;
-    //                if (this.geist.posX < 0) {
-    //                    this.geist.posX = this.level.length - 1
-    //                }
-    //            }
-    //            break;
-    //        }
-    //    }
-    //
-    //}
-
 }
 class astar {
     static init(grid) {
@@ -662,5 +576,4 @@ xmlhttp.addEventListener('readystatechange', function() {
 
 });
 xmlhttp.send();
-
 

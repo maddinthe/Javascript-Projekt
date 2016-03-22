@@ -136,5 +136,6 @@ if (!isset($_POST["UserName"])){
     </div>
 </div>
 <script src="pacman.js"></script>
+<script src="datenbank.js"></script>
 </body>
 </html>

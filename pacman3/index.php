@@ -121,7 +121,10 @@ if (!isset($_POST["UserName"])) {
         </nav>
         <div id="result"></div>
         <section style="width:<?= $size ?>px; height:<?= $size ?>px;">
-            <div class="pause pause-inaktiv">Pause</div>
+            <div class="pause inaktiv">Pause</div>
+            <div id="start" class="gewonnen-verloren">Press Return</div>
+            <div id="verloren" class="gewonnen-verloren inaktiv">Verloren</div>
+            <div id="gewonnen" class="gewonnen-verloren inaktiv">Gewonnen</div>
             <canvas id="spielFeld" width="<?= $size ?>" height="<?= $size ?>">Ihr Browser kann kein HTML 5</canvas>
             <canvas id="pacmanFeld" width="<?= $size ?>" height="<?= $size ?>">Ihr Browser kann kein HTML 5</canvas>
             <canvas id="geisterFeld" width="<?= $size ?>" height="<?= $size ?>">Ihr Browser kann kein HTML 5</canvas>

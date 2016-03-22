@@ -178,7 +178,7 @@ footer {
     50%{opacity: 0.1  }
     100%{opacity: 1}
 }
-.pause-inaktiv{
+.inaktiv {
     display: none;
 }
 .pause{

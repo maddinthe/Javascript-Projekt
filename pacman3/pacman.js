@@ -8,7 +8,7 @@ var zustand = {
     pause: false,
     observer: null,
     gesamtpillen: 100,
-    startZeit: 5,
+    startZeit: 0,
     restpillen: 5,
     spielerName: "platzhalter",
     zeitSpanne: 5
@@ -67,6 +67,7 @@ var lvl = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
 var spielFlaeche;
 var intervalle = [];
+var listener = [];
 
 
 function controller_start() {
@@ -100,23 +101,42 @@ function controller_spielen() {
                 zustand.pause = !zustand.pause;
                 break;
             }
+
+            case 13:
+            {
+                if(zustand.startZeit==0){
+                    document.getElementById("start").classList.add("inaktiv");
+                    zustand.startZeit = new Date().getTime();
+                    intervalle.push(setInterval(function () {
+                        spielFlaeche.bewegen()
+                    }, 200));
+                }
+                break;
+            }
+            default:
+            {
+                console.log(e.keyCode);
+                break;
+            }
         }
     });
-    zustand.startZeit = new Date().getTime();
-    intervalle.push(setInterval(function () {
-        spielFlaeche.bewegen()
-    }, 200));
-    //intervalle.push(setInterval(function () {
-    //    spielFlaeche.pacMan.darfwegglaufen = !spielFlaeche.pacMan.darfwegglaufen;
-    //    console.log(spielFlaeche.pacMan.darfwegglaufen);
-    //}, 5000));
+
 }
 function controller_spielende() {
     zustand.zeitSpanne = new Date().getTime() - zustand.startZeit;
+    let element = null;
     if (zustand.restpillen > 0) {
-        alert("gewonnen");
+
+        element = document.getElementById("gewonnen");
+
     } else
-        alert("Verloren!");
+        element = document.getElementById("verloren");
+
+    element.classList.remove("inaktiv");
+    element.addEventListener("click", function () {
+        console.log("reload");
+        location.reload();
+    })
 }
 //observer
 Object.observe(zustand, function (changes) {
@@ -146,8 +166,8 @@ Object.observe(zustand, function (changes) {
             if (zustand.status == 2) {
                 let pausediv = document.getElementsByClassName("pause");
                 for (let i = 0; i < pausediv.length; i++) {
-                    if (zustand.pause)pausediv[i].classList.remove("pause-inaktiv");
-                    else pausediv[i].classList.add("pause-inaktiv");
+                    if (zustand.pause)pausediv[i].classList.remove("inaktiv");
+                    else pausediv[i].classList.add("inaktiv");
                 }
             }
 
@@ -491,21 +511,21 @@ class SpielFlaeche {
             //prüfen ob geist in der nähe ist und pacman flüchten darf
             //prüfen ob schon gewonnen
             if (!gewonnen) {
-                if (pacman.darfwegglaufen && pacman.getAbstand(geist.posX,geist.posY)< 6) {
+                if (pacman.darfwegglaufen && pacman.getAbstand(geist.posX, geist.posY) < 6) {
                     console.log("flüchten");
-                    let aktKnoten=knoten[pacman.posY][pacman.posX];
-                    let auswege=aktKnoten.nachbarn;
-                    let bestnachbar=auswege[0];
-                    let bestabstand=geist.getAbstand(bestnachbar.posX,bestnachbar.posY);
-                    for (let i=1;i<auswege.length;i++){
-                        let neuabstand=geist.getAbstand(auswege[i].posX,auswege[i].posY);
-                        if (neuabstand>bestabstand){
-                            bestabstand=neuabstand;
-                            bestnachbar=auswege[i];
+                    let aktKnoten = knoten[pacman.posY][pacman.posX];
+                    let auswege = aktKnoten.nachbarn;
+                    let bestnachbar = auswege[0];
+                    let bestabstand = geist.getAbstand(bestnachbar.posX, bestnachbar.posY);
+                    for (let i = 1; i < auswege.length; i++) {
+                        let neuabstand = geist.getAbstand(auswege[i].posX, auswege[i].posY);
+                        if (neuabstand > bestabstand) {
+                            bestabstand = neuabstand;
+                            bestnachbar = auswege[i];
                         }
                     }
-                    pacman.posX=bestnachbar.posX;
-                    pacman.posY=bestnachbar.posY;
+                    pacman.posX = bestnachbar.posX;
+                    pacman.posY = bestnachbar.posY;
 
                     if (!this.toogleTimerAn) {
                         setTimeout(function () {
@@ -514,10 +534,10 @@ class SpielFlaeche {
                         }, 5000);
                         setTimeout(function () {
                             spielFlaeche.pacManWeglaufentoggle();
-                            spielFlaeche.toogleTimerAn=false;
+                            spielFlaeche.toogleTimerAn = false;
                             console.log("darf wieder flüchten");
                         }, 7000);
-                        this.toogleTimerAn=true;
+                        this.toogleTimerAn = true;
                     }
 
                 }

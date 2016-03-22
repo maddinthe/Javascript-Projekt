@@ -1,8 +1,18 @@
 <?php
 $size = 500;
+$username;
 if (isset($_GET["size"]) && (!is_nan($_GET["size"])))
     $size = $_GET["size"];
+
+if (!isset($_POST["UserName"])){
+    $username = '';
+}else{
+    $username = $_POST["UserName"];
+}
+
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -116,8 +126,8 @@ if (isset($_GET["size"]) && (!is_nan($_GET["size"])))
         <section>
             <nav style="width:<?= $size ?>px;">
                 <ul>
-                    <li>Username: <?php echo $_POST['UserName']; ?> |</li>
-                    <li>Zeit: <?php time() ?></li>
+                    <li>Username: <?php echo $username; ?> |</li>
+                    <li onclick="controller_spielen().startTime">Zeit: new Date().getTime()</li>
                 </ul>
             </nav>
         </section>

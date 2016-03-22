@@ -445,8 +445,6 @@ class SpielFlaeche {
             }
             geist.richtung = 5;
             geist.richtungNeu = 5;
-
-
             //Geist Bewegen Ende
             //PacMan bewegen
             //prüfen ob geist in der nähe ist und pacman flüchten darf

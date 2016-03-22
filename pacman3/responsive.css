@@ -1,0 +1,49 @@
+body{
+    background-color: orange;
+}
+
+div {
+    width: 100%;
+    margin: auto;
+    background-color: orange;
+}
+
+body>div>div{
+    position: absolute;
+    top: 250px;
+}
+
+nav > ul > li > a {
+    background: #0077b3 none repeat scroll 0 0;
+    border: 1px solid #00669a;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin-bottom: 0;
+    max-width: 100%;
+    padding: 12px;
+    text-align: center;
+    text-decoration: none;
+    z-index: 10001;
+}
+
+.pacman img{
+    transform: rotate(25deg);
+    width: 10%;
+    position:relative;
+    top:-70px;
+    left:-50px;
+    z-index: 1001;
+}
+
+.geist img{
+    width: 15%;
+    position:relative;
+    top:300px;
+    right:-510px;
+    transform: rotate(25deg);
+    z-index: 1001;
+}

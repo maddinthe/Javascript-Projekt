@@ -8,6 +8,11 @@ div {
     background-color: orange;
 }
 
+body>div>div{
+    position: absolute;
+    top: 250px;
+}
+
 nav > ul > li > a {
     background: #0077b3 none repeat scroll 0 0;
     border: 1px solid #00669a;
@@ -28,14 +33,14 @@ nav > ul > li > a {
 
 
 header {
-    margin-top:1%;
-    padding-top:50px;
+    /*margin-top:1%;*/
+    /*padding-top:50px;*/
     margin-left: auto;
     margin-right: auto;
 }
 
 header>img {
-    padding-top:0.5%;
+    /*padding-top:0.5%;*/
 }
 
 canvas {
@@ -44,18 +49,14 @@ canvas {
 
 nav {
     margin: auto;
-    z-index: 10001;
-
 }
 
 nav ul {
     list-style: none;
-    z-index: 10001;
 }
 
 nav ul li {
     display: inline-block;
-    z-index: 10001;
 }
 
 section {
@@ -82,7 +83,7 @@ section {
 }
 
 footer {
-    height: 50px;
+    height: 30px;
 }
 
 .mbottom {
@@ -110,14 +111,6 @@ footer {
     background-color: gray;
     width: 25%;
     transition: 1s;
-}
-
-
-@media screen and(width: 500px) {
-    div > header > img {
-        width: 500px;
-    }
-
 }
 
 #divArcadeText{
@@ -206,3 +199,17 @@ footer {
 }
 
 
+@media screen and(max-width: 325px) {
+    body{
+        background-color: orange;
+    }
+
+    div {
+        width: 50%;
+        background-color: orange;
+    }
+
+    body>div>div{
+        position: absolute;
+        top: 250px;
+    }}

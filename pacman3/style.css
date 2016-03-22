@@ -175,7 +175,7 @@ footer {
     border-radius: 5px;
     font-size: 18pt;
     font-weight:bold;
-    box-shadow: 5px 5px 50px 50px yellow;
+    box-shadow: 5px 5px 30px 30px yellow;
     animation: blinken 1s linear;
     animation-iteration-count: 3;
     z-index: 1001;

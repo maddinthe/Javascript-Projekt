@@ -4,7 +4,9 @@
  */
 "use strict";
 var zustand = {
-    status: 0
+    status: 0,
+    pause: false,
+    observer: null
 };
 var Richtungen = {
     hoch: 0,
@@ -60,8 +62,8 @@ var lvl = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
 var spielFlaeche;
 var intervalle = [];
-var startZeit=0;
-var zeitSpanne=0;
+var startZeit = 0;
+var zeitSpanne = 0;
 
 function controller_start() {
     spielFlaeche = new SpielFlaeche(document.getElementById("spielFeld"), document.getElementById("pacmanFeld"), document.getElementById("geisterFeld"), lvl)
@@ -95,20 +97,20 @@ function controller_spielen() {
             }
             case 32:
             {
-                spielFlaeche.bewegen();
+                zustand.pause = !zustand.pause;
                 break;
             }
         }
     });
-    startZeit=new Date().getTime();
+    startZeit = new Date().getTime();
     intervalle.push(setInterval(spielFlaeche.bewegen, 200));
-    intervalle.push(setInterval(function(){
-        spielFlaeche.pacMan.darfwegglaufen=!spielFlaeche.pacMan.darfwegglaufen;
+    intervalle.push(setInterval(function () {
+        spielFlaeche.pacMan.darfwegglaufen = !spielFlaeche.pacMan.darfwegglaufen;
         console.log(spielFlaeche.pacMan.darfwegglaufen);
-    },5000));
+    }, 5000));
 }
 function controller_verloren() {
-    zeitSpanne=new Date().getTime()-startZeit;
+    zeitSpanne = new Date().getTime() - startZeit;
     alert("Verloren!");
 }
 //observer
@@ -134,6 +136,17 @@ Object.observe(zustand, function (changes) {
                     controller_verloren();
                 }
             }
+        }
+        else if (change.name === "pause") {
+            let pausediv=document.getElementsByClassName("pause");
+            console.log(pausediv);
+                for(let i=0;i<pausediv.length;i++){
+                    if(zustand.pause)pausediv[i].classList.remove("pause-inaktiv");
+                    else pausediv[i].classList.add("pause-inaktiv");
+                }
+
+
+
         }
     });
 });
@@ -382,59 +395,59 @@ class SpielFlaeche {
     //todo:funktioniert weitestgehend ein/zwei bugs müssen noch drin sein
     bewegen() {
         //Geist Bewegen
-        let knoten=spielFlaeche.knoten;
-        let geist=spielFlaeche.geist;
+        if (!zustand.pause) {
+            let knoten = spielFlaeche.knoten;
+            let geist = spielFlaeche.geist;
 
 
+            //Geist Bewegen Ende
+            //PacMan bewegen
+            //prüfen ob geist in der nähe ist und pacman flüchten darf
+            let pacman = spielFlaeche.pacMan;
+            let pillen = spielFlaeche.pillen;
+            if (pacman.darfwegglaufen && astar.manhattan(geist.posX, geist.posY, pacman.posX, pacman.posY) < 6) {
+                let zielX = 1;
+                let zielY = 1;
+                if (geist.posX < spielFlaeche.level[0].length / 2)zielX = spielFlaeche.level[0].length - 2;
+                if (geist.posY < spielFlaeche.level.length / 2)zielY = spielFlaeche.level.length - 2;
+                let route = astar.search(knoten, pacman.posX, pacman.posY, zielX, zielY);
+                pacman.posX = route[0].posX;
+                pacman.posY = route[0].posY;
 
-        //Geist Bewegen Ende
-        //PacMan bewegen
-        //prüfen ob geist in der nähe ist und pacman flüchten darf
-        let pacman = spielFlaeche.pacMan;
-        let pillen = spielFlaeche.pillen;
-        if(pacman.darfwegglaufen&&astar.manhattan(geist.posX,geist.posY,pacman.posX,pacman.posY)<6){
-            let zielX=1;
-            let zielY=1;
-            if(geist.posX<spielFlaeche.level[0].length/2)zielX=spielFlaeche.level[0].length-2;
-            if(geist.posY<spielFlaeche.level.length/2)zielY=spielFlaeche.level.length-2;
-            let route=astar.search(knoten,pacman.posX,pacman.posY,zielX,zielY);
-            pacman.posX=route[0].posX;
-            pacman.posY=route[0].posY;
-
-        }
-        else {
-            //--nächste pille rausfinden mittels manhattan distanz rausfinden;
-
-
-            let nahestPille = 0;
-            let nahestPilleManhattan = 1000;
-            if (pillen.length == 0) {
-                zustand.status = 3;
-                return;
             }
-            for (let i in pillen) {
-                let manhattan = astar.manhattan(pacman.posX, pacman.posY, pillen[i].posX, pillen[i].posY);
-                if (manhattan < nahestPilleManhattan) {
-                    nahestPilleManhattan = manhattan;
-                    nahestPille = i;
+            else {
+                //--nächste pille rausfinden mittels manhattan distanz rausfinden;
+
+
+                let nahestPille = 0;
+                let nahestPilleManhattan = 1000;
+                if (pillen.length == 0) {
+                    zustand.status = 3;
+                    return;
                 }
+                for (let i in pillen) {
+                    let manhattan = astar.manhattan(pacman.posX, pacman.posY, pillen[i].posX, pillen[i].posY);
+                    if (manhattan < nahestPilleManhattan) {
+                        nahestPilleManhattan = manhattan;
+                        nahestPille = i;
+                    }
+                }
+
+                let zielPille = pillen[nahestPille];
+                let zielRoute = astar.search(knoten, pacman.posX, pacman.posY, zielPille.posX, zielPille.posY);
+                pacman.posX = zielRoute[0].posX;
+                pacman.posY = zielRoute[0].posY;
             }
-
-            let zielPille = pillen[nahestPille];
-            let zielRoute = astar.search(knoten, pacman.posX, pacman.posY, zielPille.posX, zielPille.posY);
-            pacman.posX = zielRoute[0].posX;
-            pacman.posY = zielRoute[0].posY;
+            if (knoten[pacman.posY][pacman.posX].pille != null) {
+                let pille = knoten[pacman.posY][pacman.posX].pille;
+                knoten[pacman.posY][pacman.posX].pille = null;
+                pillen.splice(pillen.indexOf(pille), 1);
+            }
+            //PacMan Bewegen Ende
+            //änderungen Zeichnen
+            spielFlaeche.figurenZeichnen();
         }
-        if(knoten[pacman.posY][pacman.posX].pille!=null){
-            let pille=knoten[pacman.posY][pacman.posX].pille;
-            knoten[pacman.posY][pacman.posX].pille=null;
-            pillen.splice(pillen.indexOf(pille),1);
-        }
-        //PacMan Bewegen Ende
-        //änderungen Zeichnen
-        spielFlaeche.figurenZeichnen();
     }
-
 
     //
     //bewegen() {
@@ -621,26 +634,26 @@ class astar {
 
 //---------------------------------------------------- Datenbank --------------------------------------------------------
 
-var username=document.getElementById("usernameEingabe");
+var username = document.getElementById("usernameEingabe");
 var schwierigkeit = 10;
 
-var punkte = zeitSpanne/schwierigkeit;
+var punkte = zeitSpanne / schwierigkeit;
 
-function msToHMS( ms ) {
+function msToHMS(ms) {
     // 1- Convert to seconds:
     var seconds = ms / 1000;
     // 2- Extract hours:
-    var hours = parseInt( seconds / 3600 ); // 3,600 seconds in 1 hour
+    var hours = parseInt(seconds / 3600); // 3,600 seconds in 1 hour
     seconds = seconds % 3600; // seconds remaining after extracting hours
     // 3- Extract minutes:
-    var minutes = parseInt( seconds / 60 ); // 60 seconds in 1 minute
+    var minutes = parseInt(seconds / 60); // 60 seconds in 1 minute
     // 4- Keep only seconds not extracted to minutes:
     seconds = seconds % 60;
-    alert( hours+":"+minutes+":"+seconds);
+    alert(hours + ":" + minutes + ":" + seconds);
 }
 
 
-var zeit = msToHMS( zeitSpanne );
+var zeit = msToHMS(zeitSpanne);
 
 var datensatz = {
     username, zeit, punkte

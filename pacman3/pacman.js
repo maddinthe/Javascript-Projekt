@@ -75,6 +75,7 @@ function controller_start() {
     spielFlaeche = new SpielFlaeche(document.getElementById("spielFeld"), document.getElementById("pacmanFeld"), document.getElementById("geisterFeld"), lvl)
 }
 function controller_spielen() {
+    requestAnimationFrame(function(){spielFlaeche.figurenZeichnen()});
     var keylistener = window.addEventListener("keydown", function (e) {
         switch (e.keyCode) {
             case 37:
@@ -173,7 +174,7 @@ Object.observe(zustand, function (changes) {
             }
 
         }
-        else if (change.name === "aengstlich"){
+        else if (change.name === "aengstlich") {
             spielFlaeche.toggleAengstlichLevel();
         }
     });
@@ -265,6 +266,8 @@ class SpielObjekt {
         this.posY = posY;
         this.groesse = groesse;
         this.imageData = null;
+        this.offsetX=0;
+        this.offsetY=0
     }
 
     getAbstand(posX, posY) {
@@ -408,6 +411,16 @@ class SpielFlaeche {
                     {
                         this.levelContext.clearRect(j * this.factor, i * this.factor, this.factor, this.factor);
                         this.knoten[i][j] = new Knoten(this.knoten[i - 1][j], this.knoten[i][j - 1], j, i, null);
+                        if (j == this.level[i].length - 1) {
+                            console.log(this.knoten[i][j]);
+                            this.knoten[i][j].knotenRechts = this.knoten[i][0];
+                            this.knoten[i][0].knotenLinks = this.knoten[i][j];
+                        }
+                        if (i == this.level.length - 1) {
+                            console.log(this.knoten[i][j]);
+                            this.knoten[i][j].knotenUnten = this.knoten[0][j];
+                            this.knoten[0][j].knotenOben = this.knoten[i][j];
+                        }
                         break;
                     }
                     case Feldtypen.hohlraum:
@@ -441,7 +454,7 @@ class SpielFlaeche {
                         this.knoten[i][j] = new Knoten(this.knoten[i - 1][j], this.knoten[i][j - 1], j, i, pille);
                         break;
                     }
-                        this.knoten[i][j] = null
+
 
 
                 }
@@ -452,15 +465,16 @@ class SpielFlaeche {
     pacManWeglaufentoggle() {
         this.pacMan.darfwegglaufen = !this.pacMan.darfwegglaufen;
     }
-    toggleAengstlichLevel(){
-        negative(this.levelContext,this.width,this.height);
-        function negative(context,width,height){
+
+    toggleAengstlichLevel() {
+        negative(this.levelContext, this.width, this.height);
+        function negative(context, width, height) {
             var imageData = context.getImageData(0, 0, width, height);
             var pixels = imageData.data;
             for (var i = 0; i < pixels.length; i += 4) {
-                pixels[i]   = 255 - pixels[i];   // red
-                pixels[i+1] = 255 - pixels[i+1]; // green
-                pixels[i+2] = 255 - pixels[i+2]; // blue
+                pixels[i] = 255 - pixels[i];   // red
+                pixels[i + 1] = 255 - pixels[i + 1]; // green
+                pixels[i + 2] = 255 - pixels[i + 2]; // blue
                 // i+3 is alpha (the fourth element)
             }
 
@@ -474,11 +488,22 @@ class SpielFlaeche {
     figurenZeichnen() {
         this.pacManContext.clearRect(0, 0, this.width, this.height);
         this.geistContext.clearRect(0, 0, this.width, this.height);
-        this.pacManContext.putImageData(this.pacMan.imageData, this.pacMan.posX * this.factor, this.pacMan.posY * this.factor);
+        this.pacManContext.putImageData(this.pacMan.imageData, this.pacMan.posX * this.factor+this.pacMan.offsetX, this.pacMan.posY * this.factor+this.pacMan.offsetY);
         for (let i in this.pillen)
             this.pacManContext.putImageData(this.pillen[i].imageData, this.pillen[i].posX * this.factor, this.pillen[i].posY * this.factor);
 
-        this.geistContext.putImageData(this.geist.imageData, this.geist.posX * this.factor, this.geist.posY * this.factor);
+        this.geistContext.putImageData(this.geist.imageData, this.geist.posX * this.factor+this.geist.offsetX, this.geist.posY * this.factor+this.geist.offsetY);
+        if(this.pacMan.offsetX>0)this.pacMan.offsetX-=2;
+        if(this.pacMan.offsetX<0)this.pacMan.offsetX+=2;
+        if(this.pacMan.offsetY<0)this.pacMan.offsetY+=2;
+        if(this.pacMan.offsetY>0)this.pacMan.offsetY-=2;
+        if(this.geist.offsetX>0)this.geist.offsetX-=2;
+        if(this.geist.offsetX<0)this.geist.offsetX+=2;
+        if(this.geist.offsetY<0)this.geist.offsetY+=2;
+        if(this.geist.offsetY>0)this.geist.offsetY-=2;
+        if(zustand.status==2)requestAnimationFrame(function(){
+            spielFlaeche.figurenZeichnen();
+        });
 
     }
 
@@ -486,12 +511,12 @@ class SpielFlaeche {
         //überprüfen ob Pause ist. wenn ja dann garnichts machen.
         if (!zustand.pause) {
             //variablen heranholen zur leichteren lesbarkeit
-            let gewonnen = false;
+            let beendet = false;
             let knoten = this.knoten;
             let geist = this.geist;
             let pacman = this.pacMan;
             let pillen = this.pillen;
-            let level=this.level;
+            let level = this.level;
             //Geist Bewegen
             if (geist.richtungNeu != 5) {
                 if (knoten[geist.posY][geist.posX].nexthop(geist.richtungNeu) == geist.richtungNeu) {
@@ -500,20 +525,24 @@ class SpielFlaeche {
                         case Richtungen.hoch:
                         {
                             geist.posY--;
+                            geist.offsetY=this.factor;
                             break;
                         }
                         case Richtungen.links:
                         {
                             geist.posX--;
+                            geist.offsetX=this.factor;
                             break;
                         }
                         case Richtungen.rechts:
                         {
                             geist.posX++;
+                            geist.offsetX=-this.factor;
                             break;
                         }
                         case Richtungen.runter:
                         {
+                            geist.offsetY=-this.factor;
                             geist.posY++;
                             break;
                         }
@@ -522,10 +551,9 @@ class SpielFlaeche {
                     if (geist.posY < 0)geist.posY = knoten.length - 1;
                     if (geist.posX > knoten[0].length - 1)geist.posX = 0;
                     if (geist.posY > knoten.length - 1)geist.posY = 0;
-                    if (pacman.posX == geist.posX && pacman.posY == geist.posY) {
-                        gewonnen = true;
-                    }
-                    if(level[geist.posY][geist.posX]==Feldtypen.geisterHaus||level[geist.posY][geist.posX]==Feldtypen.geistSpawn)zustand.aengstlich=false;
+                    if (pacman.posX == geist.posX && pacman.posY == geist.posY) beendet = true;
+
+                    if (level[geist.posY][geist.posX] == Feldtypen.geisterHaus || level[geist.posY][geist.posX] == Feldtypen.geistSpawn)zustand.aengstlich = false;
                 }
             }
             geist.richtung = 5;
@@ -534,7 +562,9 @@ class SpielFlaeche {
             //PacMan bewegen
             //prüfen ob geist in der nähe ist und pacman flüchten darf
             //prüfen ob schon gewonnen
-            if (!gewonnen) {
+            if (!beendet) {
+                let PacManAltX=pacman.posX;
+                let PacManAltY=pacman.posY;
                 if (zustand.aengstlich) {
                     let zielRoute = astar.search(knoten, pacman.posX, pacman.posY, geist.posX, geist.posY);
                     pacman.posX = zielRoute[0].posX;
@@ -598,25 +628,31 @@ class SpielFlaeche {
                     let pille = knoten[pacman.posY][pacman.posX].pille;
                     knoten[pacman.posY][pacman.posX].pille = null;
                     pillen.splice(pillen.indexOf(pille), 1);
-                    if(pille.isGross){
-                        zustand.aengstlich=true;
-                        setTimeout(function(){
-                           zustand.aengstlich=false;
-                        },20000)
+                    if (pille.isGross) {
+                        zustand.aengstlich = true;
+                        setTimeout(function () {
+                            zustand.aengstlich = false;
+                        }, 20000)
                     }
                     zustand.restpillen--;
                 }
+
+                if(PacManAltY<pacman.posY)pacman.offsetY=-this.factor;
+                if(PacManAltY>pacman.posY)pacman.offsetY=this.factor;
+                if(PacManAltX<pacman.posX)pacman.offsetX=-this.factor;
+                if(PacManAltX>pacman.posX)pacman.offsetX=this.factor;
+
+
                 if (pacman.posX == geist.posX && pacman.posY == geist.posY) {
-                    gewonnen = true;
+                    beendet = true;
                 }
                 //PacMan Bewegen Ende
             }
 
 
             //änderungen Zeichnen
-            this.figurenZeichnen();
             //gewinnüberprüfung
-            if (gewonnen)zustand.status = 3;
+            if (beendet)zustand.status = 3;
         }
     }
 

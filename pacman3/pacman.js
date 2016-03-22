@@ -3,6 +3,14 @@
  * versuch 3 mit MVC
  */
 "use strict";
+
+/*
+ todo: localStorage einrichten und nutzen
+ Store
+ localStorage.setItem("lastname", "Smith");
+ Retrieve
+ document.getElementById("result").innerHTML = localStorage.getItem("lastname");
+ */
 var zustand = {
     status: 0,
     pause: false,
@@ -12,7 +20,8 @@ var zustand = {
     startZeit: 0,
     restpillen: 5,
     spielerName: "platzhalter",
-    zeitSpanne: 5
+    zeitSpanne: 5,
+    geistfarbe:"blue"
 };
 var Richtungen = {
     hoch: 0,
@@ -193,7 +202,6 @@ class Knoten {
         this.f = 0;
         this.g = 0;
         this.h = 0;
-        this.debug = "";
         this.parent = null;
         this.posX = posX;
         this.posY = posY;
@@ -204,15 +212,6 @@ class Knoten {
         if (knotenLinks instanceof Knoten) {
             knotenLinks.knotenRechts = this;
         }
-    }
-
-    get weg() {
-        let ret = [];
-        if (this.knotenLinks instanceof Knoten)ret[ret.length] = Richtungen.links;
-        if (this.knotenOben instanceof Knoten)ret[ret.length] = Richtungen.hoch;
-        if (this.knotenRechts instanceof Knoten)ret[ret.length] = Richtungen.rechts;
-        if (this.knotenUnten instanceof Knoten)ret[ret.length] = Richtungen.runter;
-        return ret;
     }
 
     get nachbarn() {
@@ -261,10 +260,9 @@ class Knoten {
 
 }
 class SpielObjekt {
-    constructor(posX, posY, groesse) {
+    constructor(posX, posY) {
         this.posX = posX;
         this.posY = posY;
-        this.groesse = groesse;
         this.imageData = null;
         this.offsetX=0;
         this.offsetY=0
@@ -287,28 +285,31 @@ class SpielObjekt {
             let green = 0;
             let blue = 0;
             switch (farbe) {
-                case "red":
+                case "blue":
                 {
                     red = 0;
                     blue = 255;
                     green = 255;
-                }
-                case "blue":
-                {
-                    red = 255;
-                    blue = 0;
-                    green = 255;
+                    break;
                 }
                 case "green":
                 {
                     red = 255;
+                    blue = 0;
+                    green = 255;
+                    break;
+                }
+                case "red":
+                {
+                    red = 255;
                     blue = 255;
                     green = 0;
+                    break;
                 }
             }
 
             for (let i = 0; i < data.data.length; i += 4) {
-                data.data[i + 0] = (data.data[i + 0] == 255) ? data.data[i + 0] : red;
+                data.data[i] = (data.data[i] == 255) ? data.data[i] : red;
                 data.data[i + 1] = (data.data[i + 1] == 255) ? data.data[i + 1] : green;
                 data.data[i + 2] = (data.data[i + 2] == 255) ? data.data[i + 2] : blue;
                 data.data[i + 3] = (data.data[i + 3] == 255) ? data.data[i + 3] : 0;
@@ -321,7 +322,7 @@ class SpielObjekt {
 }
 class Pille extends SpielObjekt {
     constructor(posX, posY, groesse, isGross) {
-        super(posX, posY, groesse);
+        super(posX, posY);
         this.isGross = isGross;
         this.imageData = this.createPilleImageData(isGross, groesse);
     }
@@ -394,7 +395,7 @@ class SpielFlaeche {
 
                     case Feldtypen.geistSpawn:
                     {
-                        this.geist = new Geist(j, i, this.factor, "red");
+                        this.geist = new Geist(j, i, this.factor, zustand.geistfarbe);
                     }
                     case Feldtypen.geisterHaus:
                     {
@@ -657,7 +658,13 @@ class SpielFlaeche {
     }
 
 }
+
 class astar {
+    //Astar bildet den Routingalgorythmus A* für unsere art Grid ab
+    /**
+     * Initalisierung des grids auf standarDwerte
+     * @param grid hier wird das zu initalisierende grid benötigt
+     */
     static init(grid) {
         for (let y = 0; y < grid.length; y++) {
             for (let x = 0; x < grid[y].length; x++) {
@@ -672,6 +679,15 @@ class astar {
         }
     }
 
+    /**
+     * Routensuche
+     * @param grid Grid in dem die route gesucht werden soll
+     * @param startX X-Koordinate des Starts
+     * @param startY Y-Koordinate des Starts
+     * @param endX X-Koordinate des Ziels
+     * @param endY Y-Koordinate des Ziels
+     * @returns {*} gibt ein Array zurück indem die beste Route abgebildet ist, ist leer wenn fehler(z.B. keine Route)
+     */
     static search(grid, startX, startY, endX, endY) {
         astar.init(grid);
         let openlist = [];
@@ -734,6 +750,14 @@ class astar {
 
     }
 
+    /**
+     * Berechnet die Manhattandistanz zwischen zwei punkten
+     * @param posStartX X-Koordinate des Starts
+     * @param posStartY Y-Koordinate des Starts
+     * @param posEndeX X-Koordinate des Ziels
+     * @param posEndeY Y-Koordinate des Ziels
+     * @returns {number} Liefert den Abstand nach |posStartX-posEndeX|+|posStartY-posEndeY|
+     */
     static manhattan(posStartX, posStartY, posEndeX, posEndeY) {
         var dx = Math.abs(posStartX - posEndeX);
         var dy = Math.abs(posStartY - posEndeY);

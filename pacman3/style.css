@@ -1,16 +1,21 @@
-body{
+
+/*-------------------------------------------------------------------*/
+/*--------------------------------TAGs-------------------------------*/
+/*-------------------------------------------------------------------*/
+
+body {
     background-color: orange;
 }
 
 div {
-    width: 1000px;
+    width: 800px;
     margin: auto;
     background-color: orange;
 }
 
-body>div>div{
+body > div > div {
     position: absolute;
-    top: 250px;
+    top: 190px;
 }
 
 nav > ul > li > a {
@@ -27,24 +32,16 @@ nav > ul > li > a {
     padding: 12px;
     text-align: center;
     text-decoration: none;
-    z-index: 10001;
 }
 
-
-
 header {
-    /*margin-top:1%;*/
-    /*padding-top:50px;*/
+    width: 500px;
     margin-left: auto;
     margin-right: auto;
 }
 
 header>img {
     /*padding-top:0.5%;*/
-}
-
-canvas {
-    /*border: solid black 1px;*/
 }
 
 nav {
@@ -63,28 +60,13 @@ section {
     margin: auto;
 }
 
-#canvascontainer {
-    position: relative;
-    margin: auto;
-}
-
-#spielFeld {
-    background-color: #202020;
-    position: absolute;
-}
-
-#pacmanFeld {
-    position: absolute;
-
-}
-
-#geisterFeld {
-    position: absolute;
-}
-
 footer {
     height: 30px;
 }
+
+/*-------------------------------------------------------------------*/
+/*------------------------------KLASSEN------------------------------*/
+/*-------------------------------------------------------------------*/
 
 .mbottom {
     margin: auto;
@@ -107,81 +89,29 @@ footer {
     margin-top: 20px;
 }
 
-.user {
-    background-color: gray;
-    width: 25%;
-    transition: 1s;
-}
-
-#divArcadeText{
-    position: absolute;
-    top: 50px;
-    width: 200px;
-    height: 100px;
-    z-index: 1000;
-    background-color: lightgray;
-    padding: 10px;
-    border-radius: 5px;
-
-}
-#divHilfeText{
-    position: absolute;
-    top: 50px;
-    width: 45%;
-    height: 100%;
-    z-index: 1000;
-    background-color: lightgray;
-    padding: 10px;
-    border-radius: 5px;
-}
-
-.pacman img{
+.pacman img {
     transform: rotate(25deg);
     width: 10%;
-    position:relative;
-    top:-70px;
-    left:-50px;
+    position: relative;
+    top: -60px;
+    left: -50px;
     z-index: 1001;
 }
 
-.geist img{
+.geist img {
     width: 15%;
-    position:relative;
-    top:300px;
-    right:-510px;
+    position: relative;
+    top: 300px;
+    right: -510px;
     transform: rotate(25deg);
     z-index: 1001;
 }
 
-#reverse-blinker{
-    transform: rotate(-25deg);
-    color: red;
-    background-color: #ababab;
-    text-align: center;
-    width: 150px;
-    height: 30px;
-    position: relative;
-    right: -212px;
-    top: -50px;
-    border: 5px solid red;
-    border-radius: 5px;
-    font-size: 18pt;
-    font-weight:bold;
-    box-shadow: 5px 5px 30px 30px yellow;
-    animation: blinken 1s linear;
-    animation-iteration-count: 3;
-    z-index: 1001;
-}
-
-@keyframes blinken {
-    0%{opacity: 1}
-    50%{opacity: 0.1  }
-    100%{opacity: 1}
-}
 .inaktiv {
     display: none;
 }
-.pause{
+
+.pause {
     animation: blinken 5s linear;
     animation-iteration-count: infinite;
     text-align: center;
@@ -192,7 +122,7 @@ footer {
     width: 150px;
     height: 30px;
     font-size: 18pt;
-    font-weight:bold;
+    font-weight: bold;
     color: red;
     border: 5px solid red;
     border-radius: 5px;
@@ -209,24 +139,91 @@ footer {
     width: 150px;
     height: 30px;
     font-size: 18pt;
-    font-weight:bold;
+    font-weight: bold;
     color: red;
     border: 5px solid red;
     border-radius: 5px;
 }
 
+/*-------------------------------------------------------------------*/
+/*---------------------------------IDs-------------------------------*/
+/*-------------------------------------------------------------------*/
 
-@media screen and(max-width: 325px) {
-    body{
-        background-color: orange;
+
+#canvascontainer {
+    position: relative;
+    margin: auto;
+}
+
+#spielFeld {
+    background-color: #202020;
+    position: absolute;
+}
+
+#pacmanFeld {
+    position: absolute;
+
+}
+
+#geisterFeld {
+    position: absolute;
+}
+
+#divArcadeText {
+    position: absolute;
+    top: 50px;
+    width: 200px;
+    height: 100px;
+    z-index: 1000;
+    background-color: lightgray;
+    padding: 10px;
+    border-radius: 5px;
+
+}
+
+#divHilfeText {
+    position: absolute;
+    top: 50px;
+    width: 45%;
+    height: 100%;
+    z-index: 1000;
+    background-color: lightgray;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+#reverse-blinker {
+    transform: rotate(-25deg);
+    color: red;
+    background-color: #ababab;
+    text-align: center;
+    width: 150px;
+    height: 30px;
+    position: relative;
+    right: -212px;
+    top: -50px;
+    border: 5px solid red;
+    border-radius: 5px;
+    font-size: 18pt;
+    font-weight: bold;
+    box-shadow: 5px 5px 30px 30px yellow;
+    animation: blinken 1s linear;
+    animation-iteration-count: 3;
+    z-index: 1001;
+}
+
+/*-------------------------------------------------------------------*/
+/*----------------------------@ Elemente-----------------------------*/
+/*-------------------------------------------------------------------*/
+
+@keyframes blinken {
+    0% {
+        opacity: 1
     }
-
-    div {
-        width: 50%;
-        background-color: orange;
+    50% {
+        opacity: 0.1
     }
-
-    body>div>div{
-        position: absolute;
-        top: 250px;
-    }}
+    100% {
+        opacity: 1
+    }
+}

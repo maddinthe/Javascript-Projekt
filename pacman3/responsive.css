@@ -3,7 +3,6 @@ body{
 }
 
 div {
-
     margin: auto;
     background-color: orange;
 }
@@ -19,7 +18,7 @@ nav > ul > li > a {
     border-radius: 4px;
     color: #fff;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 10px;
     font-weight: bold;
     letter-spacing: 1px;
     margin-bottom: 0;
@@ -27,7 +26,6 @@ nav > ul > li > a {
     padding: 12px;
     text-align: center;
     text-decoration: none;
-    z-index: 10001;
 }
 
 
@@ -40,7 +38,7 @@ header {
 }
 
 header>img {
-    /*padding-top:0.5%;*/
+    width:100%;
 }
 
 canvas {

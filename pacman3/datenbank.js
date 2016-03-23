@@ -1,10 +1,9 @@
 var username = document.getElementById("usernameEingabe");
-var schwierigkeit = 1000;
 var user = zustand.spielerName;
 
 
 function punkte() {
-    return 0 - ((zustand.gesamtpillen - zustand.restpillen) + (zustand.zeitSpanne / schwierigkeit));
+    return 0 - ((zustand.gesamtpillen - zustand.restpillen) + (zustand.zeitSpanne / zustand.schwierigkeit*1000));
 }
 
 function zeitbestimmen() {

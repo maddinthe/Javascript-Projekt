@@ -11,100 +11,95 @@
  Retrieve
  document.getElementById("result").innerHTML = localStorage.getItem("lastname");
  */
-var zustand = {
-    status: 0,
-    pause: false,
-    observer: null,
-    aengstlich: false,
-    gesamtpillen: 100,
-    startZeit: 0,
-    restpillen: 5,
-    spielerName: "platzhalter",
-    zeitSpanne: 5,
-    geistfarbe:"blue"
-};
-var Richtungen = {
-    hoch: 0,
-    runter: 1,
-    rechts: 2,
-    links: 3
-};
-var Feldtypen = {
-    wand: 0,
-    hohlraum: 1,
-    tuer: 2,
-    geisterHaus: 3,
-    pille: 4,
-    grPille: 5,
-    pacManSpawn: 6,
-    geistSpawn: 7,
-    leerFlaeche: 8
-};
-var Farben = {
-    wand: "#696969",
-    hohlraum: "#808080",
-    tuer: "#FF0000",
-    geisterHaus: "#0000FF",
-    pille: "yellow",
-    grPille: "yellow",
-    geistSpawn: "#0000FF"
-};
-var lvl = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 0],
-    [0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0],
-    [0, 4, 0, 0, 4, 0, 1, 1, 1, 1, 0, 4, 0, 4, 0, 1, 1, 1, 1, 0, 4, 0, 0, 4, 0],
-    [0, 4, 0, 0, 4, 0, 0, 0, 1, 1, 0, 4, 0, 4, 0, 1, 1, 0, 0, 0, 4, 0, 0, 4, 0],
-    [0, 4, 0, 0, 4, 4, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 4, 4, 0, 0, 4, 0],
-    [0, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 0],
-    [0, 4, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 4, 0],
-    [0, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 0],
-    [0, 0, 0, 0, 4, 0, 0, 0, 4, 4, 4, 4, 5, 4, 4, 4, 4, 0, 0, 0, 4, 0, 0, 0, 0],
-    [1, 1, 1, 0, 4, 0, 1, 0, 4, 0, 0, 2, 2, 2, 0, 0, 4, 0, 1, 0, 4, 0, 1, 1, 1],
-    [0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 3, 3, 3, 3, 3, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0],
-    [8, 8, 8, 6, 4, 4, 4, 4, 4, 0, 3, 3, 7, 3, 3, 0, 4, 4, 4, 4, 4, 8, 8, 8, 8],
-    [0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 3, 3, 3, 3, 3, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0],
-    [1, 1, 1, 0, 4, 0, 1, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 1, 0, 4, 0, 1, 1, 1],
-    [0, 0, 0, 0, 4, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 4, 0, 0, 0, 0],
-    [0, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 0],
-    [0, 4, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 4, 0],
-    [0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0],
-    [0, 0, 4, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 4, 0, 0],
-    [0, 4, 4, 0, 4, 0, 4, 0, 1, 1, 0, 4, 0, 4, 0, 1, 1, 0, 4, 0, 4, 0, 4, 4, 0],
-    [0, 4, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 4, 0],
-    [0, 4, 0, 0, 4, 0, 4, 0, 0, 5, 0, 4, 0, 4, 0, 5, 0, 0, 4, 0, 4, 0, 0, 4, 0],
-    [0, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
-var spielFlaeche;
-var intervalle = [];
-var listener = [];
+var Spielvariablen={
+    spielFlaeche:null,
+    Richtungen:{hoch: 0,
+        runter: 1,
+        rechts: 2,
+        links: 3},
+    Feldtypen:{
+        wand: 0,
+        hohlraum: 1,
+        tuer: 2,
+        geisterHaus: 3,
+        pille: 4,
+        grPille: 5,
+        pacManSpawn: 6,
+        geistSpawn: 7,
+        leerFlaeche: 8},
+    Farben:{wand: "#696969",
+        hohlraum: "#808080",
+        tuer: "#FF0000",
+        geisterHaus: "#0000FF",
+        pille: "yellow",
+        grPille: "yellow",
+        geistSpawn: "#0000FF"},
+    level:{1:[
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 0],
+        [0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0],
+        [0, 4, 0, 0, 4, 0, 1, 1, 1, 1, 0, 4, 0, 4, 0, 1, 1, 1, 1, 0, 4, 0, 0, 4, 0],
+        [0, 4, 0, 0, 4, 0, 0, 0, 1, 1, 0, 4, 0, 4, 0, 1, 1, 0, 0, 0, 4, 0, 0, 4, 0],
+        [0, 4, 0, 0, 4, 4, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 4, 4, 0, 0, 4, 0],
+        [0, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 0],
+        [0, 4, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 4, 0],
+        [0, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 0],
+        [0, 0, 0, 0, 4, 0, 0, 0, 4, 4, 4, 4, 5, 4, 4, 4, 4, 0, 0, 0, 4, 0, 0, 0, 0],
+        [1, 1, 1, 0, 4, 0, 1, 0, 4, 0, 0, 2, 2, 2, 0, 0, 4, 0, 1, 0, 4, 0, 1, 1, 1],
+        [0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 3, 3, 3, 3, 3, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0],
+        [8, 8, 8, 6, 4, 4, 4, 4, 4, 0, 3, 3, 7, 3, 3, 0, 4, 4, 4, 4, 4, 8, 8, 8, 8],
+        [0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 3, 3, 3, 3, 3, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0],
+        [1, 1, 1, 0, 4, 0, 1, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 1, 0, 4, 0, 1, 1, 1],
+        [0, 0, 0, 0, 4, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 4, 0, 0, 0, 0],
+        [0, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 0],
+        [0, 4, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 4, 0],
+        [0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0],
+        [0, 0, 4, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 4, 0, 0],
+        [0, 4, 4, 0, 4, 0, 4, 0, 1, 1, 0, 4, 0, 4, 0, 1, 1, 0, 4, 0, 4, 0, 4, 4, 0],
+        [0, 4, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 4, 0],
+        [0, 4, 0, 0, 4, 0, 4, 0, 0, 5, 0, 4, 0, 4, 0, 5, 0, 0, 4, 0, 4, 0, 0, 4, 0],
+        [0, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]},
+    intervalle:[],
+    listener:[]
+}
+
 
 
 function controller_start() {
-    spielFlaeche = new SpielFlaeche(document.getElementById("spielFeld"), document.getElementById("pacmanFeld"), document.getElementById("geisterFeld"), lvl)
+    let spielFeld=document.getElementById("spielFeld");
+    let pacManFeld=document.getElementById("pacmanFeld");
+    let Geistfeld=document.getElementById("geisterFeld");
+    spielFeld.width=zustand.spielFeldGroesse;
+    spielFeld.height=zustand.spielFeldGroesse;
+    Geistfeld.width=zustand.spielFeldGroesse;
+    Geistfeld.height=zustand.spielFeldGroesse;
+    pacManFeld.width=zustand.spielFeldGroesse;
+    pacManFeld.height=zustand.spielFeldGroesse;
+    Spielvariablen.spielFlaeche = new SpielFlaeche(spielFeld,pacManFeld,Geistfeld,Spielvariablen.level[1])
 }
 function controller_spielen() {
-    requestAnimationFrame(function(){spielFlaeche.figurenZeichnen()});
+    requestAnimationFrame(function(){Spielvariablen.spielFlaeche.figurenZeichnen()});
     var keylistener = window.addEventListener("keydown", function (e) {
         switch (e.keyCode) {
             case 37:
             {
-                spielFlaeche.geist.richtungNeu = Richtungen.links;
+                Spielvariablen.spielFlaeche.geist.richtungNeu = Spielvariablen.Richtungen.links;
                 break;
             }
             case 38:
             {
-                spielFlaeche.geist.richtungNeu = Richtungen.hoch;
+                Spielvariablen.spielFlaeche.geist.richtungNeu = Spielvariablen.Richtungen.hoch;
                 break;
             }
             case 39:
             {
-                spielFlaeche.geist.richtungNeu = Richtungen.rechts;
+                Spielvariablen.spielFlaeche.geist.richtungNeu = Spielvariablen.Richtungen.rechts;
                 break;
             }
             case 40:
             {
-                spielFlaeche.geist.richtungNeu = Richtungen.runter;
+                Spielvariablen.spielFlaeche.geist.richtungNeu = Spielvariablen.Richtungen.runter;
                 break;
             }
             case 32:
@@ -115,12 +110,16 @@ function controller_spielen() {
 
             case 13:
             {
-                if (zustand.startZeit == 0) {
+                if (zustand.status == 2) {
                     document.getElementById("start").classList.add("inaktiv");
                     zustand.startZeit = new Date().getTime();
-                    intervalle.push(setInterval(function () {
-                        spielFlaeche.bewegen()
+                    Spielvariablen.intervalle.push(setInterval(function () {
+                        Spielvariablen.spielFlaeche.pacManBewegen()
+                    }, 200/zustand.schwierigkeit));
+                    Spielvariablen.intervalle.push(setInterval(function () {
+                        Spielvariablen.spielFlaeche.geistBewegen()
                     }, 200));
+
                 }
                 break;
             }
@@ -166,8 +165,8 @@ Object.observe(zustand, function (changes) {
                 }
                 case 3:
                 {
-                    for (let i in intervalle) {
-                        clearInterval(intervalle[i])
+                    for (let i in Spielvariablen.intervalle) {
+                        clearInterval(Spielvariablen.intervalle[i])
                     }
                     controller_spielende();
                 }
@@ -184,7 +183,7 @@ Object.observe(zustand, function (changes) {
 
         }
         else if (change.name === "aengstlich") {
-            spielFlaeche.toggleAengstlichLevel();
+            Spielvariablen.spielFlaeche.toggleAengstlichLevel();
         }
     });
 });
@@ -225,33 +224,33 @@ class Knoten {
 
     nexthop(richtung) {
         switch (richtung) {
-            case Richtungen.hoch:
+            case Spielvariablen.Richtungen.hoch:
             {
-                if (this.knotenOben instanceof Knoten)return Richtungen.hoch;
-                if (this.knotenLinks instanceof Knoten) return Richtungen.links;
-                if (this.knotenRechts instanceof Knoten) return Richtungen.rechts;
-                return Richtungen.runter;
+                if (this.knotenOben instanceof Knoten)return Spielvariablen.Richtungen.hoch;
+                if (this.knotenLinks instanceof Knoten) return Spielvariablen.Richtungen.links;
+                if (this.knotenRechts instanceof Knoten) return Spielvariablen.Richtungen.rechts;
+                return Spielvariablen.Richtungen.runter;
             }
-            case Richtungen.rechts:
+            case Spielvariablen.Richtungen.rechts:
             {
-                if (this.knotenRechts instanceof Knoten)return Richtungen.rechts;
-                if (this.knotenOben instanceof Knoten) return Richtungen.hoch;
-                if (this.knotenUnten instanceof Knoten) return Richtungen.runter;
-                return Richtungen.links;
+                if (this.knotenRechts instanceof Knoten)return Spielvariablen.Richtungen.rechts;
+                if (this.knotenOben instanceof Knoten) return Spielvariablen.Richtungen.hoch;
+                if (this.knotenUnten instanceof Knoten) return Spielvariablen.Richtungen.runter;
+                return Spielvariablen.Richtungen.links;
             }
-            case Richtungen.runter:
+            case Spielvariablen.Richtungen.runter:
             {
-                if (this.knotenUnten instanceof Knoten)return Richtungen.runter;
-                if (this.knotenLinks instanceof Knoten) return Richtungen.links;
-                if (this.knotenRechts instanceof Knoten) return Richtungen.rechts;
-                return Richtungen.hoch;
+                if (this.knotenUnten instanceof Knoten)return Spielvariablen.Richtungen.runter;
+                if (this.knotenLinks instanceof Knoten) return Spielvariablen.Richtungen.links;
+                if (this.knotenRechts instanceof Knoten) return Spielvariablen.Richtungen.rechts;
+                return Spielvariablen.Richtungen.hoch;
             }
-            case Richtungen.links:
+            case Spielvariablen.Richtungen.links:
             {
-                if (this.knotenLinks instanceof Knoten)return Richtungen.links;
-                if (this.knotenOben instanceof Knoten) return Richtungen.hoch;
-                if (this.knotenUnten instanceof Knoten) return Richtungen.runter;
-                return Richtungen.rechts;
+                if (this.knotenLinks instanceof Knoten)return Spielvariablen.Richtungen.links;
+                if (this.knotenOben instanceof Knoten) return Spielvariablen.Richtungen.hoch;
+                if (this.knotenUnten instanceof Knoten) return Spielvariablen.Richtungen.runter;
+                return Spielvariablen.Richtungen.rechts;
             }
         }
 
@@ -330,8 +329,8 @@ class Pille extends SpielObjekt {
     createPilleImageData(isGross, groesse) {
         let canvas = document.createElement('canvas');
         let context = canvas.getContext("2d");
-        context.strokeStyle = isGross ? Farben.grPille : Farben.pille;
-        context.fillStyle = isGross ? Farben.grPille : Farben.pille;
+        context.strokeStyle = isGross ? Spielvariablen.Farben.grPille : Spielvariablen.Farben.pille;
+        context.fillStyle = isGross ? Spielvariablen.Farben.grPille : Spielvariablen.Farben.pille;
         context.arc(groesse / 2, groesse / 2, isGross ? groesse * 0.35 : groesse * 0.2, 0, 2 * Math.PI);
         context.fill();
         return context.getImageData(0, 0, groesse, groesse);
@@ -342,7 +341,7 @@ class PacMan extends SpielObjekt {
     constructor(posX, posY, groesse) {
         super(posX, posY, groesse);
         this.imageData = this.ImageToImageData(document.getElementById("pacman"), groesse);
-        this.richtung = Richtungen.rechts;
+        this.richtung = Spielvariablen.Richtungen.rechts;
         this.richtungNeu = this.richtung;
         this.verboteneFelder = 2;
         this.darfwegglaufen = true;
@@ -370,9 +369,10 @@ class SpielFlaeche {
         this.pillen = [];
         this.geist = null;
         this.pacMan = null;
-        this.factor = this.width / lvl.length;
+        this.factor = this.width / level.length;
         this.knoten = [];
         this.toogleTimerAn = false;
+        this.beendet=false;
         this.zeichnen();
         this.figurenZeichnen();
         zustand.gesamtpillen = this.pillen.length;
@@ -381,34 +381,34 @@ class SpielFlaeche {
     }
 
     zeichnen() {
-        for (let i = 0; i < lvl.length; i++) {
+        for (let i = 0; i < this.level.length; i++) {
             this.knoten[i] = [];
-            for (let j = 0; j < lvl[i].length; j++) {
-                switch (lvl[i][j]) {
-                    case Feldtypen.wand:
+            for (let j = 0; j < this.level[i].length; j++) {
+                switch (this.level[i][j]) {
+                    case Spielvariablen.Feldtypen.wand:
                     {
-                        this.levelContext.fillStyle = Farben.wand;
+                        this.levelContext.fillStyle = Spielvariablen.Farben.wand;
                         this.levelContext.fillRect(j * this.factor, i * this.factor, this.factor, this.factor);
                         this.knoten[i][j] = null;
                         break;
                     }
 
-                    case Feldtypen.geistSpawn:
+                    case Spielvariablen.Feldtypen.geistSpawn:
                     {
                         this.geist = new Geist(j, i, this.factor, zustand.geistfarbe);
                     }
-                    case Feldtypen.geisterHaus:
+                    case Spielvariablen.Feldtypen.geisterHaus:
                     {
-                        this.levelContext.fillStyle = Farben.geisterHaus;
+                        this.levelContext.fillStyle = Spielvariablen.Farben.geisterHaus;
                         this.levelContext.fillRect(j * this.factor, i * this.factor, this.factor, this.factor);
                         this.knoten[i][j] = new Knoten(this.knoten[i - 1][j], this.knoten[i][j - 1], j, i, null);
                         break;
                     }
-                    case Feldtypen.pacManSpawn:
+                    case Spielvariablen.Feldtypen.pacManSpawn:
                     {
                         this.pacMan = new PacMan(j, i, this.factor);
                     }
-                    case Feldtypen.leerFlaeche:
+                    case Spielvariablen.Feldtypen.leerFlaeche:
                     {
                         this.levelContext.clearRect(j * this.factor, i * this.factor, this.factor, this.factor);
                         this.knoten[i][j] = new Knoten(this.knoten[i - 1][j], this.knoten[i][j - 1], j, i, null);
@@ -424,31 +424,31 @@ class SpielFlaeche {
                         }
                         break;
                     }
-                    case Feldtypen.hohlraum:
+                    case Spielvariablen.Feldtypen.hohlraum:
                     {
-                        this.levelContext.fillStyle = Farben.hohlraum;
+                        this.levelContext.fillStyle = Spielvariablen.Farben.hohlraum;
                         this.levelContext.fillRect(j * this.factor, i * this.factor, this.factor, this.factor);
                         this.knoten[i][j] = null;
                         break;
                     }
-                    case Feldtypen.tuer:
+                    case Spielvariablen.Feldtypen.tuer:
                     {
 
-                        this.levelContext.fillStyle = Farben.tuer;
+                        this.levelContext.fillStyle = Spielvariablen.Farben.tuer;
                         this.levelContext.fillRect(j * this.factor, i * this.factor, this.factor, this.factor / 2);
-                        this.levelContext.fillStyle = Farben.geistSpawn;
+                        this.levelContext.fillStyle = Spielvariablen.Farben.geistSpawn;
                         this.levelContext.fillRect(j * this.factor, i * this.factor + this.factor / 2, this.factor, this.factor / 2);
                         this.knoten[i][j] = new Knoten(this.knoten[i - 1][j], this.knoten[i][j - 1], j, i, null);
                         break;
                     }
-                    case Feldtypen.pille:
+                    case Spielvariablen.Feldtypen.pille:
                     {
                         let pille = new Pille(j, i, this.factor, false);
                         this.pillen.push(pille);
                         this.knoten[i][j] = new Knoten(this.knoten[i - 1][j], this.knoten[i][j - 1], j, i, pille);
                         break;
                     }
-                    case Feldtypen.grPille:
+                    case Spielvariablen.Feldtypen.grPille:
                     {
                         let pille = new Pille(j, i, this.factor, true);
                         this.pillen.push(pille);
@@ -503,9 +503,161 @@ class SpielFlaeche {
         if(this.geist.offsetY<0)this.geist.offsetY+=2;
         if(this.geist.offsetY>0)this.geist.offsetY-=2;
         if(zustand.status==2)requestAnimationFrame(function(){
-            spielFlaeche.figurenZeichnen();
+            Spielvariablen.spielFlaeche.figurenZeichnen();
         });
 
+    }
+
+    pacManBewegen(){
+        if(!zustand.pause){
+            let knoten = this.knoten;
+            let geist = this.geist;
+            let pacman = this.pacMan;
+            let pillen = this.pillen;
+            if (!this.beendet) {
+                let PacManAltX=pacman.posX;
+                let PacManAltY=pacman.posY;
+                if (zustand.aengstlich) {
+                    let zielRoute = astar.search(knoten, pacman.posX, pacman.posY, geist.posX, geist.posY);
+                    pacman.posX = zielRoute[0].posX;
+                    pacman.posY = zielRoute[0].posY;
+
+
+                } else if (pacman.darfwegglaufen && pacman.getAbstand(geist.posX, geist.posY) < 6) {
+                    console.log("flüchten");
+                    let aktKnoten = knoten[pacman.posY][pacman.posX];
+                    let auswege = aktKnoten.nachbarn;
+                    let bestnachbar = auswege[0];
+                    let bestabstand = geist.getAbstand(bestnachbar.posX, bestnachbar.posY);
+                    for (let i = 1; i < auswege.length; i++) {
+                        let neuabstand = geist.getAbstand(auswege[i].posX, auswege[i].posY);
+                        if (neuabstand > bestabstand) {
+                            bestabstand = neuabstand;
+                            bestnachbar = auswege[i];
+                        }
+                    }
+                    pacman.posX = bestnachbar.posX;
+                    pacman.posY = bestnachbar.posY;
+
+                    if (!this.toogleTimerAn) {
+                        setTimeout(function () {
+                            Spielvariablen.spielFlaeche.pacManWeglaufentoggle();
+                            console.log("darf nicht mehr flüchten");
+                        }, 5000);
+                        setTimeout(function () {
+                            Spielvariablen.spielFlaeche.pacManWeglaufentoggle();
+                            Spielvariablen.spielFlaeche.toogleTimerAn = false;
+                            console.log("darf wieder flüchten");
+                        }, 7000);
+                        this.toogleTimerAn = true;
+                    }
+
+                }
+                else {
+                    //--nächste pille rausfinden mittels manhattan distanz rausfinden;
+
+
+                    let nahestPille = 0;
+                    let nahestPilleManhattan = 1000;
+                    if (pillen.length == 0) {
+                        zustand.status = 3;
+                        return;
+                    }
+                    for (let i in pillen) {
+                        let manhattan = astar.manhattan(pacman.posX, pacman.posY, pillen[i].posX, pillen[i].posY);
+                        if (manhattan < nahestPilleManhattan) {
+                            nahestPilleManhattan = manhattan;
+                            nahestPille = i;
+                        }
+                    }
+
+                    let zielPille = pillen[nahestPille];
+                    let zielRoute = astar.search(knoten, pacman.posX, pacman.posY, zielPille.posX, zielPille.posY);
+                    pacman.posX = zielRoute[0].posX;
+                    pacman.posY = zielRoute[0].posY;
+                }
+                if (knoten[pacman.posY][pacman.posX].pille != null) {
+                    let pille = knoten[pacman.posY][pacman.posX].pille;
+                    knoten[pacman.posY][pacman.posX].pille = null;
+                    pillen.splice(pillen.indexOf(pille), 1);
+                    if (pille.isGross) {
+                        zustand.aengstlich = true;
+                        setTimeout(function () {
+                            zustand.aengstlich = false;
+                        }, 20000)
+                    }
+                    zustand.restpillen--;
+                }
+
+                if(PacManAltY<pacman.posY)pacman.offsetY=-this.factor;
+                if(PacManAltY>pacman.posY)pacman.offsetY=this.factor;
+                if(PacManAltX<pacman.posX)pacman.offsetX=-this.factor;
+                if(PacManAltX>pacman.posX)pacman.offsetX=this.factor;
+
+
+                if (pacman.posX == geist.posX && pacman.posY == geist.posY) {
+                    this.beendet = true;
+                }
+                //PacMan Bewegen Ende
+            }
+
+
+            //änderungen Zeichnen
+            //gewinnüberprüfung
+            if (this.beendet)zustand.status = 3;
+
+        }
+
+    }
+    geistBewegen(){if (!zustand.pause) {
+        //variablen heranholen zur leichteren lesbarkeit
+
+        let knoten = this.knoten;
+        let geist = this.geist;
+        let pacman = this.pacMan;
+        let level = this.level;
+        //Geist Bewegen
+        if (geist.richtungNeu != 5) {
+            if (knoten[geist.posY][geist.posX].nexthop(geist.richtungNeu) == geist.richtungNeu) {
+                geist.richtung = geist.richtungNeu;
+                switch (geist.richtung) {
+                    case Spielvariablen.Richtungen.hoch:
+                    {
+                        geist.posY--;
+                        geist.offsetY = this.factor;
+                        break;
+                    }
+                    case Spielvariablen.Richtungen.links:
+                    {
+                        geist.posX--;
+                        geist.offsetX = this.factor;
+                        break;
+                    }
+                    case Spielvariablen.Richtungen.rechts:
+                    {
+                        geist.posX++;
+                        geist.offsetX = -this.factor;
+                        break;
+                    }
+                    case Spielvariablen.Richtungen.runter:
+                    {
+                        geist.offsetY = -this.factor;
+                        geist.posY++;
+                        break;
+                    }
+                }
+                if (geist.posX < 0)geist.posX = knoten[0].length - 1;
+                if (geist.posY < 0)geist.posY = knoten.length - 1;
+                if (geist.posX > knoten[0].length - 1)geist.posX = 0;
+                if (geist.posY > knoten.length - 1)geist.posY = 0;
+                if (pacman.posX == geist.posX && pacman.posY == geist.posY) this.beendet = true;
+
+                if (level[geist.posY][geist.posX] == Spielvariablen.Feldtypen.geisterHaus || level[geist.posY][geist.posX] == Spielvariablen.Feldtypen.geistSpawn)zustand.aengstlich = false;
+            }
+        }
+        geist.richtung = 5;
+        geist.richtungNeu = 5;
+    }
     }
 
     bewegen() {

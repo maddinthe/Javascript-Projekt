@@ -124,6 +124,8 @@ if (!isset($_POST["UserName"])) {
             <div id="start" class="gewonnenverloren">Press Return</div>
             <div id="verloren" class="gewonnenverloren inaktiv">Verloren</div>
             <div id="gewonnen" class="gewonnenverloren inaktiv">Gewonnen</div>
+            <div id="zeitContainer">Zeit:<br/>00:00:00</div>
+            <div id="userNameContainer">Hans</div>
             <canvas id="spielFeld">Ihr Browser kann kein HTML 5</canvas>
             <canvas id="pacmanFeld">Ihr Browser kann kein HTML 5</canvas>
             <canvas id="geisterFeld">Ihr Browser kann kein HTML 5</canvas>

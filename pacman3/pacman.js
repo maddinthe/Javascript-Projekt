@@ -62,9 +62,10 @@ var Spielvariablen = {
     intervalle: {
         eins: null,
         zwei: null,
-        zeit: null
+        abgelaufeneZeit: null,
+        zeitAnzeige:null
     },
-    zeit:0,
+    abgelaufeneZeit:0,
     listener: null,
     funtionen: {
         nonflucht: function () {
@@ -74,6 +75,12 @@ var Spielvariablen = {
         flucht: function () {
             Spielvariablen.spielFlaeche.pacManWeglaufentoggle();
             Spielvariablen.spielFlaeche.toogleTimerAn = false;
+
+        },
+        zeitanzeige:function(){
+            let zeit= Spielvariablen.abgelaufeneZeit;
+            let zeitcontainer=document.getElementById("zeitContainer");
+            zeitcontainer.innerHTML="Zeit:<br>"+time(zeit);
 
         }
     }
@@ -125,19 +132,25 @@ function controller_start() {
 
                 case 13:
                 {
-                    if (zustand.status == 2 && zustand.startZeit == 0) {
+                    if (zustand.status == 2 && Spielvariablen.abgelaufeneZeit++== 0) {
                         let start=document.getElementById("start");
                         start.classList.add("inaktiv");
-                        zustand.startZeit = new Date().getTime();
                         Spielvariablen.intervalle.eins = setInterval(function () {
                             Spielvariablen.spielFlaeche.pacManBewegen()
                         }, 200 / zustand.schwierigkeit);
                         Spielvariablen.intervalle.zwei = setInterval(function () {
                             Spielvariablen.spielFlaeche.geistBewegen()
                         }, 200);
+                        Spielvariablen.intervalle.abgelaufeneZeit=setInterval(function(){
+                            if(!zustand.pause)Spielvariablen.abgelaufeneZeit=Spielvariablen.abgelaufeneZeit+10;
+                        },10)
+                        Spielvariablen.intervalle.zeitAnzeige=setInterval(function(){
+                            Spielvariablen.funtionen.zeitanzeige();
+                        },1000);
+
 
                     } else if (zustand.status == 3) {
-                        zustand.startZeit = 0;
+                        Spielvariablen.abgelaufeneZeit=0;
                         zustand.status = 1;
                     }
                     break;
@@ -150,6 +163,7 @@ function controller_start() {
             }
         });
     }
+    document.getElementById("userNameContainer").innerText=zustand.spielerName;
 }
 function controller_spielen() {
     requestAnimationFrame(function () {
@@ -160,10 +174,14 @@ function controller_spielen() {
 function controller_spielende() {
     clearInterval((Spielvariablen.intervalle.eins));
     clearInterval((Spielvariablen.intervalle.zwei));
+    clearInterval((Spielvariablen.intervalle.abgelaufeneZeit));
+    clearInterval((Spielvariablen.intervalle.zeitAnzeige));
     clearTimeout(Spielvariablen.funtionen.flucht());
     clearTimeout(Spielvariablen.funtionen.nonflucht());
     zustand.restpillen=Spielvariablen.spielFlaeche.pillen.length;
-    zustand.zeitSpanne = new Date().getTime() - zustand.startZeit;
+    console.log(time(Spielvariablen.abgelaufeneZeit));
+    console.log(Spielvariablen.abgelaufeneZeit);
+    zustand.zeitSpanne = Spielvariablen.abgelaufeneZeit;
     let element = null;
     if (zustand.restpillen > 0 && !zustand.aengstlich) {
         element = document.getElementById("gewonnen");

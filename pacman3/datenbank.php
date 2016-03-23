@@ -11,7 +11,8 @@ if (isset($_POST['user'])) {
     $name = ($_POST ["user"]);
     $zeit = ($_POST ["zeit"]);
     $punkte = ($_POST ["punkte"]);
-    echo 'Name= '.$name.' Zeit= '.$zeit.' Punkte= '.$punkte;
+
+
     $spiel = "INSERT INTO t_highscore (name, zeit, punkte) VALUES ($name,CAST($zeit AS TIME),$punkte)";
     pg_query($spiel) or die('Abfrage fehlgeschlagen: ' . pg_last_error());
 
@@ -23,9 +24,9 @@ if (isset($_POST['user'])) {
 
     echo json_encode(pg_fetch_all($highscore));
 //Highscore resetten
-    if (isset($_POST['Reset'])) {
+    if (isset($_POST['user'])) {
         $reset = "DROP TABLE t_highscore";
-        $neu = "CREATE TABLE t_highscore(name VARCHAR(30),zeit TIME,punkte INTEGER)";
+        $neu = "CREATE TABLE t_highscore(name VARCHAR(30),zeit TIME,punkte DECIMAL)";
         pg_query($reset) or die('Abfrage fehlgeschlagen: ' . pg_last_error());
         pg_query($neu) or die('Abfrage fehlgeschlagen: ' . pg_last_error());
     }

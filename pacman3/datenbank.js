@@ -2,32 +2,39 @@ var username = document.getElementById("usernameEingabe");
 var schwierigkeit = 1000;
 var user = zustand.spielerName;
 
-function punkte(){
-    return 0-((zustand.gesamtpillen-zustand.restpillen)+(zustand.zeitSpanne/schwierigkeit));
+
+function punkte() {
+    return 0 - ((zustand.gesamtpillen - zustand.restpillen) + (zustand.zeitSpanne / schwierigkeit));
+}
+
+function zeitbestimmen() {
+    var secDiff = Math.floor(zustand.zeitSpanne / 1000); //in s
+    var minDiff = Math.floor(zustand.zeitSpanne / (60 * 1000)); //in min
+    var hDiff = Math.floor(zustand.zeitSpanne / (3600 * 1000)); //in h
+    if (secDiff < 10)
+        secDiff = "0" + secDiff;
+    if (minDiff < 10)
+        minDiff = "0" + minDiff;
+    if (hDiff < 10)
+        hDiff = "0" + hDiff;
+    return hDiff + ":" + minDiff + ":" + secDiff;
+
+
 }
 
 
-var secDiff = zustand.zeitSpanne / 1000; //in s
-var minDiff = zustand.zeitSpanne / 60 / 1000; //in minutes
-var hDiff = zustand.zeitSpanne / 3600 / 1000; //in hours
 
 
-var zeit = hDiff+":"+minDiff+":"+secDiff;
 
 
-var datensatz = {
-    user, zeit, punkte
-};
-datensatz.punkte=punkte();
-
-function holen(){
+function holen() {
     let xmlhttp = new XMLHttpRequest();
     xmlhttp.open('POST', 'datenbank.php', true);
 
     xmlhttp.send();
 }
-function send(name,zeit,punkte){
-    let xmlhttp=new XMLHttpRequest();
+function send() {
+    let xmlhttp = new XMLHttpRequest();
     xmlhttp.open('POST', 'datenbank.php', true);
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.addEventListener('readystatechange', function () {
@@ -37,7 +44,7 @@ function send(name,zeit,punkte){
         }
 
     });
-    xmlhttp.send("user="+encodeURIComponent("'"+name+"'")+"&zeit="+encodeURIComponent("'"+zeit+"'")+"&punkte="+encodeURIComponent("'"+punkte+"'"));
+    xmlhttp.send("user=" + encodeURIComponent("'" + user + "'") + "&zeit=" + encodeURIComponent("'" + zeitbestimmen() + "'") + "&punkte=" + encodeURIComponent("'" + punkte() + "'"));
 }
 
 

@@ -1,31 +1,11 @@
-var username = document.getElementById("usernameEingabe");
-var user = zustand.spielerName;
-
-
 function punkte() {
     return 0 - ((zustand.gesamtpillen - zustand.restpillen) + (zustand.zeitSpanne / zustand.schwierigkeit*1000));
 }
 
-function zeitbestimmen() {
-    var secDiff = Math.floor(zustand.zeitSpanne / 1000); //in s
-    var minDiff = Math.floor(zustand.zeitSpanne / (60 * 1000)); //in min
-    var hDiff = Math.floor(zustand.zeitSpanne / (3600 * 1000)); //in h
-    if (secDiff < 10)
-        secDiff = "0" + secDiff;
-    if (minDiff < 10)
-        minDiff = "0" + minDiff;
-    if (hDiff < 10)
-        hDiff = "0" + hDiff;
-    return hDiff + ":" + minDiff + ":" + secDiff;
 
-
+function time() {
+    return new Date(zustand.zeitSpanne).toISOString().slice(11,19);
 }
-
-
-
-
-
-
 function holen() {
     let xmlhttp = new XMLHttpRequest();
     xmlhttp.open('POST', 'datenbank.php', true);
@@ -50,7 +30,7 @@ function send() {
             }
 
     });
-    xmlhttp.send("user=" + encodeURIComponent(user) + "&zeit=" + encodeURIComponent(zeitbestimmen()) + "&punkte=" + encodeURIComponent(punkte()));
+    xmlhttp.send("user=" + encodeURIComponent(zustand.spielerName) + "&zeit=" + encodeURIComponent(time()) + "&punkte=" + encodeURIComponent(punkte()));
 }
 
 

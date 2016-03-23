@@ -16,12 +16,12 @@ if (isset($_POST['user'])) {
     echo json_encode(pg_fetch_all($highscore));
 
 //Highscore resetten
-    if (isset($_POST['user'])) {
-        $reset = "DROP TABLE t_highscore";
-        $neu = "CREATE TABLE t_highscore(name VARCHAR(30),zeit TIME,punkte DECIMAL)";
-        pg_query($reset) or die('Abfrage fehlgeschlagen: ' . pg_last_error());
-        pg_query($neu) or die('Abfrage fehlgeschlagen: ' . pg_last_error());
-    }
+//    if (isset($_POST['user'])) {
+//        $reset = "DROP TABLE t_highscore";
+//        $neu = "CREATE TABLE t_highscore(name VARCHAR(30),zeit TIME,punkte DECIMAL)";
+//        pg_query($reset) or die('Abfrage fehlgeschlagen: ' . pg_last_error());
+//        pg_query($neu) or die('Abfrage fehlgeschlagen: ' . pg_last_error());
+//    }
     // Speicher freigeben
     pg_free_result($highscore);
 }

@@ -8,14 +8,14 @@ body {
 }
 
 div {
-    width: 1000px;
+    width: 800px;
     margin: auto;
     background-color: orange;
 }
 
 body > div > div {
     position: absolute;
-    top: 220px;
+    top: 190px;
 }
 
 nav > ul > li > a {
@@ -93,7 +93,7 @@ footer {
     transform: rotate(25deg);
     width: 10%;
     position: relative;
-    top: -70px;
+    top: -60px;
     left: -50px;
     z-index: 1001;
 }

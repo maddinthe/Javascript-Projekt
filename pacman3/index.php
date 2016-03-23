@@ -32,7 +32,7 @@ if (!isset($_POST["UserName"])) {
 <div>
     <header>
         <img src="./grafik/pacman_marque.gif" alt=""/>
-        <div id="reverse-blinker">Reverse!!!</div>
+<!--        <div id="reverse-blinker">Reverse!!!</div>-->
         <div class="pacman">
             <img src="./grafik/pacman-161870_1280.png" alt=""/>
         </div>
@@ -52,7 +52,7 @@ if (!isset($_POST["UserName"])) {
                         </form>
                     </div>
                 </li>
-                <li><a href="#" onclick="post();">Highscore</a></li>
+                <li><a href="#">Highscore</a></li>
                 <li><a href="#">Einstellungen</a></li>
                 <li><a href="" onclick="javascript:show('divHilfeText'); return false">Hilfe</a>
 
@@ -130,12 +130,7 @@ if (!isset($_POST["UserName"])) {
             <canvas id="geisterFeld">Ihr Browser kann kein HTML 5</canvas>
         </section>
         <footer>
-            <nav style="width:<?= $size ?>px;">
-                <ul>
-                    <li>Username: <?php echo $username; ?> |</li>
-                    <li onclick="controller_spielen().startTime">Zeit: new Date().getTime()</li>
-                </ul>
-            </nav>
+
         </footer>
     </div>
 </div>

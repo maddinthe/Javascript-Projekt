@@ -4,7 +4,7 @@ $dbconn = pg_connect("host=localhost dbname=db_pacman user=postgres password=roo
 or die('Verbindungsaufbau fehlgeschlagen: ' . pg_last_error());
 
 
-
+//todo: auf prepared statements umstellen;
 
 //Nach Beendigung des Spiels füge die Spieldaten als Datensatz hinzu:
 if (isset($_POST['user'])) {

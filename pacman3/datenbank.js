@@ -3,9 +3,10 @@ function punkte() {
 }
 
 
-function time() {
-    return new Date(zustand.zeitSpanne).toISOString().slice(11,19);
+function time(ms) {
+    return new Date(ms).toISOString().slice(11,19);
 }
+
 function holen() {
     let xmlhttp = new XMLHttpRequest();
     xmlhttp.open('POST', 'datenbank.php', true);
@@ -19,6 +20,9 @@ function holen() {
 
     xmlhttp.send();
 }
+while(zustand.status==2)
+console.log(time(new Date().getTime()));
+
 function send() {
     let xmlhttp = new XMLHttpRequest();
     xmlhttp.open('POST', 'datenbank.php', true);
@@ -30,7 +34,7 @@ function send() {
             }
 
     });
-    xmlhttp.send("user=" + encodeURIComponent(zustand.spielerName) + "&zeit=" + encodeURIComponent(time()) + "&punkte=" + encodeURIComponent(punkte()));
+    xmlhttp.send("user=" + encodeURIComponent(zustand.spielerName) + "&zeit=" + encodeURIComponent(time(zustand.zeitSpanne)) + "&punkte=" + encodeURIComponent(punkte()));
 }
 
 

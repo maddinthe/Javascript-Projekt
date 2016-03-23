@@ -63,9 +63,9 @@ var Spielvariablen = {
         eins: null,
         zwei: null,
         abgelaufeneZeit: null,
-        zeitAnzeige:null
+        zeitAnzeige: null
     },
-    abgelaufeneZeit:0,
+    abgelaufeneZeit: 0,
     listener: null,
     funtionen: {
         nonflucht: function () {
@@ -77,10 +77,10 @@ var Spielvariablen = {
             Spielvariablen.spielFlaeche.toogleTimerAn = false;
 
         },
-        zeitanzeige:function(){
-            let zeit= Spielvariablen.abgelaufeneZeit;
-            let zeitcontainer=document.getElementById("zeitContainer");
-            zeitcontainer.innerHTML="Zeit:<br>"+time(zeit);
+        zeitanzeige: function () {
+            let zeit = Spielvariablen.abgelaufeneZeit;
+            let zeitcontainer = document.getElementById("zeitContainer");
+            zeitcontainer.innerHTML = "Zeit:<br>" + time(zeit);
 
         }
     }
@@ -132,8 +132,8 @@ function controller_start() {
 
                 case 13:
                 {
-                    if (zustand.status == 2 && Spielvariablen.abgelaufeneZeit++== 0) {
-                        let start=document.getElementById("start");
+                    if (zustand.status == 2 && Spielvariablen.abgelaufeneZeit++ == 0) {
+                        let start = document.getElementById("start");
                         start.classList.add("inaktiv");
                         Spielvariablen.intervalle.eins = setInterval(function () {
                             Spielvariablen.spielFlaeche.pacManBewegen()
@@ -141,16 +141,16 @@ function controller_start() {
                         Spielvariablen.intervalle.zwei = setInterval(function () {
                             Spielvariablen.spielFlaeche.geistBewegen()
                         }, 200);
-                        Spielvariablen.intervalle.abgelaufeneZeit=setInterval(function(){
-                            if(!zustand.pause)Spielvariablen.abgelaufeneZeit=Spielvariablen.abgelaufeneZeit+10;
-                        },10)
-                        Spielvariablen.intervalle.zeitAnzeige=setInterval(function(){
+                        Spielvariablen.intervalle.abgelaufeneZeit = setInterval(function () {
+                            if (!zustand.pause)Spielvariablen.abgelaufeneZeit = Spielvariablen.abgelaufeneZeit + 10;
+                        }, 10)
+                        Spielvariablen.intervalle.zeitAnzeige = setInterval(function () {
                             Spielvariablen.funtionen.zeitanzeige();
-                        },1000);
+                        }, 1000);
 
 
                     } else if (zustand.status == 3) {
-                        Spielvariablen.abgelaufeneZeit=0;
+                        Spielvariablen.abgelaufeneZeit = 0;
                         zustand.status = 1;
                     }
                     break;
@@ -163,7 +163,7 @@ function controller_start() {
             }
         });
     }
-    document.getElementById("userNameContainer").innerText=zustand.spielerName;
+    document.getElementById("userNameContainer").innerText = zustand.spielerName;
 }
 function controller_spielen() {
     requestAnimationFrame(function () {
@@ -178,7 +178,7 @@ function controller_spielende() {
     clearInterval((Spielvariablen.intervalle.zeitAnzeige));
     clearTimeout(Spielvariablen.funtionen.flucht());
     clearTimeout(Spielvariablen.funtionen.nonflucht());
-    zustand.restpillen=Spielvariablen.spielFlaeche.pillen.length;
+    zustand.restpillen = Spielvariablen.spielFlaeche.pillen.length;
     console.log(time(Spielvariablen.abgelaufeneZeit));
     console.log(Spielvariablen.abgelaufeneZeit);
     zustand.zeitSpanne = Spielvariablen.abgelaufeneZeit;
@@ -235,6 +235,13 @@ Object.observe(zustand, function (changes) {
 var load = window.addEventListener("load", function () {
     zustand.status = 1;
 });
+/*
+todo: so könnte man de spielstatus speichern
+var close = window.addEventListener("beforeunload", function () {
+    localStorage.setItem("revPacMan-gameZustand", JSON.stringify(zustand));
+    localStorage.setItem("revPacMan-gameSpielvar", JSON.stringify([Spielvariablen.spielFlaeche.pillen,Spielvariablen.aengstlich,Spielvariablen.abgelaufeneZeit,Spielvariablen.beendet]));
+
+});*/
 //<<------------------Klassendefinition------------------>>
 
 class Knoten {

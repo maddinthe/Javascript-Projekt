@@ -24,4 +24,12 @@ if(typeof(localStorage) !== "undefined") {
     if(spielerName!=null)zustand.spielerName=spielerName;
     if(schwierigkeit!=null)zustand.schwierigkeit=Number(schwierigkeit);
     if(spielFeldGroesse!=null)zustand.spielFeldGroesse=Number(spielFeldGroesse);
+ /*
+    todo:So könnte man den spielstatus wiederherstellen
+    let spielstatus=localStorage.getItem("revPacMan-gameZustand");
+    let spielvar=localStorage.getItem("revPacMan-gameSpielvar");
+    if(spielstatus!=null){
+        console.log(JSON.parse(spielstatus));
+        console.log(JSON.parse(spielvar));
+    }*/
 }

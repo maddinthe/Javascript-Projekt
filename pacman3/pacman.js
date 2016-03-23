@@ -61,18 +61,20 @@ var Spielvariablen = {
     },
     intervalle: {
         eins: null,
-        zwei: null
+        zwei: null,
+        zeit: null
     },
+    zeit:0,
     listener: null,
     funtionen: {
         nonflucht: function () {
             Spielvariablen.spielFlaeche.pacManWeglaufentoggle();
-            console.log("darf nicht mehr flüchten")
+
         },
         flucht: function () {
             Spielvariablen.spielFlaeche.pacManWeglaufentoggle();
             Spielvariablen.spielFlaeche.toogleTimerAn = false;
-            console.log("darf wieder flüchten");
+
         }
     }
 }
@@ -125,7 +127,6 @@ function controller_start() {
                 {
                     if (zustand.status == 2 && zustand.startZeit == 0) {
                         let start=document.getElementById("start");
-                        console.log(start);
                         start.classList.add("inaktiv");
                         zustand.startZeit = new Date().getTime();
                         Spielvariablen.intervalle.eins = setInterval(function () {
@@ -178,7 +179,6 @@ function controller_spielende() {
 }
 //observer
 Object.observe(zustand, function (changes) {
-    console.log(changes);
     changes.forEach(function (change) {
         if (change.name === 'status') {
             switch (change.object.status) {
@@ -549,7 +549,6 @@ class SpielFlaeche {
 
 
                 } else if (pacman.darfwegglaufen && pacman.getAbstand(geist.posX, geist.posY) < 6) {
-                    console.log("flüchten");
                     let aktKnoten = knoten[pacman.posY][pacman.posX];
                     let auswege = aktKnoten.nachbarn;
                     let bestnachbar = auswege[0];

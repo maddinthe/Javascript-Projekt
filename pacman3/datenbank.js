@@ -20,8 +20,7 @@ function holen() {
 
     xmlhttp.send();
 }
-while(zustand.status==2)
-console.log(time(new Date().getTime()));
+
 
 function send() {
     let xmlhttp = new XMLHttpRequest();

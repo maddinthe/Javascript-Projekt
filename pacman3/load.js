@@ -12,7 +12,7 @@ var zustand = {
     spielerName: "platzhalter",
     zeitSpanne: 5,
     geistfarbe:"blue",
-    schwierigkeit:2,
+    schwierigkeit:1.1,
     spielFeldGroesse:500
 };
 if(typeof(localStorage) !== "undefined") {

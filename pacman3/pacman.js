@@ -11,19 +11,6 @@
  Retrieve
  document.getElementById("result").innerHTML = localStorage.getItem("lastname");
  */
-var zustand = {
-    status: 0,
-    pause: false,
-    observer: null,
-    aengstlich: false,
-    gesamtpillen: 100,
-    startZeit: 0,
-    restpillen: 5,
-    spielerName: "platzhalter",
-    zeitSpanne: 5,
-    geistfarbe:"blue",
-    schwierigkeit:2
-};
 var Spielvariablen={
     spielFlaeche:null,
     Richtungen:{hoch: 0,
@@ -80,7 +67,16 @@ var Spielvariablen={
 
 
 function controller_start() {
-    Spielvariablen.spielFlaeche = new SpielFlaeche(document.getElementById("spielFeld"), document.getElementById("pacmanFeld"), document.getElementById("geisterFeld"), Spielvariablen.level[1])
+    let spielFeld=document.getElementById("spielFeld");
+    let pacManFeld=document.getElementById("pacmanFeld");
+    let Geistfeld=document.getElementById("geisterFeld");
+    spielFeld.width=zustand.spielFeldGroesse;
+    spielFeld.height=zustand.spielFeldGroesse;
+    Geistfeld.width=zustand.spielFeldGroesse;
+    Geistfeld.height=zustand.spielFeldGroesse;
+    pacManFeld.width=zustand.spielFeldGroesse;
+    pacManFeld.height=zustand.spielFeldGroesse;
+    Spielvariablen.spielFlaeche = new SpielFlaeche(spielFeld,pacManFeld,Geistfeld,Spielvariablen.level[1])
 }
 function controller_spielen() {
     requestAnimationFrame(function(){Spielvariablen.spielFlaeche.figurenZeichnen()});

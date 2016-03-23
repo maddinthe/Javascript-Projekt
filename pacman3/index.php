@@ -21,6 +21,7 @@ if (!isset($_POST["UserName"])) {
     <link rel="stylesheet" type="text/css" href="style.css" media="(min-width: 1024px)"/>
     <link rel="stylesheet" type="text/css" href="responsive.css" media="(min-width: 320px)" />
     <script src="observer.js"></script>
+    <script src="load.js"></script>
     <script src="toni.js"></script>
 
 </head>
@@ -125,9 +126,9 @@ if (!isset($_POST["UserName"])) {
             <div id="start" class="gewonnen-verloren">Press Return</div>
             <div id="verloren" class="gewonnen-verloren inaktiv">Verloren</div>
             <div id="gewonnen" class="gewonnen-verloren inaktiv">Gewonnen</div>
-            <canvas id="spielFeld" width="<?= $size ?>" height="<?= $size ?>">Ihr Browser kann kein HTML 5</canvas>
-            <canvas id="pacmanFeld" width="<?= $size ?>" height="<?= $size ?>">Ihr Browser kann kein HTML 5</canvas>
-            <canvas id="geisterFeld" width="<?= $size ?>" height="<?= $size ?>">Ihr Browser kann kein HTML 5</canvas>
+            <canvas id="spielFeld">Ihr Browser kann kein HTML 5</canvas>
+            <canvas id="pacmanFeld">Ihr Browser kann kein HTML 5</canvas>
+            <canvas id="geisterFeld">Ihr Browser kann kein HTML 5</canvas>
         </section>
         <footer>
             <nav style="width:<?= $size ?>px;">

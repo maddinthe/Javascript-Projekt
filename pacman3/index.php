@@ -18,8 +18,8 @@ if (!isset($_POST["UserName"])) {
 <head>
     <meta charset="UTF-8">
     <title>PacMan</title>
-    <link rel="stylesheet" type="text/css" href="style.css" media="(min-width: 1024px)"/>
-    <link rel="stylesheet" type="text/css" href="responsive.css" media="(min-width: 320px)" />
+    <link rel="stylesheet" type="text/css" href="style.css"/>
+<!--    <link rel="stylesheet" type="text/css" href="responsive.css" media="(min-width: 320px)" />-->
     <script src="observer.js"></script>
     <script src="load.js"></script>
     <script src="toni.js"></script>
@@ -30,16 +30,15 @@ if (!isset($_POST["UserName"])) {
 <img src="./grafik/geist.png" id="geist" alt="" style="display: none"/>
 
 <div>
-    <header style="width:<?= $size ?>px;">
+    <header>
         <img src="./grafik/pacman_marque.gif" alt=""/>
-
         <div id="reverse-blinker">Reverse!!!</div>
-<!--        <div class="pacman">-->
-<!--            <img src="./grafik/pacman-161870_1280.png" alt=""/>-->
-<!--        </div>-->
-<!--        <div class="geist">-->
-<!--            <img src="./grafik/birg-149103_1280.png" alt=""/>-->
-<!--        </div>-->
+        <div class="pacman">
+            <img src="./grafik/pacman-161870_1280.png" alt=""/>
+        </div>
+        <div class="geist">
+            <img src="./grafik/birg-149103_1280.png" alt=""/>
+        </div>
     </header>
     <div>
         <nav style="width:<?= $size ?>px;">

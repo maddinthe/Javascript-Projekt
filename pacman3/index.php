@@ -18,6 +18,7 @@ if (!isset($_POST["UserName"])) {
 <head>
     <meta charset="UTF-8">
     <title>PacMan</title>
+    <link rel="icon" href="./grafik/pacman.png" type="image/png"/>
     <link rel="stylesheet" type="text/css" href="style.css"/>
 <!--    <link rel="stylesheet" type="text/css" href="responsive.css" media="(min-width: 320px)" />-->
     <script src="observer.js"></script>

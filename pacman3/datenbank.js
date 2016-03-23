@@ -1,10 +1,9 @@
 var username = document.getElementById("usernameEingabe");
-var schwierigkeit = 1000;
 var user = zustand.spielerName;
 
 
 function punkte() {
-    return 0 - ((zustand.gesamtpillen - zustand.restpillen) + (zustand.zeitSpanne / schwierigkeit));
+    return 0 - ((zustand.gesamtpillen - zustand.restpillen) + (zustand.zeitSpanne / zustand.schwierigkeit*1000));
 }
 
 function zeitbestimmen() {
@@ -30,6 +29,13 @@ function zeitbestimmen() {
 function holen() {
     let xmlhttp = new XMLHttpRequest();
     xmlhttp.open('POST', 'datenbank.php', true);
+    xmlhttp.addEventListener('readystatechange', function () {
+
+        if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+            console.log(xmlhttp.responseText);
+        }
+
+    });
 
     xmlhttp.send();
 }
@@ -39,12 +45,12 @@ function send() {
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.addEventListener('readystatechange', function () {
 
-        if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-            console.log(xmlhttp.responseText);
-        }
+            if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                console.log(xmlhttp.responseText);
+            }
 
     });
-    xmlhttp.send("user=" + encodeURIComponent("'" + user + "'") + "&zeit=" + encodeURIComponent("'" + zeitbestimmen() + "'") + "&punkte=" + encodeURIComponent("'" + punkte() + "'"));
+    xmlhttp.send("user=" + encodeURIComponent(user) + "&zeit=" + encodeURIComponent(zeitbestimmen()) + "&punkte=" + encodeURIComponent(punkte()));
 }
 
 

@@ -5,6 +5,7 @@
 "use strict";
 var Spielvariablen = {
     spielFlaeche: null,
+    richtungLock: false,
     Richtungen: {
         hoch: 0,
         runter: 1,
@@ -67,6 +68,7 @@ var Spielvariablen = {
     },
     abgelaufeneZeit: 0,
     listener: null,
+    listener2: null,
     funtionen: {
         nonflucht: function () {
             Spielvariablen.spielFlaeche.pacManWeglaufentoggle();
@@ -100,28 +102,40 @@ function controller_start() {
     Geistfeld.height = zustand.spielFeldGroesse;
     pacManFeld.width = zustand.spielFeldGroesse;
     pacManFeld.height = zustand.spielFeldGroesse;
-    Spielvariablen.spielFlaeche = new SpielFlaeche(spielFeld, pacManFeld, Geistfeld, Spielvariablen.level[1])
+    Spielvariablen.spielFlaeche = new SpielFlaeche(spielFeld, pacManFeld, Geistfeld, Spielvariablen.level[1]);
     if (Spielvariablen.listener == null) {
         Spielvariablen.listener = window.addEventListener("keydown", function (e) {
             switch (e.keyCode) {
                 case 37:
                 {
                     Spielvariablen.spielFlaeche.geist.richtungNeu = Spielvariablen.Richtungen.links;
+                    e.cancelBubble = true; //eventweiterreichung unterbinden um scollen zu verhindern
+                    e.returnValue = false; //dito
+                    Spielvariablen.richtungLock = true;
                     break;
                 }
                 case 38:
                 {
                     Spielvariablen.spielFlaeche.geist.richtungNeu = Spielvariablen.Richtungen.hoch;
+                    e.cancelBubble = true;
+                    e.returnValue = false;
+                    Spielvariablen.richtungLock = true;
                     break;
                 }
                 case 39:
                 {
                     Spielvariablen.spielFlaeche.geist.richtungNeu = Spielvariablen.Richtungen.rechts;
+                    e.cancelBubble = true;
+                    e.returnValue = false;
+                    Spielvariablen.richtungLock = true;
                     break;
                 }
                 case 40:
                 {
                     Spielvariablen.spielFlaeche.geist.richtungNeu = Spielvariablen.Richtungen.runter;
+                    e.cancelBubble = true;
+                    e.returnValue = false;
+                    Spielvariablen.richtungLock = true;
                     break;
                 }
                 case 32:
@@ -162,6 +176,40 @@ function controller_start() {
                 }
             }
         });
+        Spielvariablen.listener2 = window.addEventListener("keyup", function (e) {
+            //Wird benötigt um spieleingaben zu "smoothen" :D
+            let smooth = function () {
+                clearInterval(Spielvariablen.intervalle.zwei);
+                Spielvariablen.intervalle.zwei = setInterval(function () {
+                    Spielvariablen.spielFlaeche.geistBewegen()
+                }, 200);
+                Spielvariablen.richtungLock = false;
+            };
+            switch (e.keyCode) {
+                case 37:
+                {
+                    smooth();
+
+                    break;
+                }
+                case 38:
+                {
+                    smooth();
+                    break;
+                }
+                case 39:
+                {
+                    smooth();
+                    break;
+                }
+                case 40:
+                {
+                    smooth();
+                    break;
+                }
+            }
+
+        })
     }
     document.getElementById("userNameContainer").innerText = zustand.spielerName;
 }
@@ -236,14 +284,17 @@ var load = window.addEventListener("load", function () {
     zustand.status = 1;
 });
 /*
-todo: so könnte man de spielstatus speichern
-var close = window.addEventListener("beforeunload", function () {
-    localStorage.setItem("revPacMan-gameZustand", JSON.stringify(zustand));
-    localStorage.setItem("revPacMan-gameSpielvar", JSON.stringify([Spielvariablen.spielFlaeche.pillen,Spielvariablen.aengstlich,Spielvariablen.abgelaufeneZeit,Spielvariablen.beendet]));
+ todo: so könnte man de spielstatus speichern
+ var close = window.addEventListener("beforeunload", function () {
+ localStorage.setItem("revPacMan-gameZustand", JSON.stringify(zustand));
+ localStorage.setItem("revPacMan-gameSpielvar", JSON.stringify([Spielvariablen.spielFlaeche.pillen,Spielvariablen.aengstlich,Spielvariablen.abgelaufeneZeit,Spielvariablen.beendet]));
 
-});*/
+ });*/
 //<<------------------Klassendefinition------------------>>
 
+/**
+ * Grundlage des Navigationsgrids
+ */
 class Knoten {
     constructor(knotenOben, knotenLinks, posX, posY, pille) {
         this.knotenOben = knotenOben;
@@ -310,7 +361,13 @@ class Knoten {
 
 
 }
+
 class SpielObjekt {
+    /**
+     * Constructor für Spielobjekt
+     * @param posX X-Position des Objekts
+     * @param posY Y-Position des Objekts
+     */
     constructor(posX, posY) {
         this.posX = posX;
         this.posY = posY;
@@ -660,6 +717,9 @@ class SpielFlaeche {
             let pacman = this.pacMan;
             let level = this.level;
             //Geist Bewegen
+            if (!Spielvariablen.richtungLock) {
+                geist.richtungNeu = 5;
+            }
             if (geist.richtungNeu != 5) {
                 if (knoten[geist.posY][geist.posX].nexthop(geist.richtungNeu) == geist.richtungNeu) {
                     geist.richtung = geist.richtungNeu;
@@ -695,11 +755,12 @@ class SpielFlaeche {
                     if (geist.posY > knoten.length - 1)geist.posY = 0;
                     if (pacman.posX == geist.posX && pacman.posY == geist.posY) this.beendet = true;
 
-                    if (level[geist.posY][geist.posX] == Spielvariablen.Feldtypen.geisterHaus || level[geist.posY][geist.posX] == Spielvariablen.Feldtypen.geistSpawn)zustand.aengstlich = false;
+
                 }
             }
+            if (level[geist.posY][geist.posX] == Spielvariablen.Feldtypen.geisterHaus || level[geist.posY][geist.posX] == Spielvariablen.Feldtypen.geistSpawn || level[geist.posY][geist.posX] == Spielvariablen.Feldtypen.tuer)zustand.aengstlich = false;
             geist.richtung = 5;
-            geist.richtungNeu = 5;
+
 
             if (this.beendet) {
                 zustand.status = 3;

@@ -12,7 +12,7 @@ var zustand = {
     startZeit:0,
     zeitSpanne: 5,
     geistfarbe:"blue",
-    schwierigkeit:1.1,
+    schwierigkeit:0.9,
     spielFeldGroesse:500
 };
 if(typeof(localStorage) !== "undefined") {

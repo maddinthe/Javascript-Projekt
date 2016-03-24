@@ -120,6 +120,7 @@ if (!isset($_POST["UserName"])) {
                 </li>
             </ul>
         </nav>
+        <div id="result"></div>
         <section style="width:<?= $size ?>px; height:<?= $size ?>px;">
             <div class="pause inaktiv">Pause</div>
             <div id="start" class="gewonnenverloren">Press Return</div>

@@ -8,6 +8,7 @@ var Spielvariablen = {
     FrameCounterGeist: 0,
     GrameCounterPac: 0,
     lock: false,
+    levelstand:1,
     Richtungen: {
         hoch: 0,
         runter: 1,
@@ -198,7 +199,7 @@ function controller_start() {
     Geistfeld.height = zustand.spielFeldGroesse;
     pacManFeld.width = zustand.spielFeldGroesse;
     pacManFeld.height = zustand.spielFeldGroesse;
-    Spielvariablen.spielFlaeche = new SpielFlaeche(spielFeld, pacManFeld, Geistfeld, Spielvariablen.level[1]);
+    Spielvariablen.spielFlaeche = new SpielFlaeche(spielFeld, pacManFeld, Geistfeld, Spielvariablen.level[Spielvariablen.levelstand]);
     if (Spielvariablen.listener == null) {
         console.log("listener-add");
         Spielvariablen.listener = window.addEventListener("keydown", Spielvariablen.funtionen.keylistener);
@@ -227,9 +228,17 @@ function controller_spielende() {
     if (zustand.restpillen > 0 && !zustand.aengstlich) {
         element = document.getElementById("gewonnen");
         send();
+        Spielvariablen.levelstand++;
+        if(Spielvariablen.levelstand==Spielvariablen.level.length){
+            alert("spiel zuende");
+            Spielvariablen.levelstand=0;
+        }
 
-    } else
+    } else{
         element = document.getElementById("verloren");
+        Spielvariablen.levelstand=1;
+    }
+
 
     element.classList.remove("inaktiv");
     if (zustand.aengstlich) {

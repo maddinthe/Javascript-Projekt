@@ -8,7 +8,7 @@ var Spielvariablen = {
     FrameCounterGeist: 0,
     GrameCounterPac: 0,
     lock: false,
-    levelstand:1,
+    levelstand: 1,
     Richtungen: {
         hoch: 0,
         runter: 1,
@@ -173,13 +173,13 @@ var Spielvariablen = {
                 }
             }
         },
-        shuffle:function(array){
-            let zufall,temp
-            for(let i=array.length;i>0;i--){
-                zufall=Math.floor(Math.random()*i);
-                temp=array[i-1];
-                array[i-1]=array[zufall];
-                array[zufall]=temp;
+        shuffle: function (array) {
+            let zufall, temp
+            for (let i = array.length; i > 0; i--) {
+                zufall = Math.floor(Math.random() * i);
+                temp = array[i - 1];
+                array[i - 1] = array[zufall];
+                array[zufall] = temp;
             }
         }
     }
@@ -189,6 +189,15 @@ function controller_start() {
     for (let i in gewonnenverloren) {
         if (gewonnenverloren[i].id === "start")gewonnenverloren[i].classList.remove("inaktiv");
         else if (gewonnenverloren[i] instanceof Node)gewonnenverloren[i].classList.add("inaktiv");
+    }
+    let breite = document.getElementsByClassName("breite");
+    let hoehe = document.getElementsByClassName("hoehe");
+    console.log(breite, hoehe);
+    for(let i=0;i<breite.length;i++){
+        breite[i].style.width=zustand.spielFeldGroesse+"px";
+    }
+    for(let i=0;i<hoehe.length;i++){
+        hoehe[i].style.height = zustand.spielFeldGroesse + "px";
     }
     let spielFeld = document.getElementById("spielFeld");
     let pacManFeld = document.getElementById("pacmanFeld");
@@ -229,14 +238,14 @@ function controller_spielende() {
         element = document.getElementById("gewonnen");
         send();
         Spielvariablen.levelstand++;
-        if(Spielvariablen.levelstand==Spielvariablen.level.length){
+        if (Spielvariablen.levelstand == Spielvariablen.level.length) {
             alert("spiel zuende");
-            Spielvariablen.levelstand=0;
+            Spielvariablen.levelstand = 0;
         }
 
-    } else{
+    } else {
         element = document.getElementById("verloren");
-        Spielvariablen.levelstand=1;
+        Spielvariablen.levelstand = 1;
     }
 
 

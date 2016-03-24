@@ -1,16 +1,3 @@
-<?php
-$size = 500;
-$username;
-if (isset($_GET["size"]) && (!is_nan($_GET["size"])))
-    $size = $_GET["size"];
-
-if (!isset($_POST["UserName"])) {
-    $username = '';
-} else {
-    $username = $_POST["UserName"];
-}
-
-?>
 
 
 <!DOCTYPE html>
@@ -42,7 +29,7 @@ if (!isset($_POST["UserName"])) {
         </div>
     </header>
     <div>
-        <nav style="width:<?= $size ?>px;">
+        <nav class="breite"><!--todo: breite festsetzeen-->
             <ul>
                 <li><a href="" onclick="javascript:show('divArcadeText'); return false">Arcade</a>
 
@@ -121,7 +108,7 @@ if (!isset($_POST["UserName"])) {
             </ul>
         </nav>
         <div id="result"></div>
-        <section style="width:<?= $size ?>px; height:<?= $size ?>px;">
+        <section class="breite hoehe"> <!--todo: breite und höhe festsetzeen-->
             <div class="pause inaktiv">Pause</div>
             <div id="start" class="gewonnenverloren">Press Return</div>
             <div id="verloren" class="gewonnenverloren inaktiv">Verloren</div>

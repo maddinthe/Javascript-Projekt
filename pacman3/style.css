@@ -212,6 +212,24 @@ footer {
     z-index: 1001;
 }
 
+#zeitContainer {
+    width: 15%;
+    position: relative;
+    top: 220px;
+    right: -330px;
+    transform: rotate(25deg);
+    z-index: 1001;
+}
+
+#userNameContainer {
+    width: 40px;
+    position: relative;
+    top: 250px;
+    right: -300px;
+    transform: rotate(25deg);
+    z-index: 1001;
+}
+
 /*-------------------------------------------------------------------*/
 /*----------------------------@ Elemente-----------------------------*/
 /*-------------------------------------------------------------------*/

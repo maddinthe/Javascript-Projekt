@@ -2,7 +2,7 @@
  * Created by mtheilen on 23.03.2016.
  */
 var zustand = {
-    status: 0,
+    status: -1,
     pause: false,
     observer: null,
     aengstlich: false,

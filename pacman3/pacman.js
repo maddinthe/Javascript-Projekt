@@ -190,15 +190,7 @@ function controller_start() {
         if (gewonnenverloren[i].id === "start")gewonnenverloren[i].classList.remove("inaktiv");
         else if (gewonnenverloren[i] instanceof Node)gewonnenverloren[i].classList.add("inaktiv");
     }
-    let breite = document.getElementsByClassName("breite");
-    let hoehe = document.getElementsByClassName("hoehe");
-    console.log(breite, hoehe);
-    for(let i=0;i<breite.length;i++){
-        breite[i].style.width=zustand.spielFeldGroesse+"px";
-    }
-    for(let i=0;i<hoehe.length;i++){
-        hoehe[i].style.height = zustand.spielFeldGroesse + "px";
-    }
+
     let spielFeld = document.getElementById("spielFeld");
     let pacManFeld = document.getElementById("pacmanFeld");
     let Geistfeld = document.getElementById("geisterFeld");
@@ -254,11 +246,28 @@ function controller_spielende() {
         zustand.aengstlich = false;
     }
 }
+function controller_Seitenaufbau(){
+    let breite = document.getElementsByClassName("breite");
+    let hoehe = document.getElementsByClassName("hoehe");
+    for(let i=0;i<breite.length;i++){
+        breite[i].style.width=zustand.spielFeldGroesse+"px";
+    }
+    for(let i=0;i<hoehe.length;i++){
+        hoehe[i].style.height = zustand.spielFeldGroesse + "px";
+    }
+   //todo: hier die kapselung rein
+
+    zustand.status=1
+}
 //observer
 Object.observe(zustand, function (changes) {
     changes.forEach(function (change) {
         if (change.name === 'status') {
             switch (change.object.status) {
+                case 0:{
+                    controller_Seitenaufbau()
+                    break;
+                }
                 case 1:
                 {
                     controller_start();
@@ -292,7 +301,7 @@ Object.observe(zustand, function (changes) {
     });
 });
 var load = window.addEventListener("load", function () {
-    zustand.status = 1;
+    zustand.status = 0;
 });
 /*
  todo: so könnte man de spielstatus speichern

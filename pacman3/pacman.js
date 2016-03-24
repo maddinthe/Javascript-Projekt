@@ -60,8 +60,8 @@ var Spielvariablen = {
             [0, 4, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 4, 0],
             [0, 4, 0, 0, 4, 0, 4, 0, 0, 5, 0, 4, 0, 4, 0, 5, 0, 0, 4, 0, 4, 0, 0, 4, 0],
             [0, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
-    },
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
+    2:[]},
     intervalle: {
         eins: null,
         zwei: null,
@@ -411,7 +411,6 @@ class PacMan extends SpielObjekt {
         this.imageData = this.ImageToImageData(document.getElementById("pacman"), groesse);
         this.richtung = Spielvariablen.Richtungen.rechts;
         this.richtungNeu = this.richtung;
-        this.verboteneFelder = 2;
         this.darfwegglaufen = true;
     }
 
@@ -422,7 +421,6 @@ class Geist extends SpielObjekt {
         this.imageData = this.ImageToImageData(document.getElementById("geist"), groesse, farbe);
         this.richtung = null;
         this.richtungNeu = null;
-        this.verboteneFelder = 1;
     }
 
 }

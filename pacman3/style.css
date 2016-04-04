@@ -147,6 +147,28 @@ footer {
     border-radius: 5px;
 }
 
+.menuText {
+    position: absolute;
+    top: 50px;
+    width: 200px;
+    height: 100px;
+    z-index: 1000;
+    background-color: lightgray;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/*#divHilfeText {*/
+    /*position: absolute;*/
+    /*top: 50px;*/
+    /*width: 45%;*/
+    /*height: 100%;*/
+    /*z-index: 1000;*/
+    /*background-color: lightgray;*/
+    /*padding: 10px;*/
+    /*border-radius: 5px;*/
+/*}*/
+
 /*-------------------------------------------------------------------*/
 /*---------------------------------IDs-------------------------------*/
 /*-------------------------------------------------------------------*/
@@ -171,28 +193,6 @@ footer {
     position: absolute;
 }
 
-#divArcadeText {
-    position: absolute;
-    top: 50px;
-    width: 200px;
-    height: 100px;
-    z-index: 1000;
-    background-color: lightgray;
-    padding: 10px;
-    border-radius: 5px;
-
-}
-
-#divHilfeText {
-    position: absolute;
-    top: 50px;
-    width: 45%;
-    height: 100%;
-    z-index: 1000;
-    background-color: lightgray;
-    padding: 10px;
-    border-radius: 5px;
-}
 
 #reverse-blinker {
     transform: rotate(-25deg);

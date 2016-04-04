@@ -18,7 +18,7 @@ body > div > div {
     top: 190px;
 }
 
-nav > ul > li > a {
+nav > ul > li {
     background: #0077b3 none repeat scroll 0 0;
     border: 1px solid #00669a;
     border-radius: 4px;
@@ -87,6 +87,7 @@ footer {
     text-align: center;
     text-decoration: none;
     margin-top: 20px;
+    cursor: pointer;
 }
 
 .pacman img {

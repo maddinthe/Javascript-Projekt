@@ -181,6 +181,18 @@ var Spielvariablen = {
                 array[i - 1] = array[zufall];
                 array[zufall] = temp;
             }
+        },
+        navListener: function(e){
+            if (e.target.tagName=="LI"){
+                let childs=e.target.childNodes;
+                for(let i=0;i<childs.length;i++){
+                    if (childs[i].tagName=="DIV"){
+                        if (childs[i].classList.contains("inaktiv"))childs[i].classList.remove("inaktiv");
+                        else childs[i].classList.add("inaktiv")
+                    }
+                }
+            }
+
         }
     }
 };
@@ -255,7 +267,7 @@ function controller_Seitenaufbau(){
     for(let i=0;i<hoehe.length;i++){
         hoehe[i].style.height = zustand.spielFeldGroesse + "px";
     }
-   //todo: hier die kapselung rein
+    document.getElementById("navList").addEventListener("click",Spielvariablen.funtionen.navListener);
 
     zustand.status=1
 }

@@ -29,11 +29,11 @@
         </div>
     </header>
     <div>
-        <nav class="breite">
+        <nav class="breite" id="navList">
             <ul>
-                <li>Arcade <!-- todo: Kapseln-->
+                <li>Arcade
 
-                    <div style="display: none" id="divArcadeText">
+                    <div class="inaktiv" id="divArcadeText">
                         <form action="" method="post">
                             <input type="text" placeholder="Username eingeben" id="usernameEingabe" name="UserName"/>
                             <input class="button" type="submit" value="Spiel starten" id="spielStart" onclick="" ;/>
@@ -42,9 +42,8 @@
                 </li>
                 <li>Highscore</li>
                 <li>Einstellungen</li>
-                <li>Hilfe<!-- todo: Kapseln-->
-
-                    <div style="display: none" id="divHilfeText">
+                <li>Hilfe
+                    <div class="inaktiv" id="divHilfeText">
                         <h2>So spielt man Reverse Pacman</h2>
 
                         <p>Man steuert den Pacman mit Hilfe eines Joysticks (oder den Pfeiltasten) durch ein Labyrinth

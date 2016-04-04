@@ -182,13 +182,17 @@ var Spielvariablen = {
                 array[zufall] = temp;
             }
         },
-        navListener: function(e){
-            if (e.target.tagName=="LI"){
-                let childs=e.target.childNodes;
-                for(let i=0;i<childs.length;i++){
-                    if (childs[i].tagName=="DIV"){
-                        if (childs[i].classList.contains("inaktiv"))childs[i].classList.remove("inaktiv");
-                        else childs[i].classList.add("inaktiv")
+        navListener: function (e) {
+            if (e.target.tagName == "LI") {
+                let div = document.getElementById(e.target.innerText);
+                if (div != undefined) {
+                    if(div.classList.contains("inaktiv")){
+                        div.classList.remove("inaktiv");
+                        zustand.pause=true;
+                    }else{
+                        div.classList.add("inaktiv");
+                        zustand.pause=false;
+
                     }
                 }
             }
@@ -258,25 +262,26 @@ function controller_spielende() {
         zustand.aengstlich = false;
     }
 }
-function controller_Seitenaufbau(){
+function controller_Seitenaufbau() {
     let breite = document.getElementsByClassName("breite");
     let hoehe = document.getElementsByClassName("hoehe");
-    for(let i=0;i<breite.length;i++){
-        breite[i].style.width=zustand.spielFeldGroesse+"px";
+    for (let i = 0; i < breite.length; i++) {
+        breite[i].style.width = zustand.spielFeldGroesse + "px";
     }
-    for(let i=0;i<hoehe.length;i++){
+    for (let i = 0; i < hoehe.length; i++) {
         hoehe[i].style.height = zustand.spielFeldGroesse + "px";
     }
-    document.getElementById("navList").addEventListener("click",Spielvariablen.funtionen.navListener);
+    document.getElementById("navList").addEventListener("click", Spielvariablen.funtionen.navListener);
 
-    zustand.status=1
+    zustand.status = 1
 }
 //observer
 Object.observe(zustand, function (changes) {
     changes.forEach(function (change) {
         if (change.name === 'status') {
             switch (change.object.status) {
-                case 0:{
+                case 0:
+                {
                     controller_Seitenaufbau()
                     break;
                 }

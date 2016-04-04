@@ -272,7 +272,10 @@ function controller_Seitenaufbau() {
         hoehe[i].style.height = zustand.spielFeldGroesse + "px";
     }
     document.getElementById("navList").addEventListener("click", Spielvariablen.funtionen.navListener);
-
+    document.getElementById("spielStart",function(){
+        zustand.spielerName=document.getElementById("usernameEingabe").value;
+        localStorage.setItem("REVPacSpielerName",zustand.spielerName);
+    });
     zustand.status = 1
 }
 //observer
@@ -499,6 +502,7 @@ class Geist extends SpielObjekt {
         this.imageData = this.ImageToImageData(document.getElementById("geist"), groesse, farbe);
         this.richtung = null;
         this.richtungNeu = null;
+        this.isMoving=false;
     }
 
 }
@@ -675,7 +679,7 @@ class SpielFlaeche {
                 pacman.posY = zielRoute[0].posY;
 
 
-            } else if (pacman.darfwegglaufen && pacman.getAbstand(geist.posX, geist.posY) < 6) {
+            } else if ((pacman.darfwegglaufen && pacman.getAbstand(geist.posX, geist.posY) < 6)|!geist.isMoving) {
                 let aktKnoten = knoten[pacman.posY][pacman.posX];
                 let auswege = aktKnoten.nachbarn;
                 let bestnachbar = auswege[0];
@@ -763,6 +767,9 @@ class SpielFlaeche {
         let geist = this.geist;
         let pacman = this.pacMan;
         let level = this.level;
+        let geistAltX=this.geist.posX;
+        let geistAltY=this.geist.posY;
+        geist.isMoving=false;
         if (knoten[geist.posY][geist.posX].nexthop(geist.richtungNeu) == geist.richtungNeu) {
             geist.richtung = geist.richtungNeu;
             switch (geist.richtung) {
@@ -797,6 +804,7 @@ class SpielFlaeche {
             if (geist.posY > knoten.length - 1)geist.posY = 0;
             if (pacman.posX == geist.posX && pacman.posY == geist.posY) this.beendet = true;
 
+            if (!(geist.posX==geistAltX&&geist.posY==geistAltY))geist.isMoving=true;
 
         }
         if (level[geist.posY][geist.posX] == Spielvariablen.Feldtypen.geisterHaus || level[geist.posY][geist.posX] == Spielvariablen.Feldtypen.geistSpawn || level[geist.posY][geist.posX] == Spielvariablen.Feldtypen.tuer)zustand.aengstlich = false;

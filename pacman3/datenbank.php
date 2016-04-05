@@ -12,7 +12,7 @@ if (isset($_POST['user'])) {
 } else {
 
 //Ansonsten Gib den Highscore als Array zurück
-    $highscore = pg_query("SELECT * FROM t_highscore ORDER BY punkte DESC") or die('Abfrage fehlgeschlagen: ' . pg_last_error());
+    $highscore = pg_query("SELECT * FROM t_highscore ORDER BY punkte DESC LIMIT 10") or die('Abfrage fehlgeschlagen: ' . pg_last_error());
     echo json_encode(pg_fetch_all($highscore));
 
 //Datenbank begrenzen

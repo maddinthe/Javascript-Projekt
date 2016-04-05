@@ -604,6 +604,8 @@ class SpielFlaeche {
         this.tempoGeist = 10;
         this.offsetDivPac = this.factor / this.tempoPac;
         this.offsetDivGeist = this.factor / this.tempoGeist;
+        this.animationFrame=0;
+        this.animationCount=0;
         this.zeichnen();
         zustand.gesamtpillen = this.pillen.length;
         zustand.restpillen = zustand.gesamtpillen;
@@ -735,17 +737,19 @@ class SpielFlaeche {
 
         this.pacManContext.clearRect(0, 0, this.width, this.height);
         this.geistContext.clearRect(0, 0, this.width, this.height);
-        //richtung wechseln
-
-
+        //pacman richtung wechseln und animation
+        if(this.animationCount++%10==0&&!zustand.pause&&Spielvariablen.Spielstart){
+            if(++this.animationFrame>2)this.animationFrame=0;
+        }
 
         this.pacManContext.save();
         this.pacManContext.translate(this.pacMan.posX * this.factor + this.pacMan.offsetX+this.factor/2,this.pacMan.posY * this.factor + this.pacMan.offsetY+this.factor/2);
         this.pacManContext.rotate(this.pacMan.richtung*Math.PI/2);
-        this.pacManContext.drawImage(this.pacMan.image,-this.factor/2,-this.factor/2,this.factor,this.factor);
+        this.pacManContext.drawImage(this.pacMan.image,this.animationFrame*100,0,100,100,-this.factor/2,-this.factor/2,this.factor,this.factor);
         this.pacManContext.restore();
 
-        //richtung wechseln ende
+        //pacman richtung wechseln und animation ende
+
         for (let i in this.pillen)
             this.pacManContext.putImageData(this.pillen[i].imageData, this.pillen[i].posX * this.factor, this.pillen[i].posY * this.factor);
 

@@ -27,8 +27,13 @@ function holen() {
     xmlhttp.send();
 }
 
-
-function send() {
+/**
+ *
+ * @param name Spielername
+ * @param zeit Gesamtzeit die Abgelaufen ist in ms
+ * @param punkte Gesamtpunkte
+ */
+function send(name,zeit,punkte) {
     let xmlhttp = new XMLHttpRequest();
     xmlhttp.open('POST', 'datenbank.php', true);
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -39,7 +44,7 @@ function send() {
         }
 
     });
-    xmlhttp.send("user=" + encodeURIComponent(zustand.spielerName) + "&zeit=" + encodeURIComponent(time(zustand.zeitSpanne)) + "&punkte=" + encodeURIComponent(punkte()));
+    xmlhttp.send("user=" + encodeURIComponent(name) + "&zeit=" + encodeURIComponent(time(zeit)) + "&punkte=" + encodeURIComponent(punkte));
 }
 
 

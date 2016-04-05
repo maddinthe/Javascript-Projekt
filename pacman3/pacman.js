@@ -39,9 +39,11 @@ var Spielvariablen = {
     FrameCounterPac: 0,
     lock: false,
     levelstand: 0,
+    gesamtzeit:0,
+    punkte:0,
     Richtungen: {
         hoch: 0,
-        runter:2,
+        runter: 2,
         rechts: 3,
         links: 1
     },
@@ -314,7 +316,7 @@ function controller_spielen() {
 
 }
 
-function controller_spielende() {
+function controller_levelende() {
     Spielvariablen.Spielstart = false;
     clearInterval((Spielvariablen.intervalle.abgelaufeneZeit));
     clearInterval((Spielvariablen.intervalle.zeitAnzeige));
@@ -323,21 +325,25 @@ function controller_spielende() {
     zustand.restpillen = Spielvariablen.spielFlaeche.pillen.length;
     console.log(time(Spielvariablen.abgelaufeneZeit));
     console.log(punkte());
+    Spielvariablen.punkte+=punkte();
+    Spielvariablen.gesamtzeit+=Spielvariablen.abgelaufeneZeit;
     zustand.zeitSpanne = Spielvariablen.abgelaufeneZeit;
     Spielvariablen.abgelaufeneZeit = 0;
     let element = null;
     if (zustand.restpillen > 0 && !zustand.aengstlich) {
         element = document.getElementById("gewonnen");
-        send();
+
         Spielvariablen.levelstand++;
         if (Spielvariablen.levelstand == Spielvariablen.level.length) {
-            alert("spiel zuende");
+            zustand.status=4;
             Spielvariablen.levelstand = 0;
         }
 
     } else {
         element = document.getElementById("verloren");
         Spielvariablen.levelstand = 0;
+        Spielvariablen.punkte=0;
+        Spielvariablen.gesamtzeit=0;
     }
 
 
@@ -363,6 +369,9 @@ function controller_Seitenaufbau() {
     });
     zustand.status = 1
 }
+function controller_spielende(){
+    send(zustand.spielerName,Spielvariablen.gesamtzeit,Spielvariablen.punkte);
+}
 
 //observer
 Object.observe(zustand, function (changes) {
@@ -385,6 +394,11 @@ Object.observe(zustand, function (changes) {
                     break;
                 }
                 case 3:
+                {
+                    controller_levelende();
+                    break;
+                }
+                case 4:
                 {
                     controller_spielende();
                     break;
@@ -568,10 +582,10 @@ class Pille extends SpielObjekt {
 class PacMan extends SpielObjekt {
     constructor(posX, posY, groesse) {
         super(posX, posY, groesse);
-        this.image= document.getElementById("pacman");
+        this.image = document.getElementById("pacman");
         this.richtung = Spielvariablen.Richtungen.hoch;
         this.darfwegglaufen = true;
-        this.animationCount=0;
+        this.animationCount = 0;
     }
 
 }
@@ -604,8 +618,8 @@ class SpielFlaeche {
         this.tempoGeist = 10;
         this.offsetDivPac = this.factor / this.tempoPac;
         this.offsetDivGeist = this.factor / this.tempoGeist;
-        this.animationFrame=0;
-        this.animationCount=0;
+        this.animationFrame = 0;
+        this.animationCount = 0;
         this.zeichnen();
         zustand.gesamtpillen = this.pillen.length;
         zustand.restpillen = zustand.gesamtpillen;
@@ -738,14 +752,14 @@ class SpielFlaeche {
         this.pacManContext.clearRect(0, 0, this.width, this.height);
         this.geistContext.clearRect(0, 0, this.width, this.height);
         //pacman richtung wechseln und animation
-        if(this.animationCount++%10==0&&!zustand.pause&&Spielvariablen.Spielstart){
-            if(++this.animationFrame>2)this.animationFrame=0;
+        if (this.animationCount++ % 10 == 0 && !zustand.pause && Spielvariablen.Spielstart) {
+            if (++this.animationFrame > 2)this.animationFrame = 0;
         }
 
         this.pacManContext.save();
-        this.pacManContext.translate(this.pacMan.posX * this.factor + this.pacMan.offsetX+this.factor/2,this.pacMan.posY * this.factor + this.pacMan.offsetY+this.factor/2);
-        this.pacManContext.rotate(this.pacMan.richtung*Math.PI/2);
-        this.pacManContext.drawImage(this.pacMan.image,this.animationFrame*100,0,100,100,-this.factor/2,-this.factor/2,this.factor,this.factor);
+        this.pacManContext.translate(this.pacMan.posX * this.factor + this.pacMan.offsetX + this.factor / 2, this.pacMan.posY * this.factor + this.pacMan.offsetY + this.factor / 2);
+        this.pacManContext.rotate(this.pacMan.richtung * Math.PI / 2);
+        this.pacManContext.drawImage(this.pacMan.image, this.animationFrame * 100, 0, 100, 100, -this.factor / 2, -this.factor / 2, this.factor, this.factor);
         this.pacManContext.restore();
 
         //pacman richtung wechseln und animation ende

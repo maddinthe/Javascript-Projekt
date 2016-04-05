@@ -16,14 +16,14 @@ if (isset($_POST['user'])) {
     echo json_encode(pg_fetch_all($highscore));
 
 //Datenbank begrenzen
-    $zaehlen = pg_query("SELECT count(*) from t_highscore");
-    $encode = json_encode(pg_fetch_all_columns($zaehlen,0));
-    $zahl1 = intval(substr($encode,2,-2));
+    $zaehlen = pg_query("SELECT count(*) FROM t_highscore");
+    $encode = json_encode(pg_fetch_all_columns($zaehlen, 0));
+    $zahl1 = intval(substr($encode, 2, -2));
 
-    while ($zahl1-->20) {
-        $kleinster = pg_query("SELECT MIN(punkte) from t_highscore");
-        $abfrage = json_encode(pg_fetch_all_columns($kleinster,0));
-        $zahl2 = floatval(substr($abfrage,2,-2));
+    while ($zahl1-- > 20) {
+        $kleinster = pg_query("SELECT MIN(punkte) FROM t_highscore");
+        $abfrage = json_encode(pg_fetch_all_columns($kleinster, 0));
+        $zahl2 = floatval(substr($abfrage, 2, -2));
         pg_query("DELETE FROM t_highscore WHERE punkte=$zahl2") or die('Abfrage fehlgeschlagen: ' . pg_last_error());;
 
     }

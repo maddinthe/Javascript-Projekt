@@ -1,10 +1,10 @@
 function punkte() {
-    return 0 - ((zustand.gesamtpillen - zustand.restpillen) + (zustand.zeitSpanne / zustand.schwierigkeit*1000));
+    return 0 - ((zustand.gesamtpillen - zustand.restpillen) + (zustand.zeitSpanne / zustand.schwierigkeit * 1000));
 }
 
 
 function time(ms) {
-    return new Date(ms).toISOString().slice(11,19);
+    return new Date(ms).toISOString().slice(11, 19);
 }
 
 function holen() {
@@ -28,9 +28,9 @@ function send() {
     xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlhttp.addEventListener('readystatechange', function () {
 
-            if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-                console.log(xmlhttp.responseText);
-            }
+        if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+            console.log(xmlhttp.responseText);
+        }
 
     });
     xmlhttp.send("user=" + encodeURIComponent(zustand.spielerName) + "&zeit=" + encodeURIComponent(time(zustand.zeitSpanne)) + "&punkte=" + encodeURIComponent(punkte()));

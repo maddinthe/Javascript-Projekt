@@ -584,7 +584,7 @@ class SpielFlaeche {
                     {
                         this.levelContext.clearRect(j * this.factor, i * this.factor, this.factor, this.factor);
                         this.knoten[i][j] = new Knoten((i-1<0)?undefined:this.knoten[i - 1][j], this.knoten[i][j - 1], j, i, null);  //verhindern das das zweite array undefined ist und knallt
-                        if (j == this.level[i].length - 1) {                        //levelübergang von oben nach unten oder von rechts nach links schaffen
+                        if (j == this.level[i].length - 1) {                        //levelübergang von oben nach unten oder von rechts nach links schaffen füllwort
                             this.knoten[i][j].knotenRechts = this.knoten[i][0];
                             this.knoten[i][0].knotenLinks = this.knoten[i][j];
                         }

@@ -4,227 +4,234 @@
  */
 "use strict";
 var Spielvariablen = {
-    spielFlaeche: null,
-    FrameCounterGeist: 0,
-    GrameCounterPac: 0,
-    lock: false,
-    levelstand: 1,
-    Richtungen: {
-        hoch: 0,
-        runter: 1,
-        rechts: 2,
-        links: 3
-    },
-    Feldtypen: {
-        wand: 0,
-        hohlraum: 1,
-        tuer: 2,
-        geisterHaus: 3,
-        pille: 4,
-        grPille: 5,
-        pacManSpawn: 6,
-        geistSpawn: 7,
-        leerFlaeche: 8
-    },
-    Farben: {
-        wand: "#696969",
-        hohlraum: "#808080",
-        tuer: "#FF0000",
-        geisterHaus: "#0000FF",
-        pille: "yellow",
-        grPille: "yellow",
-        geistSpawn: "#0000FF"
-    },
-    level: {
-        1: [
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 0],
-            [0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0],
-            [0, 4, 0, 0, 4, 0, 1, 1, 1, 1, 0, 4, 0, 4, 0, 1, 1, 1, 1, 0, 4, 0, 0, 4, 0],
-            [0, 4, 0, 0, 4, 0, 0, 0, 1, 1, 0, 4, 0, 4, 0, 1, 1, 0, 0, 0, 4, 0, 0, 4, 0],
-            [0, 4, 0, 0, 4, 4, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 4, 4, 0, 0, 4, 0],
-            [0, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 0],
-            [0, 4, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 4, 0],
-            [0, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 0],
-            [0, 0, 0, 0, 4, 0, 0, 0, 4, 4, 4, 4, 5, 4, 4, 4, 4, 0, 0, 0, 4, 0, 0, 0, 0],
-            [1, 1, 1, 0, 4, 0, 1, 0, 4, 0, 0, 2, 2, 2, 0, 0, 4, 0, 1, 0, 4, 0, 1, 1, 1],
-            [0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 3, 3, 3, 3, 3, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0],
-            [8, 8, 8, 6, 4, 4, 4, 4, 4, 0, 3, 3, 7, 3, 3, 0, 4, 4, 4, 4, 4, 8, 8, 8, 8],
-            [0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 3, 3, 3, 3, 3, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0],
-            [1, 1, 1, 0, 4, 0, 1, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 1, 0, 4, 0, 1, 1, 1],
-            [0, 0, 0, 0, 4, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 4, 0, 0, 0, 0],
-            [0, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 0],
-            [0, 4, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 4, 0],
-            [0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0],
-            [0, 0, 4, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 4, 0, 0],
-            [0, 4, 4, 0, 4, 0, 4, 0, 1, 1, 0, 4, 0, 4, 0, 1, 1, 0, 4, 0, 4, 0, 4, 4, 0],
-            [0, 4, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 4, 0],
-            [0, 4, 0, 0, 4, 0, 4, 0, 0, 5, 0, 4, 0, 4, 0, 5, 0, 0, 4, 0, 4, 0, 0, 4, 0],
-            [0, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
-        2: [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 0],
-            [0, 4, 0, 0, 4, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 4, 0, 0, 4, 0],
-            [0, 4, 4, 0, 4, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 4, 0, 4, 4, 0],
-            [0, 0, 4, 0, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 0, 4, 0, 0],
-            [0, 0, 4, 0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0, 4, 0, 0],
-            [0, 4, 4, 4, 4, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 4, 4, 4, 4, 0],
-            [0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0],
-            [0, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 0, 4, 0, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 0],
-            [0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 4, 4, 4, 4, 4, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0],
-            [1, 1, 1, 0, 4, 0, 4, 4, 4, 4, 4, 0, 4, 0, 4, 4, 4, 4, 4, 0, 4, 0, 1, 1, 1],
-            [0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0],
-            [8, 8, 8, 6, 4, 4, 4, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4, 8, 8, 8, 8],
-            [0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0],
-            [1, 1, 1, 0, 4, 0, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 0, 4, 0, 1, 1, 1],
-            [0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 4, 0, 4, 0, 4, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0],
-            [0, 4, 0, 0, 4, 0, 4, 0, 0, 0, 4, 0, 4, 0, 4, 0, 0, 0, 4, 0, 4, 0, 0, 4, 0],
-            [0, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 0],
-            [0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0],
-            [0, 4, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 4, 0],
-            [0, 4, 0, 0, 4, 0, 0, 0, 4, 0, 0, 2, 2, 2, 0, 0, 4, 0, 0, 0, 4, 0, 0, 4, 0],
-            [0, 4, 4, 4, 4, 0, 1, 0, 4, 0, 3, 3, 3, 3, 3, 0, 4, 0, 1, 0, 4, 4, 4, 4, 0],
-            [0, 4, 0, 0, 4, 0, 0, 0, 4, 0, 3, 3, 7, 3, 3, 0, 4, 0, 0, 0, 4, 0, 0, 4, 0],
-            [0, 5, 4, 4, 4, 4, 4, 4, 4, 0, 3, 3, 3, 3, 3, 0, 4, 4, 4, 4, 4, 4, 4, 5, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
-        3: [[0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 6, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 0],
-            [0, 4, 0, 0, 0, 4, 0, 0, 0, 0, 4, 0, 8, 0, 4, 0, 0, 0, 0, 4, 0, 0, 0, 4, 0],
-            [0, 4, 0, 0, 0, 4, 0, 0, 0, 0, 4, 0, 8, 0, 4, 0, 0, 0, 0, 4, 0, 0, 0, 4, 0],
-            [0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0],
-            [0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0],
-            [0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0],
-            [0, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 4, 0, 0, 4, 0],
-            [0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0],
-            [0, 4, 0, 0, 4, 0, 0, 1, 1, 1, 1, 0, 4, 0, 1, 1, 1, 1, 1, 0, 4, 0, 0, 4, 0],
-            [0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0],
-            [0, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 0],
-            [0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0],
-            [0, 4, 0, 0, 4, 0, 1, 1, 1, 1, 1, 0, 4, 0, 1, 1, 1, 1, 1, 0, 4, 0, 0, 4, 0],
-            [0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0],
-            [0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0],
-            [0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0],
-            [0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0],
-            [0, 4, 0, 0, 4, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 4, 0, 0, 4, 0],
-            [0, 4, 0, 0, 4, 0, 0, 4, 0, 0, 0, 0, 5, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 4, 0],
-            [0, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 2, 2, 2, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 0],
-            [0, 4, 0, 0, 4, 0, 0, 0, 4, 0, 3, 3, 3, 3, 3, 0, 4, 0, 0, 4, 0, 0, 0, 4, 0],
-            [0, 4, 0, 0, 4, 0, 0, 0, 4, 0, 3, 3, 7, 3, 3, 0, 4, 0, 0, 4, 0, 0, 0, 4, 0],
-            [0, 5, 4, 4, 4, 4, 4, 4, 4, 0, 3, 3, 3, 3, 3, 0, 4, 4, 4, 4, 4, 4, 4, 5, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0]]
-    },
-    intervalle: {
-        eins: null,
-        zwei: null,
-        abgelaufeneZeit: null,
-        zeitAnzeige: null
-    },
-    abgelaufeneZeit: 0,
-    listener: null,
-    funtionen: {
-        nonflucht: function () {
-            Spielvariablen.spielFlaeche.pacManWeglaufentoggle();
+        spielFlaeche: null,
+        FrameCounterGeist: 0,
+        GrameCounterPac: 0,
+        lock: false,
+        levelstand: 0,
+        Richtungen: {
+            hoch: 0,
+            runter: 1,
+            rechts: 2,
+            links: 3
         },
-        flucht: function () {
-            Spielvariablen.spielFlaeche.pacManWeglaufentoggle();
-            Spielvariablen.spielFlaeche.toogleTimerAn = false;
+        Feldtypen: {
+            wand: 0,
+            hohlraum: 1,
+            tuer: 2,
+            geisterHaus: 3,
+            pille: 4,
+            grPille: 5,
+            pacManSpawn: 6,
+            geistSpawn: 7,
+            leerFlaeche: 8
         },
-        zeitanzeige: function () {
-            let zeit = Spielvariablen.abgelaufeneZeit;
-            let zeitcontainer = document.getElementById("zeitContainer");
-            zeitcontainer.innerHTML = "Zeit:<br>" + time(zeit);
+        Farben: {
+            wand: "#696969",
+            hohlraum: "#808080",
+            tuer: "#FF0000",
+            geisterHaus: "#0000FF",
+            pille: "yellow",
+            grPille: "yellow",
+            geistSpawn: "#0000FF"
         },
-        keylistener: function (e) {
-            switch (e.keyCode) {
-                case 37:
-                {
-                    Spielvariablen.spielFlaeche.geist.richtungNeu = Spielvariablen.Richtungen.links;
-                    e.cancelBubble = true; //eventweiterreichung unterbinden um scollen zu verhindern
-                    e.returnValue = false; //dito
-                    break;
-                }
-                case 38:
-                {
-                    Spielvariablen.spielFlaeche.geist.richtungNeu = Spielvariablen.Richtungen.hoch;
-                    e.cancelBubble = true;
-                    e.returnValue = false;
-                    break;
-                }
-                case 39:
-                {
-                    Spielvariablen.spielFlaeche.geist.richtungNeu = Spielvariablen.Richtungen.rechts;
-                    e.cancelBubble = true;
-                    e.returnValue = false;
-                    break;
-                }
-                case 40:
-                {
-                    Spielvariablen.spielFlaeche.geist.richtungNeu = Spielvariablen.Richtungen.runter;
-                    e.cancelBubble = true;
-                    e.returnValue = false;
-                    break;
-                }
-                case 32:
-                {
-                    zustand.pause = !zustand.pause;
-                    break;
-                }
+        level: [//level 1
+            [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 0],
+                [0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0],
+                [0, 4, 0, 0, 4, 0, 1, 1, 1, 1, 0, 4, 0, 4, 0, 1, 1, 1, 1, 0, 4, 0, 0, 4, 0],
+                [0, 4, 0, 0, 4, 0, 0, 0, 1, 1, 0, 4, 0, 4, 0, 1, 1, 0, 0, 0, 4, 0, 0, 4, 0],
+                [0, 4, 0, 0, 4, 4, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 4, 4, 0, 0, 4, 0],
+                [0, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 0],
+                [0, 4, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 4, 0],
+                [0, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 0],
+                [0, 0, 0, 0, 4, 0, 0, 0, 4, 4, 4, 4, 5, 4, 4, 4, 4, 0, 0, 0, 4, 0, 0, 0, 0],
+                [1, 1, 1, 0, 4, 0, 1, 0, 4, 0, 0, 2, 2, 2, 0, 0, 4, 0, 1, 0, 4, 0, 1, 1, 1],
+                [0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 3, 3, 3, 3, 3, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0],
+                [8, 8, 8, 6, 4, 4, 4, 4, 4, 0, 3, 3, 7, 3, 3, 0, 4, 4, 4, 4, 4, 8, 8, 8, 8],
+                [0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 3, 3, 3, 3, 3, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0],
+                [1, 1, 1, 0, 4, 0, 1, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 1, 0, 4, 0, 1, 1, 1],
+                [0, 0, 0, 0, 4, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 4, 0, 0, 0, 0],
+                [0, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 0],
+                [0, 4, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 4, 0],
+                [0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0],
+                [0, 0, 4, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 4, 0, 0],
+                [0, 4, 4, 0, 4, 0, 4, 0, 1, 1, 0, 4, 0, 4, 0, 1, 1, 0, 4, 0, 4, 0, 4, 4, 0],
+                [0, 4, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 4, 0, 4, 0, 0, 4, 0],
+                [0, 4, 0, 0, 4, 0, 4, 0, 0, 5, 0, 4, 0, 4, 0, 5, 0, 0, 4, 0, 4, 0, 0, 4, 0],
+                [0, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
+            //level2
+            [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 0],
+                [0, 4, 0, 0, 4, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 4, 0, 0, 4, 0],
+                [0, 4, 4, 0, 4, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 4, 0, 4, 4, 0],
+                [0, 0, 4, 0, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 0, 4, 0, 0],
+                [0, 0, 4, 0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0, 4, 0, 0],
+                [0, 4, 4, 4, 4, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 4, 4, 4, 4, 0],
+                [0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0],
+                [0, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 0, 4, 0, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 0],
+                [0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 4, 4, 4, 4, 4, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0],
+                [1, 1, 1, 0, 4, 0, 4, 4, 4, 4, 4, 0, 4, 0, 4, 4, 4, 4, 4, 0, 4, 0, 1, 1, 1],
+                [0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0],
+                [8, 8, 8, 6, 4, 4, 4, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4, 8, 8, 8, 8],
+                [0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0],
+                [1, 1, 1, 0, 4, 0, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 0, 4, 0, 1, 1, 1],
+                [0, 0, 0, 0, 4, 0, 4, 0, 0, 0, 4, 0, 4, 0, 4, 0, 0, 0, 4, 0, 4, 0, 0, 0, 0],
+                [0, 4, 0, 0, 4, 0, 4, 0, 0, 0, 4, 0, 4, 0, 4, 0, 0, 0, 4, 0, 4, 0, 0, 4, 0],
+                [0, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 0],
+                [0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0],
+                [0, 4, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 4, 0],
+                [0, 4, 0, 0, 4, 0, 0, 0, 4, 0, 0, 2, 2, 2, 0, 0, 4, 0, 0, 0, 4, 0, 0, 4, 0],
+                [0, 4, 4, 4, 4, 0, 1, 0, 4, 0, 3, 3, 3, 3, 3, 0, 4, 0, 1, 0, 4, 4, 4, 4, 0],
+                [0, 4, 0, 0, 4, 0, 0, 0, 4, 0, 3, 3, 7, 3, 3, 0, 4, 0, 0, 0, 4, 0, 0, 4, 0],
+                [0, 5, 4, 4, 4, 4, 4, 4, 4, 0, 3, 3, 3, 3, 3, 0, 4, 4, 4, 4, 4, 4, 4, 5, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
+            //level 3
+            [[0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 6, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 0],
+                [0, 4, 0, 0, 0, 4, 0, 0, 0, 0, 4, 0, 8, 0, 4, 0, 0, 0, 0, 4, 0, 0, 0, 4, 0],
+                [0, 4, 0, 0, 0, 4, 0, 0, 0, 0, 4, 0, 8, 0, 4, 0, 0, 0, 0, 4, 0, 0, 0, 4, 0],
+                [0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0],
+                [0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0],
+                [0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0],
+                [0, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 4, 0, 0, 4, 0],
+                [0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0],
+                [0, 4, 0, 0, 4, 0, 0, 1, 1, 1, 1, 0, 4, 0, 1, 1, 1, 1, 1, 0, 4, 0, 0, 4, 0],
+                [0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0],
+                [0, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 0],
+                [0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0],
+                [0, 4, 0, 0, 4, 0, 1, 1, 1, 1, 1, 0, 4, 0, 1, 1, 1, 1, 1, 0, 4, 0, 0, 4, 0],
+                [0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0],
+                [0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0],
+                [0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0],
+                [0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0],
+                [0, 4, 0, 0, 4, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 4, 0, 0, 4, 0],
+                [0, 4, 0, 0, 4, 0, 0, 4, 0, 0, 0, 0, 5, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 4, 0],
+                [0, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 2, 2, 2, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 0],
+                [0, 4, 0, 0, 4, 0, 0, 0, 4, 0, 3, 3, 3, 3, 3, 0, 4, 0, 0, 4, 0, 0, 0, 4, 0],
+                [0, 4, 0, 0, 4, 0, 0, 0, 4, 0, 3, 3, 7, 3, 3, 0, 4, 0, 0, 4, 0, 0, 0, 4, 0],
+                [0, 5, 4, 4, 4, 4, 4, 4, 4, 0, 3, 3, 3, 3, 3, 0, 4, 4, 4, 4, 4, 4, 4, 5, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0]]],
 
-                case 13:
-                {
-                    if (zustand.status == 2 && !(Spielvariablen.Spielstart)) {
-                        let start = document.getElementById("start");
-                        start.classList.add("inaktiv");
-                        Spielvariablen.Spielstart = true;
-                        Spielvariablen.intervalle.abgelaufeneZeit = setInterval(function () {
-                            if (!zustand.pause)Spielvariablen.abgelaufeneZeit = Spielvariablen.abgelaufeneZeit + 10;
-                        }, 10);
-                        Spielvariablen.funtionen.zeitanzeige();
-                        Spielvariablen.intervalle.zeitAnzeige = setInterval(function () {
+        intervalle: {
+            eins: null,
+            zwei: null,
+            abgelaufeneZeit: null,
+            zeitAnzeige: null
+        },
+        abgelaufeneZeit: 0,
+        listener: null,
+        funtionen: {
+            nonflucht: function () {
+                Spielvariablen.spielFlaeche.pacManWeglaufentoggle();
+            }
+            ,
+            flucht: function () {
+                Spielvariablen.spielFlaeche.pacManWeglaufentoggle();
+                Spielvariablen.spielFlaeche.toogleTimerAn = false;
+            }
+            ,
+            zeitanzeige: function () {
+                let zeit = Spielvariablen.abgelaufeneZeit;
+                let zeitcontainer = document.getElementById("zeitContainer");
+                zeitcontainer.innerHTML = "Zeit:<br>" + time(zeit);
+            }
+            ,
+            keylistener: function (e) {
+                switch (e.keyCode) {
+                    case 37:
+                    {
+                        Spielvariablen.spielFlaeche.geist.richtungNeu = Spielvariablen.Richtungen.links;
+                        e.cancelBubble = true; //eventweiterreichung unterbinden um scollen zu verhindern
+                        e.returnValue = false; //dito
+                        break;
+                    }
+                    case 38:
+                    {
+                        Spielvariablen.spielFlaeche.geist.richtungNeu = Spielvariablen.Richtungen.hoch;
+                        e.cancelBubble = true;
+                        e.returnValue = false;
+                        break;
+                    }
+                    case 39:
+                    {
+                        Spielvariablen.spielFlaeche.geist.richtungNeu = Spielvariablen.Richtungen.rechts;
+                        e.cancelBubble = true;
+                        e.returnValue = false;
+                        break;
+                    }
+                    case 40:
+                    {
+                        Spielvariablen.spielFlaeche.geist.richtungNeu = Spielvariablen.Richtungen.runter;
+                        e.cancelBubble = true;
+                        e.returnValue = false;
+                        break;
+                    }
+                    case 32:
+                    {
+                        zustand.pause = !zustand.pause;
+                        break;
+                    }
+
+                    case 13:
+                    {
+                        if (zustand.status == 2 && !(Spielvariablen.Spielstart)) {
+                            let start = document.getElementById("start");
+                            start.classList.add("inaktiv");
+                            Spielvariablen.Spielstart = true;
+                            Spielvariablen.intervalle.abgelaufeneZeit = setInterval(function () {
+                                if (!zustand.pause)Spielvariablen.abgelaufeneZeit = Spielvariablen.abgelaufeneZeit + 10;
+                            }, 10);
                             Spielvariablen.funtionen.zeitanzeige();
-                        }, 1000);
+                            Spielvariablen.intervalle.zeitAnzeige = setInterval(function () {
+                                Spielvariablen.funtionen.zeitanzeige();
+                            }, 1000);
 
 
-                    } else if (zustand.status == 3) {
-                        Spielvariablen.Spielstart = false;
-                        zustand.status = 1;
+                        } else if (zustand.status == 3) {
+                            Spielvariablen.Spielstart = false;
+                            zustand.status = 1;
+                        }
+                        break;
                     }
-                    break;
-                }
-                default:
-                {
-                    console.log(e.keyCode);
-                    break;
-                }
-            }
-        },
-        shuffle: function (array) {
-            let zufall, temp
-            for (let i = array.length; i > 0; i--) {
-                zufall = Math.floor(Math.random() * i);
-                temp = array[i - 1];
-                array[i - 1] = array[zufall];
-                array[zufall] = temp;
-            }
-        },
-        navListener: function (e) {
-            if (e.target.tagName == "LI") {
-                let div = document.getElementById(e.target.innerText);
-                if (div != undefined) {
-                    if (div.classList.contains("inaktiv")) {
-                        div.classList.remove("inaktiv");
-                        zustand.pause = true;
-                    } else {
-                        div.classList.add("inaktiv");
-                        zustand.pause = false;
-
+                    default:
+                    {
+                        console.log(e.keyCode);
+                        break;
                     }
                 }
             }
+            ,
+            shuffle: function (array) {
+                let zufall, temp
+                for (let i = array.length; i > 0; i--) {
+                    zufall = Math.floor(Math.random() * i);
+                    temp = array[i - 1];
+                    array[i - 1] = array[zufall];
+                    array[zufall] = temp;
+                }
+            }
+            ,
+            navListener: function (e) {
+                if (e.target.tagName == "LI") {
+                    let div = document.getElementById(e.target.innerText);
+                    if (div != undefined) {
+                        if (div.classList.contains("inaktiv")) {
+                            div.classList.remove("inaktiv");
+                            zustand.pause = true;
+                        } else {
+                            div.classList.add("inaktiv");
+                            zustand.pause = false;
 
+                        }
+                    }
+                }
+
+            }
         }
     }
-};
+    ;
 function controller_start() {
     let gewonnenverloren = document.getElementsByClassName("gewonnenverloren");
     for (let i in gewonnenverloren) {
@@ -278,7 +285,7 @@ function controller_spielende() {
 
     } else {
         element = document.getElementById("verloren");
-        Spielvariablen.levelstand = 1;
+        Spielvariablen.levelstand = 0;
     }
 
 
@@ -583,7 +590,7 @@ class SpielFlaeche {
                     case Spielvariablen.Feldtypen.leerFlaeche:
                     {
                         this.levelContext.clearRect(j * this.factor, i * this.factor, this.factor, this.factor);
-                        this.knoten[i][j] = new Knoten((i-1<0)?undefined:this.knoten[i - 1][j], this.knoten[i][j - 1], j, i, null);  //verhindern das das zweite array undefined ist und knallt
+                        this.knoten[i][j] = new Knoten((i - 1 < 0) ? undefined : this.knoten[i - 1][j], this.knoten[i][j - 1], j, i, null);  //verhindern das das zweite array undefined ist und knallt
                         if (j == this.level[i].length - 1) {                        //levelübergang von oben nach unten oder von rechts nach links schaffen füllwort
                             this.knoten[i][j].knotenRechts = this.knoten[i][0];
                             this.knoten[i][0].knotenLinks = this.knoten[i][j];

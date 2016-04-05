@@ -1,5 +1,11 @@
 function punkte() {
-    return 0 - ((zustand.gesamtpillen - zustand.restpillen) + (zustand.zeitSpanne / zustand.schwierigkeit * 1000));
+    if (zustand.restpillen < 1)return 120000-zustand.zeitSpanne;
+    let ret = (120000-zustand.zeitSpanne) * (zustand.restpillen / zustand.gesamtpillen);
+    if (zustand.schwierigkeit < 0)
+        ret *= 0.75;
+    else if (zustand.schwierigkeit > 0)
+        ret *= 1.25;
+    return ret;
 }
 
 

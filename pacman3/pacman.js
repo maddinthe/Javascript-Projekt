@@ -3,6 +3,34 @@
  * versuch 3
  */
 "use strict";
+var zustand = {
+    status: -1,
+    pause: false,
+    observer: null,
+    aengstlich: false,
+    gesamtpillen: 100,
+    restpillen: 5,
+    spielerName: "platzhalter",
+    startZeit: 0,
+    zeitSpanne: 5,
+    geistfarbe: "blue",
+    schwierigkeit: -2,
+    spielFeldGroesse: 500
+};
+if (typeof(localStorage) !== "undefined") {
+    let spielerName = localStorage.getItem("REVPacSpielerName");
+    let spielFeldGroesse = localStorage.getItem("REVPacSpielFeldGroesse");
+    let schwierigkeit = localStorage.getItem("REVPacSchwierigkeit");
+    let geistfarbe = localStorage.getItem("REVPacGeistfarbe");
+    if (geistfarbe != null)zustand.geistfarbe = geistfarbe;
+    if (spielerName != null)zustand.spielerName = spielerName;
+    else {
+        zustand.spielerName = prompt("Bitte Spielernamen Eingeben", "Platzhalter");
+        localStorage.setItem("REVPacSpielerName", zustand.spielerName);
+    }
+    if (schwierigkeit != null)zustand.schwierigkeit = Number(schwierigkeit);
+    if (spielFeldGroesse != null)zustand.spielFeldGroesse = Number(spielFeldGroesse);
+}
 var Spielvariablen = {
         spielFlaeche: null,
         FrameCounterGeist: 0,
@@ -221,16 +249,11 @@ var Spielvariablen = {
                         }
                         break;
                     }
-                    default:
-                    {
-                        console.log(e.keyCode);
-                        break;
-                    }
                 }
             }
             ,
             shuffle: function (array) {
-                let zufall, temp
+                let zufall, temp;
                 for (let i = array.length; i > 0; i--) {
                     zufall = Math.floor(Math.random() * i);
                     temp = array[i - 1];
@@ -256,8 +279,7 @@ var Spielvariablen = {
 
             }
         }
-    }
-    ;
+    };
 function controller_start() {
     let gewonnenverloren = document.getElementsByClassName("gewonnenverloren");
     for (let i in gewonnenverloren) {
@@ -276,7 +298,6 @@ function controller_start() {
     pacManFeld.height = zustand.spielFeldGroesse;
     Spielvariablen.spielFlaeche = new SpielFlaeche(spielFeld, pacManFeld, Geistfeld, Spielvariablen.level[Spielvariablen.levelstand]);
     if (Spielvariablen.listener == null) {
-        console.log("listener-add");
         Spielvariablen.listener = window.addEventListener("keydown", Spielvariablen.funtionen.keylistener);
         Spielvariablen.listener = Spielvariablen.funtionen.keylistener;
     }
@@ -296,7 +317,7 @@ function controller_spielende() {
     clearTimeout(Spielvariablen.funtionen.nonflucht());
     zustand.restpillen = Spielvariablen.spielFlaeche.pillen.length;
     console.log(time(Spielvariablen.abgelaufeneZeit));
-    console.log(Spielvariablen.abgelaufeneZeit);
+    console.log(punkte());
     zustand.zeitSpanne = Spielvariablen.abgelaufeneZeit;
     Spielvariablen.abgelaufeneZeit = 0;
     let element = null;
@@ -330,7 +351,7 @@ function controller_Seitenaufbau() {
         hoehe[i].style.height = zustand.spielFeldGroesse + "px";
     }
     document.getElementById("navList").addEventListener("click", Spielvariablen.funtionen.navListener);
-    document.getElementById("spielStart", function () {
+    document.getElementById("spielStart").addEventListener("click", function () {
         zustand.spielerName = document.getElementById("usernameEingabe").value;
         localStorage.setItem("REVPacSpielerName", zustand.spielerName);
     });
@@ -343,7 +364,7 @@ Object.observe(zustand, function (changes) {
             switch (change.object.status) {
                 case 0:
                 {
-                    controller_Seitenaufbau()
+                    controller_Seitenaufbau();
                     break;
                 }
                 case 1:
@@ -637,10 +658,11 @@ class SpielFlaeche {
                     case Spielvariablen.Feldtypen.tuer:
                     {
 
-                        this.levelContext.fillStyle = Spielvariablen.Farben.tuer;
-                        this.levelContext.fillRect(j * this.factor, i * this.factor, this.factor, this.factor / 2);
                         this.levelContext.fillStyle = Spielvariablen.Farben.geistSpawn;
-                        this.levelContext.fillRect(j * this.factor, i * this.factor + this.factor / 2, this.factor, this.factor / 2);
+                        this.levelContext.fillRect(j * this.factor, i * this.factor, this.factor, this.factor);
+                        this.levelContext.fillStyle = Spielvariablen.Farben.tuer;
+                        this.levelContext.fillRect(j * this.factor+this.factor/4, i * this.factor+this.factor/4, this.factor/2, this.factor / 2);
+
                         this.knoten[i][j] = new Knoten(this.knoten[i - 1][j], this.knoten[i][j - 1], j, i, null);
                         break;
                     }
@@ -737,7 +759,7 @@ class SpielFlaeche {
                 pacman.posY = zielRoute[0].posY;
 
 
-            } else if ((pacman.darfwegglaufen && pacman.getAbstand(geist.posX, geist.posY) < 6) | !geist.isMoving) {
+            } else if ((pacman.darfwegglaufen && pacman.getAbstand(geist.posX, geist.posY) < 6) || !geist.isMoving) {
                 let aktKnoten = knoten[pacman.posY][pacman.posX];
                 let auswege = aktKnoten.nachbarn;
                 let bestnachbar = auswege[0];
@@ -809,10 +831,10 @@ class SpielFlaeche {
 
             //gewinnüberprüfung
             if (this.beendet) {
-                zustand.status = 3
-                Spielvariablen.Spielstart = false
+                zustand.status = 3;
+                Spielvariablen.Spielstart = false;
             }
-            ;
+
 
         }
 

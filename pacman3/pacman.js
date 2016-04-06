@@ -228,7 +228,7 @@ var Spielvariablen = {
         zwei: null,
         abgelaufeneZeit: null,
         zeitAnzeige: null,
-        punktAnzeige:null
+        punktAnzeige: null
     },
     abgelaufeneZeit: 0,
     listener: null,
@@ -286,22 +286,10 @@ var Spielvariablen = {
 
                 case 13:
                 {
-                    if (zustand.status == 2 && !(Spielvariablen.Spielstart)) {
-                        let start = document.getElementById("start");
-                        start.classList.add("inaktiv");
-                        Spielvariablen.Spielstart = true;
-                        Spielvariablen.intervalle.abgelaufeneZeit = setInterval(function () {
-                            if (!zustand.pause)Spielvariablen.abgelaufeneZeit = Spielvariablen.abgelaufeneZeit + 10;
-                        }, 10);
-                        Spielvariablen.funtionen.zeitanzeige();
-                        Spielvariablen.intervalle.zeitAnzeige = setInterval(function () {
-                            Spielvariablen.funtionen.zeitanzeige();
-                        }, 1000);
-
-
-                    } else if (zustand.status == 3) {
-                        Spielvariablen.Spielstart = false;
+                    if (zustand.status == 3) {
                         zustand.status = 1;
+                    } else if (zustand.status == 1) {
+                        zustand.status = 2
                     }
                     break;
                 }
@@ -318,27 +306,38 @@ var Spielvariablen = {
             }
         }
         ,
-        punkteAnzeige: function(){
-            document.getElementById("punkteContainer").innerText=punkte();
+        punkteAnzeige: function () {
+            document.getElementById("punkteContainer").innerText = punkte();
         }
         ,
         navListener: function (e) {
             if (e.target.tagName == "LI") {
                 let div = document.getElementById(e.target.innerText);
                 if (div != undefined) {
+                    let menuTextDivs = document.getElementsByClassName("menuText");
                     if (div.classList.contains("inaktiv")) {
                         div.classList.remove("inaktiv");
                         zustand.pause = true;
+                        if (div.id == "Highscore") {
+                            holen(div);
+                        }
                     } else {
                         div.classList.add("inaktiv");
                         zustand.pause = false;
+                    }
+                    for (let i=0;i<menuTextDivs.length;i++) {
+                        if (menuTextDivs[i] != undefined && menuTextDivs[i] != div){
+                            menuTextDivs[i].classList.add("inaktiv");
+
+                        }
 
                     }
+
                 }
             }
 
         },
-        verwirrt:function () {
+        verwirrt: function () {
             zustand.aengstlich = false;
         }
     }
@@ -366,11 +365,22 @@ function controller_start() {
         Spielvariablen.listener = Spielvariablen.funtionen.keylistener;
     }
     document.getElementById("userNameContainer").innerText = zustand.spielerName;
+    if (Spielvariablen.levelstand > 0)document.getElementById("levelwechsel").play();
+    else document.getElementById("opening").play();
 }
 function controller_spielen() {
-    if(Spielvariablen.levelstand>0)document.getElementById("levelwechsel").play();
-    else document.getElementById("opening").play();
-    Spielvariablen.intervalle.punktAnzeige=setInterval(Spielvariablen.funtionen.punkteAnzeige,100);
+    document.getElementById("waka").play();
+    let start = document.getElementById("start");
+    start.classList.add("inaktiv");
+    Spielvariablen.Spielstart = true;
+    Spielvariablen.intervalle.abgelaufeneZeit = setInterval(function () {
+        if (!zustand.pause)Spielvariablen.abgelaufeneZeit = Spielvariablen.abgelaufeneZeit + 10;
+    }, 10);
+    Spielvariablen.funtionen.zeitanzeige();
+    Spielvariablen.intervalle.zeitAnzeige = setInterval(function () {
+        Spielvariablen.funtionen.zeitanzeige();
+    }, 1000);
+    Spielvariablen.intervalle.punktAnzeige = setInterval(Spielvariablen.funtionen.punkteAnzeige, 100);
     requestAnimationFrame(function () {
         Spielvariablen.spielFlaeche.figurenZeichnen()
     });
@@ -383,6 +393,7 @@ function controller_levelende() {
     clearInterval(Spielvariablen.intervalle.punktAnzeige);
     clearTimeout(Spielvariablen.funtionen.flucht());
     clearTimeout(Spielvariablen.funtionen.nonflucht());
+    document.getElementById("waka").pause();
     zustand.restpillen = Spielvariablen.spielFlaeche.pillen.length;
     console.log(time(Spielvariablen.abgelaufeneZeit));
     console.log(punkte());
@@ -402,7 +413,7 @@ function controller_levelende() {
         }
 
     } else {
-        if(zustand.aengstlich)document.getElementById("gestorben").play();
+        if (zustand.aengstlich)document.getElementById("gestorben").play();
         element = document.getElementById("verloren");
         Spielvariablen.levelstand = 0;
         Spielvariablen.punkte = 0;
@@ -429,7 +440,6 @@ function controller_Seitenaufbau() {
         zustand.spielerName = document.getElementById("usernameEingabe").value;
         localStorage.setItem("REVPacSpielerName", zustand.spielerName);
     });
-    holen(document.getElementById("Highscore"));
     zustand.status = 1
 }
 function controller_spielende() {
@@ -473,7 +483,7 @@ Object.observe(zustand, function (changes) {
 
                 let pausediv = document.getElementsByClassName("pause");
                 for (let i = 0; i < pausediv.length; i++) {
-                    if (zustand.pause){
+                    if (zustand.pause) {
                         pausediv[i].classList.remove("inaktiv");
                         document.getElementById("waka").pause();
                     }
@@ -692,8 +702,7 @@ class SpielFlaeche {
         this.zeichnen();
         zustand.gesamtpillen = this.pillen.length;
         zustand.restpillen = zustand.gesamtpillen;
-        zustand.status = 2;
-
+        this.figurenZeichnen();
     }
 
     zeichnen() {

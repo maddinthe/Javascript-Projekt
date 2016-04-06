@@ -21,6 +21,7 @@ function holen(displayElement) {
         if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
             let tablecontent=JSON.parse(xmlhttp.responseText);
             if (displayElement != undefined){
+                displayElement.innerHTML="";
                 let table=document.createElement("table");
                 table.innerHTML="<tr><th>Platz</th><th>Name</th><th>Zeit</th><th>Punkte</th></tr>";
                 for (let i in tablecontent){

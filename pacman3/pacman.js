@@ -318,6 +318,10 @@ var Spielvariablen = {
             }
         }
         ,
+        punkteAnzeige: function(){
+            document.getElementById("punkteContainer").innerText=punkte();
+        }
+        ,
         navListener: function (e) {
             if (e.target.tagName == "LI") {
                 let div = document.getElementById(e.target.innerText);
@@ -333,9 +337,12 @@ var Spielvariablen = {
                 }
             }
 
+        },
+        verwirrt:function () {
+            zustand.aengstlich = false;
         }
     }
-};
+}
 
 function controller_start() {
     let gewonnenverloren = document.getElementsByClassName("gewonnenverloren");
@@ -363,9 +370,7 @@ function controller_start() {
 function controller_spielen() {
     if(Spielvariablen.levelstand>0)document.getElementById("levelwechsel").play();
     else document.getElementById("opening").play();
-    Spielvariablen.intervalle.punktAnzeige=setInterval(function(){
-        document.getElementById("punkteContainer").innerText=punkte();
-    },100);
+    Spielvariablen.intervalle.punktAnzeige=setInterval(Spielvariablen.funtionen.punkteAnzeige,100);
     requestAnimationFrame(function () {
         Spielvariablen.spielFlaeche.figurenZeichnen()
     });
@@ -381,6 +386,7 @@ function controller_levelende() {
     zustand.restpillen = Spielvariablen.spielFlaeche.pillen.length;
     console.log(time(Spielvariablen.abgelaufeneZeit));
     console.log(punkte());
+    Spielvariablen.funtionen.punkteAnzeige();
     Spielvariablen.punkte += punkte();
     Spielvariablen.gesamtzeit += Spielvariablen.abgelaufeneZeit;
     zustand.zeitSpanne = Spielvariablen.abgelaufeneZeit;
@@ -464,10 +470,17 @@ Object.observe(zustand, function (changes) {
         }
         else if (change.name === "pause") {
             if (zustand.status == 2) {
+
                 let pausediv = document.getElementsByClassName("pause");
                 for (let i = 0; i < pausediv.length; i++) {
-                    if (zustand.pause)pausediv[i].classList.remove("inaktiv");
-                    else pausediv[i].classList.add("inaktiv");
+                    if (zustand.pause){
+                        pausediv[i].classList.remove("inaktiv");
+                        document.getElementById("waka").pause();
+                    }
+                    else {
+                        pausediv[i].classList.add("inaktiv");
+                        document.getElementById("waka").play();
+                    }
                 }
             }
 
@@ -905,9 +918,8 @@ class SpielFlaeche {
                 pillen.splice(pillen.indexOf(pille), 1);
                 if (pille.isGross) {
                     zustand.aengstlich = true;
-                    setTimeout(function () {
-                        zustand.aengstlich = false;
-                    }, 20000)
+                    clearTimeout(Spielvariablen.funtionen.verwirrt);
+                    setTimeout(Spielvariablen.funtionen.verwirrt, 10000);
                 }
             }
 

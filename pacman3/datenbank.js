@@ -1,11 +1,11 @@
 function punkte() {
     if (zustand.restpillen < 1)return 120000 - Spielvariablen.abgelaufeneZeit;
-    let ret = (120000 - Spielvariablen.abgelaufeneZeit) * (zustand.restpillen / zustand.gesamtpillen);
+    let ret = (120000 - Spielvariablen.abgelaufeneZeit) * (Spielvariablen.spielFlaeche.pillen.length / zustand.gesamtpillen);
     if (zustand.schwierigkeit < 0)
         ret *= 0.75;
     else if (zustand.schwierigkeit > 0)
         ret *= 1.25;
-    return ret;
+    return Math.round(ret);
 }
 
 
@@ -20,7 +20,6 @@ function holen(displayElement) {
 
         if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
             let tablecontent=JSON.parse(xmlhttp.responseText);
-            console.log(tablecontent);
             if (displayElement != undefined){
                 let table=document.createElement("table");
                 table.innerHTML="<tr><th>Platz</th><th>Name</th><th>Zeit</th><th>Punkte</th></tr>";

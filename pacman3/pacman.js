@@ -2,9 +2,8 @@
  * Created by mtheilen on 16.03.2016.
  * versuch 3
  */
-
 "use strict";
-//var kapsel=function() {
+//(function() {
 var zustand = {
     status: -1,
     pause: false,
@@ -228,7 +227,8 @@ var Spielvariablen = {
         eins: null,
         zwei: null,
         abgelaufeneZeit: null,
-        zeitAnzeige: null
+        zeitAnzeige: null,
+        punktAnzeige:null
     },
     abgelaufeneZeit: 0,
     listener: null,
@@ -360,18 +360,20 @@ function controller_start() {
     }
     document.getElementById("userNameContainer").innerText = zustand.spielerName;
 }
-
 function controller_spielen() {
+    Spielvariablen.intervalle.punktAnzeige=setInterval(function(){
+        document.getElementById("PunkteContainer").innerText=punkte();
+    },100);
     requestAnimationFrame(function () {
         Spielvariablen.spielFlaeche.figurenZeichnen()
     });
 
 }
-
 function controller_levelende() {
     Spielvariablen.Spielstart = false;
     clearInterval((Spielvariablen.intervalle.abgelaufeneZeit));
     clearInterval((Spielvariablen.intervalle.zeitAnzeige));
+    clearInterval(Spielvariablen.intervalle.punktAnzeige);
     clearTimeout(Spielvariablen.funtionen.flucht());
     clearTimeout(Spielvariablen.funtionen.nonflucht());
     zustand.restpillen = Spielvariablen.spielFlaeche.pillen.length;
@@ -404,7 +406,6 @@ function controller_levelende() {
         zustand.aengstlich = false;
     }
 }
-
 function controller_Seitenaufbau() {
     let breite = document.getElementsByClassName("breite");
     let hoehe = document.getElementsByClassName("hoehe");
@@ -547,7 +548,6 @@ class Knoten {
 
 
 }
-
 class SpielObjekt {
     /**
      * Constructor für Spielobjekt
@@ -1106,5 +1106,4 @@ class astar {
         return dx + dy;
     }
 }
-//}
-//kapsel();
+//}());

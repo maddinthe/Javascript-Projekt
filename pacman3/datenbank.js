@@ -1,6 +1,6 @@
 function punkte() {
-    if (zustand.restpillen < 1)return 120000 - zustand.zeitSpanne;
-    let ret = (120000 - zustand.zeitSpanne) * (zustand.restpillen / zustand.gesamtpillen);
+    if (zustand.restpillen < 1)return 120000 - Spielvariablen.abgelaufeneZeit;
+    let ret = (120000 - Spielvariablen.abgelaufeneZeit) * (zustand.restpillen / zustand.gesamtpillen);
     if (zustand.schwierigkeit < 0)
         ret *= 0.75;
     else if (zustand.schwierigkeit > 0)

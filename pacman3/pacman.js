@@ -140,7 +140,7 @@ var Spielvariablen = {
             [0, 1, 1, 1, 1, 0, 4, 4, 4, 4, 4, 4, 4, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 4, 0],
             [0, 1, 1, 1, 1, 0, 4, 0, 0, 0, 0, 0, 4, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 4, 0],
             [0, 1, 1, 0, 0, 0, 4, 0, 0, 1, 1, 0, 4, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0],
-            [0, 1, 1, 0, 0, 4, 4, 4, 0, 1, 1, 0, 4, 0, 1, 0, 4, 4, 4, 4, 4, 4, 4, 4, 0],
+            [0, 1, 1, 0, 0, 4, 4, 4, 0, 1, 1, 0, 4, 0, 1, 0, 4, 4, 4, 4, 4, 4, 4, 5, 0],
             [0, 1, 1, 0, 0, 0, 4, 0, 0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 1, 1, 1, 1, 0, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 1, 1, 1, 1, 1, 1, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
@@ -364,7 +364,7 @@ function controller_spielen() {
     if(Spielvariablen.levelstand>0)document.getElementById("levelwechsel").play();
     else document.getElementById("opening").play();
     Spielvariablen.intervalle.punktAnzeige=setInterval(function(){
-        document.getElementById("PunkteContainer").innerText=punkte();
+        document.getElementById("punkteContainer").innerText=punkte();
     },100);
     requestAnimationFrame(function () {
         Spielvariablen.spielFlaeche.figurenZeichnen()

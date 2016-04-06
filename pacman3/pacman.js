@@ -362,7 +362,7 @@ function controller_start() {
 }
 function controller_spielen() {
     Spielvariablen.intervalle.punktAnzeige=setInterval(function(){
-        document.getElementById("PunkteContainer").innerText=punkte();
+        document.getElementById("punkteContainer").innerText=punkte();
     },100);
     requestAnimationFrame(function () {
         Spielvariablen.spielFlaeche.figurenZeichnen()

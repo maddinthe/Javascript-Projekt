@@ -367,6 +367,7 @@ function controller_Seitenaufbau() {
         zustand.spielerName = document.getElementById("usernameEingabe").value;
         localStorage.setItem("REVPacSpielerName", zustand.spielerName);
     });
+    holen(document.getElementById("Highscore"));
     zustand.status = 1
 }
 function controller_spielende(){

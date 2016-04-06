@@ -2,6 +2,9 @@
 /*-------------------------------------------------------------------*/
 /*--------------------------------TAGs-------------------------------*/
 /*-------------------------------------------------------------------*/
+*{
+    font-family:  Arial, sans-serif;
+}
 
 body {
     background-color: orange;
@@ -209,28 +212,47 @@ footer {
 #userLabelContainer {
     width: 40px;
     position: absolute;
-    top: 180px;
+    top: 150px;
     right: 75px;
     transform: rotate(25deg);
     z-index: 1001;
+    font-size: 14pt;
+    font-weight: bold;
+    color: white;
 }
 
 #userNameContainer {
     width: 40px;
     position: absolute;
-    top: 200px;
+    top: 180px;
     right: 75px;
     transform: rotate(25deg);
     z-index: 1001;
+    font-weight: bold;
+    color: red;
 }
 
-#zeitContainer {
+#zeitLabelContainer {
     width: 40px;
     position: absolute;
     top: 250px;
     right: 75px;
     transform: rotate(25deg);
     z-index: 1001;
+    font-size: 14pt;
+    font-weight: bold;
+    color: white;
+}
+
+#zeitContainer {
+    width: 40px;
+    position: absolute;
+    top: 280px;
+    right: 75px;
+    transform: rotate(25deg);
+    z-index: 1001;
+    font-weight: bold;
+    color: red;
 }
 
 #punkteLabelContainer {
@@ -240,6 +262,9 @@ footer {
     right: 75px;
     transform: rotate(25deg);
     z-index: 1001;
+    font-size: 14pt;
+    font-weight: bold;
+    color: white;
 }
 
 #punkteContainer {
@@ -249,6 +274,8 @@ footer {
     right: 75px;
     transform: rotate(25deg);
     z-index: 1001;
+    font-weight: bold;
+    color: red;
 }
 
 /*-------------------------------------------------------------------*/

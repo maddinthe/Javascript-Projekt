@@ -245,7 +245,7 @@ var Spielvariablen = {
         zeitanzeige: function () {
             let zeit = Spielvariablen.abgelaufeneZeit;
             let zeitcontainer = document.getElementById("zeitContainer");
-            zeitcontainer.innerHTML = "Zeit:<br>" + time(zeit);
+            zeitcontainer.innerHTML = time(zeit);
         }
         ,
         keylistener: function (e) {
@@ -361,6 +361,8 @@ function controller_start() {
     document.getElementById("userNameContainer").innerText = zustand.spielerName;
 }
 function controller_spielen() {
+    if(Spielvariablen.levelstand>0)document.getElementById("levelwechsel").play();
+    else document.getElementById("opening").play();
     Spielvariablen.intervalle.punktAnzeige=setInterval(function(){
         document.getElementById("PunkteContainer").innerText=punkte();
     },100);
@@ -386,7 +388,7 @@ function controller_levelende() {
     let element = null;
     if (zustand.restpillen > 0 && !zustand.aengstlich) {
         element = document.getElementById("gewonnen");
-
+        document.getElementById("gegessen").play();
         Spielvariablen.levelstand++;
         if (Spielvariablen.levelstand == Spielvariablen.level.length) {
             zustand.status = 4;
@@ -394,6 +396,7 @@ function controller_levelende() {
         }
 
     } else {
+        if(zustand.aengstlich)document.getElementById("gestorben").play();
         element = document.getElementById("verloren");
         Spielvariablen.levelstand = 0;
         Spielvariablen.punkte = 0;

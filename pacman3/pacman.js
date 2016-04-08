@@ -344,6 +344,33 @@ var Spielvariablen = {
         },
         verwirrt: function () {
             zustand.aengstlich = false;
+        },
+        einstellungenListener:function(e){
+            if (e.target.name=="schwierigkeit"){
+                console.log(e.target.id);
+                switch(e.target.id){
+                    case "normal":{
+                        zustand.schwierigkeit=0;
+                        break;
+                    }
+                    case "leicht":{
+                        zustand.schwierigkeit=-2;
+                        break;
+                    }
+                    case "schwer":{
+                        zustand.schwierigkeit=2;
+                        break;
+                    }
+                        localStorage.setItem("REVPacSchwierigkeit",zustand.schwierigkeit);
+                }
+
+            }
+            else if (e.target.name=="farbe"){
+                console.log(e.target.id);
+                zustand.geistfarbe=e.target.id;
+                localStorage.setItem("REVPacGeistfarbe",zustand.geistfarbe);
+            }
+
         }
     }
 }
@@ -445,6 +472,7 @@ function controller_Seitenaufbau() {
         zustand.spielerName = document.getElementById("usernameEingabe").value;
         localStorage.setItem("REVPacSpielerName", zustand.spielerName);
     });
+    document.getElementById("Einstellungen").addEventListener("click",Spielvariablen.funtionen.einstellungenListener);
     zustand.status = 1
 }
 function controller_spielende() {

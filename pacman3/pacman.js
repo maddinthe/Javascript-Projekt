@@ -245,7 +245,10 @@ var Spielvariablen = {
         zeitanzeige: function () {
             let zeit = Spielvariablen.abgelaufeneZeit;
             let zeitcontainer = document.getElementById("zeitContainer");
-            zeitcontainer.innerHTML = time(zeit);
+            if(Spielvariablen.levelstand>0){
+                zeitcontainer.innerHTML= time(zeit+Spielvariablen.gesamtzeit);
+            }
+            else zeitcontainer.innerHTML = time(zeit);
         }
         ,
         keylistener: function (e) {
@@ -307,7 +310,9 @@ var Spielvariablen = {
         }
         ,
         punkteAnzeige: function () {
-            document.getElementById("punkteContainer").innerText = punkte();
+            if(Spielvariablen.levelstand>0) {
+                document.getElementById("punkteContainer").innerText = punkte() + Spielvariablen.punkte;
+            }else document.getElementById("punkteContainer").innerText = punkte();
         }
         ,
         navListener: function (e) {

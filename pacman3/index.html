@@ -47,7 +47,7 @@
             <div id="zeitLabelContainer">Zeit: </div>
             <div id="zeitContainer">00:00:00</div>
             <div id="punkteLabelContainer">Punkte: </div>
-            <div id="punkteContainer"></div>
+            <div id="punkteContainer">0</div>
             <canvas id="spielFeld">Ihr Browser kann kein HTML 5</canvas>
             <canvas id="pacmanFeld">Ihr Browser kann kein HTML 5</canvas>
             <canvas id="geisterFeld">Ihr Browser kann kein HTML 5</canvas>
@@ -67,7 +67,23 @@
                 </p>
             </div>
             <div class="inaktiv breite hoehe menuText" id="Highscore"></div>
-            <div class="inaktiv breite hoehe menuText" id="Einstellungen"></div>
+            <div class="inaktiv breite hoehe menuText" id="Einstellungen">
+                <h3>Schwierigkeit (Neustart erforderlich)</h3>
+                <form>
+                    <input type="radio" name="schwierigkeit" value="leicht">leicht
+                    <input type="radio" name="schwierigkeit" value="normal" checked>normal
+                    <input type="radio" name="schwierigkeit" value="schwer">schwer
+                </form>
+                <h3>Geisterfarbe</h3>
+                <form>
+                    <input type="radio" name="farbe" value="rot">Rot
+                    <input type="radio" name="farbe" value="blau" checked>Blau
+                    <input type="radio" name="farbe" value="pink">Pink
+                    <input type="radio" name="farbe" value="orange">Orange
+                </form>
+                
+                
+            </div>
         </section>
         <footer>
 

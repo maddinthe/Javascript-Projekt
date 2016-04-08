@@ -19,7 +19,7 @@
 <div>
     <header>
         <img src="./grafik/pacman_marque.gif" alt=""/>
-                <div id="reverse-blinker">Reverse!!!</div>
+                <div id="reverseBlinker">Reverse!!!</div>
         <div class="pacman">
             <img src="./grafik/pacman-161870_1280.png" alt=""/>
         </div>
@@ -39,9 +39,9 @@
         <div id="result"></div>
         <section class="breite hoehe">
             <div class="pause inaktiv">Pause</div>
-            <div id="start" class="gewonnenverloren">Press Return</div>
-            <div id="verloren" class="gewonnenverloren inaktiv">Verloren</div>
-            <div id="gewonnen" class="gewonnenverloren inaktiv">Gewonnen</div>
+            <div id="start" class="gewonnenVerloren">Press Return</div>
+            <div id="verloren" class="gewonnenVerloren inaktiv">Verloren</div>
+            <div id="gewonnen" class="gewonnenVerloren inaktiv">Gewonnen</div>
             <div id="userLabelContainer">Spielername: </div>
             <div id="userNameContainer"></div>
             <div id="zeitLabelContainer">Zeit: </div>
@@ -54,7 +54,7 @@
             <div class="inaktiv breite hoehe menuText" id="Arcade">
                 <form action="" method="post">
                     <input type="text" placeholder="Username eingeben" id="usernameEingabe" name="UserName"/><br />
-                    <input class="button" type="submit" value="Spiel starten" id="spielStart"/>
+                    <button class="button" type="submit" id="spielStart">Spiel starten</button>
                 </form>
             </div>
             <div class="inaktiv breite hoehe menuText" id="Hilfe">

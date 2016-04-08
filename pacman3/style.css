@@ -153,11 +153,9 @@ footer {
 
 .menuText {
     position: absolute;
-    top: 77px;
-    width: 100%;
+    top: 76px;
     z-index: 1000;
     background-color: rgba(211,211,211,0.9);
-
 }
 
 

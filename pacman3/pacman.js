@@ -14,15 +14,17 @@ var zustand = {
     spielerName: "platzhalter",
     startZeit: 0,
     zeitSpanne: 5,
-    geistfarbe: "blue",
+    geistfarbe: "blau",
     schwierigkeit: -2,
-    spielFeldGroesse: 500
+    spielFeldGroesse: 500,
+    ton: true
 };
 if (typeof(localStorage) !== "undefined") {
     let spielerName = localStorage.getItem("REVPacSpielerName");
     let spielFeldGroesse = localStorage.getItem("REVPacSpielFeldGroesse");
     let schwierigkeit = localStorage.getItem("REVPacSchwierigkeit");
     let geistfarbe = localStorage.getItem("REVPacGeistfarbe");
+    let ton = localStorage.getItem("REVPacTon");
     if (geistfarbe != null)zustand.geistfarbe = geistfarbe;
     if (spielerName != null)zustand.spielerName = spielerName;
     else {
@@ -31,6 +33,7 @@ if (typeof(localStorage) !== "undefined") {
     }
     if (schwierigkeit != null)zustand.schwierigkeit = Number(schwierigkeit);
     if (spielFeldGroesse != null)zustand.spielFeldGroesse = Number(spielFeldGroesse);
+    if (ton != null)zustand.ton = (ton == "true");
 }
 var Spielvariablen = {
     spielFlaeche: null,
@@ -245,8 +248,8 @@ var Spielvariablen = {
         zeitanzeige: function () {
             let zeit = Spielvariablen.abgelaufeneZeit;
             let zeitcontainer = document.getElementById("zeitContainer");
-            if(Spielvariablen.levelstand>0){
-                zeitcontainer.innerHTML= time(zeit+Spielvariablen.gesamtzeit);
+            if (Spielvariablen.levelstand > 0) {
+                zeitcontainer.innerHTML = time(zeit + Spielvariablen.gesamtzeit);
             }
             else zeitcontainer.innerHTML = time(zeit);
         }
@@ -310,9 +313,9 @@ var Spielvariablen = {
         }
         ,
         punkteAnzeige: function () {
-            if(Spielvariablen.levelstand>0) {
+            if (Spielvariablen.levelstand > 0) {
                 document.getElementById("punkteContainer").innerText = punkte() + Spielvariablen.punkte;
-            }else document.getElementById("punkteContainer").innerText = punkte();
+            } else document.getElementById("punkteContainer").innerText = punkte();
         }
         ,
         navListener: function (e) {
@@ -330,8 +333,8 @@ var Spielvariablen = {
                         div.classList.add("inaktiv");
                         zustand.pause = false;
                     }
-                    for (let i=0;i<menuTextDivs.length;i++) {
-                        if (menuTextDivs[i] != undefined && menuTextDivs[i] != div){
+                    for (let i = 0; i < menuTextDivs.length; i++) {
+                        if (menuTextDivs[i] != undefined && menuTextDivs[i] != div) {
                             menuTextDivs[i].classList.add("inaktiv");
 
                         }
@@ -345,38 +348,52 @@ var Spielvariablen = {
         verwirrt: function () {
             zustand.aengstlich = false;
         },
-        einstellungenListener:function(e){
-            if (e.target.name=="schwierigkeit"){
+        einstellungenListener: function (e) {
+            if (e.target.name == "schwierigkeit") {
                 console.log(e.target.id);
-                switch(e.target.id){
-                    case "normal":{
-                        zustand.schwierigkeit=0;
+                switch (e.target.id) {
+                    case "normal":
+                    {
+                        zustand.schwierigkeit = 0;
+
                         break;
                     }
-                    case "leicht":{
-                        zustand.schwierigkeit=-2;
+                    case "leicht":
+                    {
+                        zustand.schwierigkeit = -2;
                         break;
                     }
-                    case "schwer":{
-                        zustand.schwierigkeit=2;
+                    case "schwer":
+                    {
+                        zustand.schwierigkeit = 2;
                         break;
                     }
-                        localStorage.setItem("REVPacSchwierigkeit",zustand.schwierigkeit);
-                }
+
+                } localStorage.setItem("REVPacSchwierigkeit", zustand.schwierigkeit);
 
             }
-            else if (e.target.name=="farbe"){
+            else if (e.target.name == "farbe") {
                 console.log(e.target.id);
-                zustand.geistfarbe=e.target.id;
-                localStorage.setItem("REVPacGeistfarbe",zustand.geistfarbe);
+                zustand.geistfarbe = e.target.id;
+                localStorage.setItem("REVPacGeistfarbe", zustand.geistfarbe);
+            }
+            else if (e.target.id == "ton") {
+                localStorage.setItem("REVPacTon", e.target.checked);
+                zustand.ton = (e.target.checked);
+                let audio = document.getElementsByTagName("audio");
+                for (let i = 0; i < audio.length; i++) {
+                    audio[i].muted = !zustand.ton;
+
+                }
+                document.getElementById("ton").checked = zustand.ton;
             }
 
         }
     }
-}
+};
 
 function controller_start() {
-    let gewonnenverloren = document.getElementsByClassName("gewonnenverloren");
+    let gewonnenverloren = document.getElementsByClassName("gewonnenVerloren");
     for (let i in gewonnenverloren) {
         if (gewonnenverloren[i].id === "start")gewonnenverloren[i].classList.remove("inaktiv");
         else if (gewonnenverloren[i] instanceof Node)gewonnenverloren[i].classList.add("inaktiv");
@@ -472,7 +489,33 @@ function controller_Seitenaufbau() {
         zustand.spielerName = document.getElementById("usernameEingabe").value;
         localStorage.setItem("REVPacSpielerName", zustand.spielerName);
     });
-    document.getElementById("Einstellungen").addEventListener("click",Spielvariablen.funtionen.einstellungenListener);
+    document.getElementById("Einstellungen").addEventListener("click", Spielvariablen.funtionen.einstellungenListener);
+
+    let audio = document.getElementsByTagName("audio");
+    for (let i = 0; i < audio.length; i++) {
+        audio[i].muted = !zustand.ton;
+
+    }
+    document.getElementById("ton").checked = zustand.ton;
+    document.getElementById(zustand.geistfarbe).checked = true;
+    switch (zustand.schwierigkeit) {
+        case -2:
+        {
+            document.getElementById("leicht").checked = true;
+            break;
+        }
+        case 0:
+        {
+            document.getElementById("normal").checked = true;
+            break;
+        }
+        case 2:
+        {
+            document.getElementById("schwer").checked = true;
+            break;
+        }
+    }
+
     zustand.status = 1
 }
 function controller_spielende() {
@@ -530,6 +573,10 @@ Object.observe(zustand, function (changes) {
         }
         else if (change.name === "aengstlich") {
             Spielvariablen.spielFlaeche.toggleAengstlichLevel();
+        }
+        else if (change.name === "geistfarbe") {
+            Spielvariablen.spielFlaeche.geist.farbeaendern();
+
         }
     });
 });
@@ -704,10 +751,16 @@ class PacMan extends SpielObjekt {
 class Geist extends SpielObjekt {
     constructor(posX, posY, groesse, farbe) {
         super(posX, posY, groesse);
-        this.imageData = this.ImageToImageData(document.getElementById("geist"), groesse, farbe);
+        this.image = document.getElementById("Geist-" + farbe);
         this.richtung = null;
         this.richtungNeu = null;
         this.isMoving = false;
+    }
+
+    farbeaendern() {
+        this.farbe = zustand.geistfarbe;
+        this.image = document.getElementById("Geist-" + this.farbe);
+
     }
 
 }
@@ -878,7 +931,7 @@ class SpielFlaeche {
         for (let i in this.pillen)
             this.pacManContext.putImageData(this.pillen[i].imageData, this.pillen[i].posX * this.factor, this.pillen[i].posY * this.factor);
 
-        this.geistContext.putImageData(this.geist.imageData, this.geist.posX * this.factor + this.geist.offsetX, this.geist.posY * this.factor + this.geist.offsetY);
+        this.geistContext.drawImage(this.geist.image, this.geist.posX * this.factor + this.geist.offsetX, this.geist.posY * this.factor + this.geist.offsetY, this.factor, this.factor);
         if (this.pacMan.offsetX > 0)this.pacMan.offsetX -= this.offsetDivPac;
         if (this.pacMan.offsetX < 0)this.pacMan.offsetX += this.offsetDivPac;
         if (this.pacMan.offsetY < 0)this.pacMan.offsetY += this.offsetDivPac;

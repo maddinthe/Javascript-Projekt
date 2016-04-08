@@ -10,6 +10,10 @@
 <body>
 <img src="./grafik/pacman-ani.png" id="pacman" alt="" style="display: none">
 <img src="./grafik/geist.png" id="geist" alt="" style="display: none"/>
+<img src="./grafik/geist-blau.png" id="Geist-blau" class="geistBild" style="display: none">
+<img src="./grafik/geist-rot.png" id="Geist-rot" class="geistBild" style="display: none">
+<img src="./grafik/geist-orange.png" id="Geist-orange" class="geistBild" style="display: none">
+<img src="./grafik/geist-pink.png" id="Geist-pink" class="geistBild" style="display: none">
 <audio src="./audio/Pacman%20Dies.mp3" id="gestorben"></audio>
 <audio src="./audio/Pacman%20Eating%20Ghost.mp3" id="gegessen"></audio>
 <audio src="./audio/Pacman%20Intermission.mp3" id="levelwechsel"></audio>
@@ -75,7 +79,7 @@
             </div>
             <div class="inaktiv breite hoehe menuText" id="Highscore">
                 <div>
-                <h3>Reverse Pacman Bestenliste</h3>
+                    <h3>Reverse Pacman Bestenliste</h3>
                 </div>
             </div>
             <div class="inaktiv breite hoehe menuText" id="Einstellungen">
@@ -90,6 +94,9 @@
                     <input type="radio" name="farbe" id="blau" checked><label for="blau">Blau</label>
                     <input type="radio" name="farbe" id="pink"><label for="pink">Pink</label>
                     <input type="radio" name="farbe" id="orange"><label for="orange">Orange</label>
+
+                    <h3>Ton</h3>
+                    <input type="checkbox" id="ton"><label for="ton">Ton an</label>
                 </div>
             </div>
         </section>

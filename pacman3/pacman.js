@@ -369,7 +369,8 @@ var Spielvariablen = {
                         break;
                     }
 
-                } localStorage.setItem("REVPacSchwierigkeit", zustand.schwierigkeit);
+                }
+                localStorage.setItem("REVPacSchwierigkeit", zustand.schwierigkeit);
 
             }
             else if (e.target.name == "farbe") {
@@ -394,9 +395,14 @@ var Spielvariablen = {
 
 function controller_start() {
     let gewonnenverloren = document.getElementsByClassName("gewonnenVerloren");
-    for (let i in gewonnenverloren) {
-        if (gewonnenverloren[i].id === "start")gewonnenverloren[i].classList.remove("inaktiv");
-        else if (gewonnenverloren[i] instanceof Node)gewonnenverloren[i].classList.add("inaktiv");
+    for (let i=0;i<gewonnenverloren.length;i++) {
+        if (gewonnenverloren[i].id === "start") {
+            gewonnenverloren[i].classList.remove("inaktiv");
+        }
+        else {
+            if (gewonnenverloren[i] instanceof Node)
+                        gewonnenverloren[i].classList.add("inaktiv");
+        }
     }
 
     let spielFeld = document.getElementById("spielFeld");
@@ -429,6 +435,7 @@ function controller_spielen() {
     Spielvariablen.intervalle.zeitAnzeige = setInterval(function () {
         Spielvariablen.funtionen.zeitanzeige();
     }, 1000);
+    //noinspection JSCheckFunctionSignatures
     Spielvariablen.intervalle.punktAnzeige = setInterval(Spielvariablen.funtionen.punkteAnzeige, 100);
     requestAnimationFrame(function () {
         Spielvariablen.spielFlaeche.figurenZeichnen()
@@ -484,11 +491,13 @@ function controller_Seitenaufbau() {
     for (let i = 0; i < hoehe.length; i++) {
         hoehe[i].style.height = zustand.spielFeldGroesse + "px";
     }
+    //noinspection JSCheckFunctionSignatures
     document.getElementById("navList").addEventListener("click", Spielvariablen.funtionen.navListener);
     document.getElementById("spielStart").addEventListener("click", function () {
         zustand.spielerName = document.getElementById("usernameEingabe").value;
         localStorage.setItem("REVPacSpielerName", zustand.spielerName);
     });
+    //noinspection JSCheckFunctionSignatures
     document.getElementById("Einstellungen").addEventListener("click", Spielvariablen.funtionen.einstellungenListener);
 
     let audio = document.getElementsByTagName("audio");
@@ -673,66 +682,20 @@ class SpielObjekt {
         let abstandY = Math.abs(posY - this.posY);
         return Math.sqrt((abstandX * abstandX) + (abstandY * abstandY));
     }
-
-    ImageToImageData(Image, size, farbe) {
-
-        let canvas = document.createElement('canvas');
-        let context = canvas.getContext("2d");
-        context.drawImage(Image, 0, 0, size, size);
-        let data = context.getImageData(0, 0, size, size);
-        if (farbe != undefined) {
-            let red = 0;
-            let green = 0;
-            let blue = 0;
-            switch (farbe) {
-                case "blue":
-                {
-                    red = 0;
-                    blue = 255;
-                    green = 255;
-                    break;
-                }
-                case "green":
-                {
-                    red = 255;
-                    blue = 0;
-                    green = 255;
-                    break;
-                }
-                case "red":
-                {
-                    red = 255;
-                    blue = 255;
-                    green = 0;
-                    break;
-                }
-            }
-
-            for (let i = 0; i < data.data.length; i += 4) {
-                data.data[i] = (data.data[i] == 255) ? data.data[i] : red;
-                data.data[i + 1] = (data.data[i + 1] == 255) ? data.data[i + 1] : green;
-                data.data[i + 2] = (data.data[i + 2] == 255) ? data.data[i + 2] : blue;
-                data.data[i + 3] = (data.data[i + 3] == 255) ? data.data[i + 3] : 0;
-
-
-            }
-        }
-        return data;
-    }
 }
 class Pille extends SpielObjekt {
     constructor(posX, posY, groesse, isGross) {
         super(posX, posY);
         this.isGross = isGross;
-        this.imageData = this.createPilleImageData(isGross, groesse);
+        this.imageData = this.createPilleImageData(groesse);
     }
 
-    createPilleImageData(isGross, groesse) {
+    createPilleImageData(groesse) {
         let canvas = document.createElement('canvas');
         let context = canvas.getContext("2d");
-        context.strokeStyle = isGross ? Spielvariablen.Farben.grPille : Spielvariablen.Farben.pille;
-        context.fillStyle = isGross ? Spielvariablen.Farben.grPille : Spielvariablen.Farben.pille;
-        context.arc(groesse / 2, groesse / 2, isGross ? groesse * 0.35 : groesse * 0.2, 0, 2 * Math.PI);
+        context.strokeStyle = this.isGross ? Spielvariablen.Farben.grPille : Spielvariablen.Farben.pille;
+        context.fillStyle = this.isGross ? Spielvariablen.Farben.grPille : Spielvariablen.Farben.pille;
+        context.arc(groesse / 2, groesse / 2, this.isGross ? groesse * 0.35 : groesse * 0.2, 0, 2 * Math.PI);
         context.fill();
         return context.getImageData(0, 0, groesse, groesse);
 
@@ -795,6 +758,7 @@ class SpielFlaeche {
         for (let i = 0; i < this.level.length; i++) {
             this.knoten[i] = [];
             for (let j = 0; j < this.level[i].length; j++) {
+                //noinspection FallThroughInSwitchStatementJS
                 switch (this.level[i][j]) {
                     case Spielvariablen.Feldtypen.wand:
                     {
@@ -928,7 +892,7 @@ class SpielFlaeche {
 
         //pacman richtung wechseln und animation ende
 
-        for (let i in this.pillen)
+        for (let i=0;i<this.pillen.length;i++)
             this.pacManContext.putImageData(this.pillen[i].imageData, this.pillen[i].posX * this.factor, this.pillen[i].posY * this.factor);
 
         this.geistContext.drawImage(this.geist.image, this.geist.posX * this.factor + this.geist.offsetX, this.geist.posY * this.factor + this.geist.offsetY, this.factor, this.factor);
@@ -976,9 +940,13 @@ class SpielFlaeche {
                 pacman.posY = bestnachbar.posY;
 
                 if (!this.toogleTimerAn) {
+                    //noinspection JSCheckFunctionSignatures
                     clearTimeout(Spielvariablen.funtionen.flucht);
+                    //noinspection JSCheckFunctionSignatures
                     clearTimeout(Spielvariablen.funtionen.nonflucht);
+                    //noinspection JSCheckFunctionSignatures
                     setTimeout(Spielvariablen.funtionen.flucht, 5000);
+                    //noinspection JSCheckFunctionSignatures
                     setTimeout(Spielvariablen.funtionen.nonflucht, 7000);
                     this.toogleTimerAn = true;
                 }
@@ -1013,7 +981,9 @@ class SpielFlaeche {
                 pillen.splice(pillen.indexOf(pille), 1);
                 if (pille.isGross) {
                     zustand.aengstlich = true;
+                    //noinspection JSCheckFunctionSignatures
                     clearTimeout(Spielvariablen.funtionen.verwirrt);
+                    //noinspection JSCheckFunctionSignatures
                     setTimeout(Spielvariablen.funtionen.verwirrt, 10000);
                 }
             }

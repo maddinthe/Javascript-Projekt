@@ -19,7 +19,8 @@
 <div>
     <header>
         <img src="./grafik/pacman_marque.gif" alt=""/>
-                <div id="reverseBlinker">Reverse!!!</div>
+
+        <div id="reverseBlinker">Reverse!!!</div>
         <div class="pacman">
             <img src="./grafik/pacman-161870_1280.png" alt=""/>
         </div>
@@ -42,41 +43,54 @@
             <div id="start" class="gewonnenVerloren">Press Return</div>
             <div id="verloren" class="gewonnenVerloren inaktiv">Verloren</div>
             <div id="gewonnen" class="gewonnenVerloren inaktiv">Gewonnen</div>
-            <div id="userLabelContainer">Spielername: </div>
+            <div id="userLabelContainer">Spielername:</div>
             <div id="userNameContainer"></div>
-            <div id="zeitLabelContainer">Zeit: </div>
+            <div id="zeitLabelContainer">Zeit:</div>
             <div id="zeitContainer">00:00:00</div>
-            <div id="punkteLabelContainer">Punkte: </div>
+            <div id="punkteLabelContainer">Punkte:</div>
             <div id="punkteContainer">0</div>
             <canvas id="spielFeld">Ihr Browser kann kein HTML 5</canvas>
             <canvas id="pacmanFeld">Ihr Browser kann kein HTML 5</canvas>
             <canvas id="geisterFeld">Ihr Browser kann kein HTML 5</canvas>
             <div class="inaktiv breite hoehe menuText" id="Arcade">
                 <form action="" method="post">
-                    <input type="text" placeholder="Username eingeben" id="usernameEingabe" name="UserName"/><br />
+                    <input type="text" placeholder="Username eingeben" id="usernameEingabe" name="UserName"/><br/>
                     <button class="button" type="submit" id="spielStart">Spiel starten</button>
                 </form>
             </div>
             <div class="inaktiv breite hoehe menuText" id="Hilfe">
-                <h2>So spielt man Reverse Pacman</h2>
-                <p>Man steuert den Geist mit Hilfe der Pfeiltasten und pausiert wird mit der Leertaste.
-                    Es geht darum Pacman möglichst schnell zu fangen um ins nächste Level zu gelangen, wenn jedoch PacMan einen Booster(Große Pille) frisst muss der Geist in sein Haus zurückkehren da er sonst von Pacman gefressen werden kann.
-                    Verloren hat man wenn PacMan alle Pillen oder den Geist gefressen hat!
-                    Die Punkte werden nach folgender Formel berechnet (2Min - abgelaufene Zeit)*(Restpillen/GesamtPillen)*Schwierigkeitsgrad.
-                    In die Highscore Tabelle gelangt man nach dem "Durchspielen"
-                </p>
+                <div>
+                    <h3>So spielt man Reverse Pacman</h3>
+
+                    <p>Man steuert den Geist mit Hilfe der Pfeiltasten und pausiert wird mit der Leertaste.
+                        Es geht darum Pacman möglichst schnell zu fangen um ins nächste Level zu gelangen, wenn jedoch
+                        PacMan einen Booster(Große Pille) frisst muss der Geist in sein Haus zurückkehren da er sonst
+                        von Pacman gefressen werden kann.
+                        Verloren hat man wenn PacMan alle Pillen oder den Geist gefressen hat!
+                        Die Punkte werden nach folgender Formel berechnet (2Min - abgelaufene
+                        Zeit)*(Restpillen/GesamtPillen)*Schwierigkeitsgrad.
+                        In die Highscore Tabelle gelangt man nach dem "Durchspielen"
+                    </p>
+                </div>
             </div>
-            <div class="inaktiv breite hoehe menuText" id="Highscore"></div>
+            <div class="inaktiv breite hoehe menuText" id="Highscore">
+                <div>
+                <h3>Reverse Pacman Bestenliste</h3>
+                </div>
+            </div>
             <div class="inaktiv breite hoehe menuText" id="Einstellungen">
-                <h3>Schwierigkeit (Neustart erforderlich)</h3>
+                <div>
+                    <h3>Schwierigkeit (Neustart erforderlich)</h3>
                     <input type="radio" id="leicht" name="schwierigkeit"><label for="leicht">leicht</label>
-                    <input type="radio" id="normal"  name="schwierigkeit"checked> <label for="normal">normal</label>
+                    <input type="radio" id="normal" name="schwierigkeit" checked> <label for="normal">normal</label>
                     <input type="radio" id="schwer" name="schwierigkeit"><label for="schwer">schwer</label>
-                <h3>Geisterfarbe</h3>
+
+                    <h3>Geisterfarbe</h3>
                     <input type="radio" name="farbe" id="rot"><label for="rot">Rot</label>
                     <input type="radio" name="farbe" id="blau" checked><label for="blau">Blau</label>
                     <input type="radio" name="farbe" id="pink"><label for="pink">Pink</label>
                     <input type="radio" name="farbe" id="orange"><label for="orange">Orange</label>
+                </div>
             </div>
         </section>
         <footer>

@@ -11,9 +11,8 @@ body {
 }
 
 div {
-    width: 800px;
     margin: auto;
-    background-color: orange;
+    width: 800px;
 }
 
 body > div > div {
@@ -158,6 +157,9 @@ footer {
     background-color: rgba(211,211,211,0.9);
 }
 
+.gewonnenVerloren, .pause, #reverseBlinker{
+    background-color: orange;
+}
 
 /*-------------------------------------------------------------------*/
 /*---------------------------------IDs-------------------------------*/
@@ -272,16 +274,20 @@ footer {
     opacity: 1 !important;
 }
 
-#Einstellungen{
+
+#Einstellungen>div{
     padding: 10px;
+    width: 96%;
 }
 
-#Hilfe {
+#Hilfe>div {
     padding: 10px;
+    width: 96%;
 }
 
-#Highscore {
+#Highscore>div {
     padding: 10px;
+    width: 96%;
 }
 
 /*-------------------------------------------------------------------*/

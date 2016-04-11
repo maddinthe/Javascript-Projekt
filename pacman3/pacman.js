@@ -395,13 +395,13 @@ var Spielvariablen = {
 
 function controller_start() {
     let gewonnenverloren = document.getElementsByClassName("gewonnenVerloren");
-    for (let i=0;i<gewonnenverloren.length;i++) {
+    for (let i = 0; i < gewonnenverloren.length; i++) {
         if (gewonnenverloren[i].id === "start") {
             gewonnenverloren[i].classList.remove("inaktiv");
         }
         else {
             if (gewonnenverloren[i] instanceof Node)
-                        gewonnenverloren[i].classList.add("inaktiv");
+                gewonnenverloren[i].classList.add("inaktiv");
         }
     }
 
@@ -414,6 +414,7 @@ function controller_start() {
     Geistfeld.height = zustand.spielFeldGroesse;
     pacManFeld.width = zustand.spielFeldGroesse;
     pacManFeld.height = zustand.spielFeldGroesse;
+    pacManFeld.style.zIndex=0;
     Spielvariablen.spielFlaeche = new SpielFlaeche(spielFeld, pacManFeld, Geistfeld, Spielvariablen.level[Spielvariablen.levelstand]);
     if (Spielvariablen.listener == null) {
         Spielvariablen.listener = window.addEventListener("keydown", Spielvariablen.funtionen.keylistener);
@@ -471,6 +472,7 @@ function controller_levelende() {
     } else {
         if (zustand.aengstlich)document.getElementById("gestorben").play();
         element = document.getElementById("verloren");
+        Spielvariablen.spielFlaeche.pacManCanvas.style.zIndex=1;
         Spielvariablen.levelstand = 0;
         Spielvariablen.punkte = 0;
         Spielvariablen.gesamtzeit = 0;
@@ -729,6 +731,7 @@ class Geist extends SpielObjekt {
 }
 class SpielFlaeche {
     constructor(levelCanvas, pacManCanvas, geistCanvas, level) {
+        this.pacManCanvas=pacManCanvas;
         this.levelContext = levelCanvas.getContext("2d");
         this.pacManContext = pacManCanvas.getContext("2d");
         this.geistContext = geistCanvas.getContext("2d");
@@ -892,7 +895,7 @@ class SpielFlaeche {
 
         //pacman richtung wechseln und animation ende
 
-        for (let i=0;i<this.pillen.length;i++)
+        for (let i = 0; i < this.pillen.length; i++)
             this.pacManContext.putImageData(this.pillen[i].imageData, this.pillen[i].posX * this.factor, this.pillen[i].posY * this.factor);
 
         this.geistContext.drawImage(this.geist.image, this.geist.posX * this.factor + this.geist.offsetX, this.geist.posY * this.factor + this.geist.offsetY, this.factor, this.factor);
@@ -906,6 +909,9 @@ class SpielFlaeche {
         if (this.geist.offsetY > 0)this.geist.offsetY -= this.offsetDivGeist;
         if (zustand.status == 2)requestAnimationFrame(function () {
             Spielvariablen.spielFlaeche.figurenZeichnen();
+        });
+        else if ((Math.abs(this.pacMan.offsetX) + Math.abs(this.pacMan.offsetY) + Math.abs(this.geist.offsetX) + Math.abs(this.geist.offsetY)) > 4) requestAnimationFrame(function () {
+            Spielvariablen.spielFlaeche.zuEndeZeichnen();
         });
 
     }
@@ -1079,6 +1085,40 @@ class SpielFlaeche {
         }
     }
 
+    zuEndeZeichnen() {
+        this.pacManContext.clearRect(0, 0, this.width, this.height);
+        this.geistContext.clearRect(0, 0, this.width, this.height);
+        //pacman richtung wechseln und animation
+        if (this.animationCount++ % 10 == 0) {
+            if (++this.animationFrame > 2)this.animationFrame = 0;
+        }
+
+        this.pacManContext.save();
+        this.pacManContext.translate(this.pacMan.posX * this.factor + this.pacMan.offsetX + this.factor / 2, this.pacMan.posY * this.factor + this.pacMan.offsetY + this.factor / 2);
+        this.pacManContext.rotate(this.pacMan.richtung * Math.PI / 2);
+        this.pacManContext.drawImage(this.pacMan.image, this.animationFrame * 100, 0, 100, 100, -this.factor / 2, -this.factor / 2, this.factor, this.factor);
+        this.pacManContext.restore();
+
+        //pacman richtung wechseln und animation ende
+
+        for (let i = 0; i < this.pillen.length; i++)
+            this.pacManContext.putImageData(this.pillen[i].imageData, this.pillen[i].posX * this.factor, this.pillen[i].posY * this.factor);
+
+        this.geistContext.drawImage(this.geist.image, this.geist.posX * this.factor + this.geist.offsetX, this.geist.posY * this.factor + this.geist.offsetY, this.factor, this.factor);
+        if (this.pacMan.offsetX > 0)this.pacMan.offsetX -= this.offsetDivPac;
+        if (this.pacMan.offsetX < 0)this.pacMan.offsetX += this.offsetDivPac;
+        if (this.pacMan.offsetY < 0)this.pacMan.offsetY += this.offsetDivPac;
+        if (this.pacMan.offsetY > 0)this.pacMan.offsetY -= this.offsetDivPac;
+        if (this.geist.offsetX > 0)this.geist.offsetX -= this.offsetDivGeist;
+        if (this.geist.offsetX < 0)this.geist.offsetX += this.offsetDivGeist;
+        if (this.geist.offsetY < 0)this.geist.offsetY += this.offsetDivGeist;
+        if (this.geist.offsetY > 0)this.geist.offsetY -= this.offsetDivGeist;
+
+        if (Math.abs(this.pacMan.offsetX) + Math.abs(this.pacMan.offsetY) + Math.abs(this.geist.offsetX) + Math.abs(this.geist.offsetY) > 4)
+            requestAnimationFrame(function () {
+                Spielvariablen.spielFlaeche.zuEndeZeichnen();
+            })
+    }
 
 }
 class astar {

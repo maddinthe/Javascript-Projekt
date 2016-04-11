@@ -11,7 +11,7 @@ var zustand = {
     aengstlich: false,
     gesamtpillen: 100,
     restpillen: 5,
-    spielerName: "platzhalter",
+    spielerName: "",
     startZeit: 0,
     zeitSpanne: 5,
     geistfarbe: "blau",
@@ -27,10 +27,6 @@ if (typeof(localStorage) !== "undefined") {
     let ton = localStorage.getItem("REVPacTon");
     if (geistfarbe != null)zustand.geistfarbe = geistfarbe;
     if (spielerName != null)zustand.spielerName = spielerName;
-    else {
-        zustand.spielerName = prompt("Bitte Spielernamen Eingeben", "Platzhalter");
-        localStorage.setItem("REVPacSpielerName", zustand.spielerName);
-    }
     if (schwierigkeit != null)zustand.schwierigkeit = Number(schwierigkeit);
     if (spielFeldGroesse != null)zustand.spielFeldGroesse = Number(spielFeldGroesse);
     if (ton != null)zustand.ton = (ton == "true");
@@ -499,6 +495,7 @@ function controller_Seitenaufbau() {
         zustand.spielerName = document.getElementById("usernameEingabe").value;
         localStorage.setItem("REVPacSpielerName", zustand.spielerName);
     });
+
     //noinspection JSCheckFunctionSignatures
     document.getElementById("Einstellungen").addEventListener("click", Spielvariablen.funtionen.einstellungenListener);
 
@@ -526,6 +523,9 @@ function controller_Seitenaufbau() {
             break;
         }
     }
+
+    if(zustand.spielerName==="")
+        document.getElementById("Arcade").classList.remove("inkativ");
 
     zustand.status = 1
 }

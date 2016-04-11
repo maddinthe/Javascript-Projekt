@@ -1,7 +1,7 @@
 <?php
 // Verbindungsaufbau und Auswahl der Datenbank
 
-$dbconn = pg_connect("host=localhost dbname=db_pacman user=postgres password=root")
+$dbconn = pg_connect("host=localhost dbname=hs06-4 user=hs06-4 password=2HCFGtn2")
 or die('Verbindungsaufbau fehlgeschlagen: ' . pg_last_error());
 
 //Nach Beendigung des Spiels füge die Spieldaten als Datensatz hinzu:

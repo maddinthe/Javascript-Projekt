@@ -616,8 +616,12 @@ function controller_Seitenaufbau() {
 }
 function controller_spielende() {
     let endeDiv=document.getElementById("ende");
-    endeDiv.innerHTML=zustand.spielerName+'<br>Gesamtzeit:'+time(Spielvariablen.gesamtzeit)+'<br>Gesamtpunkte:'+Spielvariablen.punkte;
+    endeDiv.innerHTML=zustand.spielerName+'<br>Gesamtzeit:'+time(Spielvariablen.gesamtzeit)+'<br>Gesamtpunkte:'+Spielvariablen.punkte+'<br>Taste drücken für Neustart';
     endeDiv.classList.remove("inaktiv");
+    window.addEventListener("keydown",function(){
+        location.reload();
+    });
+
     send(zustand.spielerName, Spielvariablen.gesamtzeit, Spielvariablen.punkte);
 }
 

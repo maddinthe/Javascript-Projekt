@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" serverName="Syno-zuhause-web-pacman" />
+  <component name="PublishConfigData" serverName="Schulserver" uploadOnCheckin="9051c8fb-d993-464e-b7f9-421e40b34131">
+    <option name="myUploadOnCheckinName" value="Schulserver" />
+  </component>
 </project>

@@ -425,7 +425,9 @@ function holen(displayElement) {
             if (displayElement != undefined){
                 displayElement.innerHTML="";
                 let table=document.createElement("table");
-                table.innerHTML="<tr><th>Platz</th><th>Name</th><th>Zeit</th><th>Punkte</th></tr>";
+                let tbody=document.createElement("tbody");
+                table.appendChild(tbody);
+                tbody.innerHTML="<tr><th>Platz</th><th>Name</th><th>Zeit</th><th>Punkte</th></tr>";
                 for (let i in tablecontent){
                     let tr=document.createElement("tr");
                     let platz=document.createElement("td");
@@ -440,7 +442,7 @@ function holen(displayElement) {
                     tr.appendChild(name);
                     tr.appendChild(zeit);
                     tr.appendChild(punkte);
-                    table.appendChild(tr);
+                    tbody.appendChild(tr);
                 }displayElement.appendChild(table);
             }
 
@@ -613,6 +615,9 @@ function controller_Seitenaufbau() {
     zustand.status = 1
 }
 function controller_spielende() {
+    let endeDiv=document.getElementById("ende");
+    endeDiv.innerHTML=zustand.spielerName+'<br>Gesamtzeit:'+time(Spielvariablen.gesamtzeit)+'<br>Gesamtpunkte:'+Spielvariablen.punkte;
+    endeDiv.classList.remove("inaktiv");
     send(zustand.spielerName, Spielvariablen.gesamtzeit, Spielvariablen.punkte);
 }
 

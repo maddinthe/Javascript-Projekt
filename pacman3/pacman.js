@@ -968,7 +968,7 @@ class SpielFlaeche {
                     Spielvariablen.Spielstart = false;
                     return;
                 }
-                for (let i in pillen) {
+                for (let i =0;i< pillen.length;i++) {
                     let manhattan = astar.manhattan(pacman.posX, pacman.posY, pillen[i].posX, pillen[i].posY);
                     if (manhattan < nahestPilleManhattan) {
                         nahestPilleManhattan = manhattan;
@@ -1158,7 +1158,7 @@ class astar {
         while (openlist.length > 0) {
             //kleinsten f(x) raussuchen zum weiterarbeiten
             let kleinsInd = 0;
-            for (let i in openlist) {
+            for (let i=0; i<openlist.length;i++) {
                 if (openlist[i].f < openlist[kleinsInd].f)kleinsInd = i;
             }
             let aktKnoten = openlist[kleinsInd];

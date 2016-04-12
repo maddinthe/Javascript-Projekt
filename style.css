@@ -65,7 +65,20 @@ footer {
     height: 30px;
 }
 
+td{
+    width: 200px;
+}
 
+tr:nth-child(odd){
+    background-color: forestgreen;
+    color: white;
+    font-weight: bold;
+}
+
+tr:nth-child(even){
+    background-color: red;
+    color: white;
+}
 /*-------------------------------------------------------------------*/
 /*------------------------------KLASSEN------------------------------*/
 /*-------------------------------------------------------------------*/
@@ -89,6 +102,7 @@ footer {
     text-align: center;
     text-decoration: none;
     margin-top: 20px;
+    width: 225px;
 
 }
 
@@ -262,7 +276,7 @@ footer {
 }
 
 #Arcade form>input{
-    margin: calc(40% - 0px) calc(33% - 30px) 0 calc(33% - 30px);
+    margin: calc(40% - 0px) calc(33% - 30px) 0 calc(33% - 40px);
     width: 50%;
 }
 

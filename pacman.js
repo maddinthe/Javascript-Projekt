@@ -321,13 +321,13 @@ var Spielvariablen = {
                     let menuTextDivs = document.getElementsByClassName("menuText");
                     if (div.classList.contains("inaktiv")) {
                         div.classList.remove("inaktiv");
-                        zustand.pause = true;
+                        if(zustand.status==2)zustand.pause = true;
                         if (div.id == "Highscore") {
                             holen(div);
                         }
                     } else {
                         div.classList.add("inaktiv");
-                        zustand.pause = false;
+                        //zustand.pause = false;
                     }
                     for (let i = 0; i < menuTextDivs.length; i++) {
                         if (menuTextDivs[i] != undefined && menuTextDivs[i] != div) {
@@ -680,6 +680,9 @@ Object.observe(zustand, function (changes) {
         else if (change.name === "geistfarbe") {
             Spielvariablen.spielFlaeche.geist.farbeaendern();
 
+        }
+        else if (change.name === "spielerName"){
+            document.getElementById("usernameEingabe").value=zustand.spielerName;
         }
     });
 });

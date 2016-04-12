@@ -35,10 +35,10 @@
     <div>
         <nav class="breite" id="navList">
             <ul>
-                <li>Arcade</li>
-                <li>Highscore</li>
-                <li>Einstellungen</li>
-                <li>Hilfe</li>
+                <li title="Ändern des Spielernamens">Arcade</li>
+                <li title="Punktetabelle anzeigen">Highscore</li>
+                <li title="Spieleinstellungen Ändern (Ton/Farbe/Schwierigkeitsgrad)">Einstellungen</li>
+                <li title="Spielerklärung">Hilfe</li>
             </ul>
         </nav>
         <div id="result"></div>
@@ -60,7 +60,7 @@
             <div class="inaktiv breite hoehe menuText" id="Arcade">
                 <form action="" method="post">
                     <input type="text" placeholder="Username eingeben" id="usernameEingabe" name="UserName"/><br/>
-                    <button class="button" type="submit" id="spielStart">Spiel starten</button>
+                    <div class="button" id="spielStart">Spiel starten</div>
                 </form>
             </div>
             <div class="inaktiv breite hoehe menuText" id="Hilfe">

@@ -39,6 +39,7 @@ var Spielvariablen = {
     levelstand: 0,
     gesamtzeit: 0,
     punkte: 0,
+    schwierigkeitGeaendert:false,
     Richtungen: {
         hoch: 0,
         runter: 2,
@@ -367,6 +368,7 @@ var Spielvariablen = {
 
                 }
                 localStorage.setItem("REVPacSchwierigkeit", zustand.schwierigkeit);
+                Spielvariablen.schwierigkeitGeaendert=true;
 
             }
             else if (e.target.name == "farbe") {
@@ -383,7 +385,14 @@ var Spielvariablen = {
 
                 }
                 document.getElementById("ton").checked = zustand.ton;
+            }else if (e.target.id=="speichern"){
+                if(Spielvariablen.schwierigkeitGeaendert)location.reload();
+                else{
+                    document.getElementById("Einstellungen").classList.add("inaktiv");
+                }
+
             }
+
 
         }
     }
@@ -423,7 +432,7 @@ function holen(displayElement) {
         if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
             let tablecontent=JSON.parse(xmlhttp.responseText);
             if (displayElement != undefined){
-                displayElement.innerHTML="";
+                displayElement.innerHTML="<h3>Reverse PacMan Bestenliste</h3>";
                 let table=document.createElement("table");
                 let tbody=document.createElement("tbody");
                 table.appendChild(tbody);
@@ -607,9 +616,10 @@ function controller_Seitenaufbau() {
             break;
         }
     }
-
     if(zustand.spielerName==="")
-        document.getElementById("Arcade").classList.remove("inkativ");
+        document.getElementById("Arcade").classList.remove("inaktiv");
+
+
 
 
     document.getElementById("usernameEingabe").addEventListener("keydown",function(e){
@@ -620,14 +630,14 @@ function controller_Seitenaufbau() {
             zustand.spielerName=e.target.value;
         }
     });
-
     zustand.status = 1
 }
 function controller_spielende() {
     let endeDiv=document.getElementById("ende");
-    endeDiv.innerHTML=zustand.spielerName+'<br>Gesamtzeit:'+time(Spielvariablen.gesamtzeit)+'<br>Gesamtpunkte:'+Spielvariablen.punkte+'<br>Taste drücken für Neustart';
+    endeDiv.innerHTML=zustand.spielerName+'<br>Gesamtzeit:'+time(Spielvariablen.gesamtzeit)+'<br>Gesamtpunkte:'+Spielvariablen.punkte+'<br>Return drücken für Neustart';
     endeDiv.classList.remove("inaktiv");
     window.addEventListener("keydown",function(){
+        if(e.keyCode==13)
         location.reload();
     });
 
@@ -694,6 +704,7 @@ Object.observe(zustand, function (changes) {
             document.getElementById("usernameEingabe").value=zustand.spielerName;
             localStorage.setItem("REVPacSpielerName", zustand.spielerName);
             document.getElementById("userNameContainer").innerText=zustand.spielerName;
+            document.getElementById("Arcade").classList.add("inkativ");
         }
     });
 });
@@ -951,6 +962,9 @@ class SpielFlaeche {
     }
 
     toggleAengstlichLevel() {
+        let panik=document.getElementById("panik");
+        if(panik.classList.contains("inaktiv"))panik.classList.remove("inaktiv");
+        else panik.classList.add("inaktiv");
         negative(this.levelContext, this.width, this.height);
         function negative(context, width, height) {
             var imageData = context.getImageData(0, 0, width, height);

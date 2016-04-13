@@ -578,7 +578,6 @@ function controller_Seitenaufbau() {
     document.getElementById("navList").addEventListener("click", Spielvariablen.funtionen.navListener);
     document.getElementById("spielStart").addEventListener("click", function () {
         zustand.spielerName = document.getElementById("usernameEingabe").value;
-        localStorage.setItem("REVPacSpielerName", zustand.spielerName);
     });
 
     //noinspection JSCheckFunctionSignatures
@@ -611,6 +610,16 @@ function controller_Seitenaufbau() {
 
     if(zustand.spielerName==="")
         document.getElementById("Arcade").classList.remove("inkativ");
+
+
+    document.getElementById("usernameEingabe").addEventListener("keydown",function(e){
+
+        if (e.keyCode==13){
+            e.cancelBubble = true; //eventweiterreichung für enter unterbinden
+            e.returnValue = false; //dito
+            zustand.spielerName=e.target.value;
+        }
+    });
 
     zustand.status = 1
 }
@@ -683,6 +692,8 @@ Object.observe(zustand, function (changes) {
         }
         else if (change.name === "spielerName"){
             document.getElementById("usernameEingabe").value=zustand.spielerName;
+            localStorage.setItem("REVPacSpielerName", zustand.spielerName);
+            document.getElementById("userNameContainer").innerText=zustand.spielerName;
         }
     });
 });

@@ -611,6 +611,16 @@ function controller_Seitenaufbau() {
     if(zustand.spielerName==="")
         document.getElementById("Arcade").classList.remove("inkativ");
 
+
+    document.getElementById("usernameEingabe").addEventListener("keydown",function(e){
+
+        if (e.keyCode==13){
+            e.cancelBubble = true; //eventweiterreichung für enter unterbinden
+            e.returnValue = false; //dito
+            zustand.spielerName=e.target.value;
+        }
+    });
+
     zustand.status = 1
 }
 function controller_spielende() {

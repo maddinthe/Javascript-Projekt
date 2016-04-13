@@ -578,7 +578,6 @@ function controller_Seitenaufbau() {
     document.getElementById("navList").addEventListener("click", Spielvariablen.funtionen.navListener);
     document.getElementById("spielStart").addEventListener("click", function () {
         zustand.spielerName = document.getElementById("usernameEingabe").value;
-        localStorage.setItem("REVPacSpielerName", zustand.spielerName);
     });
 
     //noinspection JSCheckFunctionSignatures
@@ -683,6 +682,8 @@ Object.observe(zustand, function (changes) {
         }
         else if (change.name === "spielerName"){
             document.getElementById("usernameEingabe").value=zustand.spielerName;
+            localStorage.setItem("REVPacSpielerName", zustand.spielerName);
+            document.getElementById("userNameContainer").innerText=zustand.spielerName;
         }
     });
 });

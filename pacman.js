@@ -1,6 +1,6 @@
 /**
  * Created by mtheilen on 16.03.2016.
- * PacMan-Reverse gebaut von T_Kertz Cpt. T.Turner und Maddinthe.
+ * PacMan-Reverse gebaut von T_Kertz Cpt. T.Turner und Maddinthe
  */
 "use strict";
 //(function() {

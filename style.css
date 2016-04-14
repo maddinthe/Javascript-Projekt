@@ -6,7 +6,7 @@
 }
 
 body {
-    background-color: orange;
+    background-color: #171719;
 }
 
 div {
@@ -20,7 +20,7 @@ body > div > div {
 }
 
 nav > ul > li {
-    background: #0077b3 none repeat scroll 0 0;
+    background: #008fff none repeat scroll 0 0;
     border: 1px solid #00669a;
     border-radius: 4px;
     color: #fff;
@@ -95,7 +95,7 @@ tr:nth-child(even){
 }
 
 .button {
-    background: #0077b3 none repeat scroll 0 0;
+    background: #008fff none repeat scroll 0 0;
     border: 1px solid #00669a;
     border-radius: 4px;
     color: #fff;
@@ -177,7 +177,7 @@ tr:nth-child(even){
 }
 
 .gewonnenVerloren, .pause, #reverseBlinker{
-    background-color: orange;
+    background-color: #008fff;
 }
 
 /*-------------------------------------------------------------------*/
@@ -202,7 +202,7 @@ tr:nth-child(even){
 
 #reverseBlinker {
     transform: rotate(-25deg);
-    color: red;
+    color: #ffffff;
     text-align: center;
     width: 150px;
     height: 30px;
@@ -213,7 +213,7 @@ tr:nth-child(even){
     border-radius: 5px;
     font-size: 18pt;
     font-weight: bold;
-    box-shadow: 0 0 5px 5px yellow;
+    box-shadow: 0 0 5px 5px;
     animation: blinken 2s linear;
     animation-iteration-count: 3;
     z-index: 1001;

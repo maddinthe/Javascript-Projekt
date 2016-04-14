@@ -77,13 +77,13 @@ tr td{
 }
 
 tr:nth-child(odd){
-    background-color: forestgreen;
+    background-color: #008fff;
     color: white;
     font-weight: bold;
 }
 
 tr:nth-child(even){
-    background-color: red;
+    background-color: #171719;
     color: white;
 }
 /*-------------------------------------------------------------------*/

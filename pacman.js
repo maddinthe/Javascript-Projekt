@@ -587,6 +587,7 @@ function controller_Seitenaufbau() {
     document.getElementById("navList").addEventListener("click", Spielvariablen.funtionen.navListener);
     document.getElementById("spielStart").addEventListener("click", function () {
         zustand.spielerName = document.getElementById("usernameEingabe").value;
+        document.getElementById("Name").classList.add("inaktiv");
     });
 
     //noinspection JSCheckFunctionSignatures
@@ -617,7 +618,7 @@ function controller_Seitenaufbau() {
         }
     }
     if(zustand.spielerName==="")
-        document.getElementById("Arcade").classList.remove("inaktiv");
+        document.getElementById("Name").classList.remove("inaktiv");
 
 
 
@@ -704,7 +705,7 @@ Object.observe(zustand, function (changes) {
             document.getElementById("usernameEingabe").value=zustand.spielerName;
             localStorage.setItem("REVPacSpielerName", zustand.spielerName);
             document.getElementById("userNameContainer").innerText=zustand.spielerName;
-            document.getElementById("Arcade").classList.add("inkativ");
+            document.getElementById("Name").classList.add("inkativ");
         }
     });
 });

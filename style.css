@@ -264,12 +264,12 @@ tr:nth-child(even){
     color: red;
 }
 
-#Arcade form>input{
+#Name form>input{
     margin: calc(40% - 0px) calc(33% - 30px) 0 calc(33% - 40px);
     width: 50%;
 }
 
-#Arcade form button{
+#Name form button{
     margin: 25px calc(33% - 30px) 0 calc(33% - 30px);
     width: 50%;
     opacity: 1 !important;

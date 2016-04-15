@@ -3,7 +3,7 @@
  * PacMan-Reverse gebaut von T_Kertz Cpt. T.Turner und Maddinthe
  */
 "use strict";
-//(function() {
+(function() {
 var zustand = {
     status: -1,
     pause: false,
@@ -311,8 +311,8 @@ var Spielvariablen = {
         ,
         punkteAnzeige: function () {
             if (Spielvariablen.levelstand > 0) {
-                document.getElementById("punkteContainer").innerText = punkte() + Spielvariablen.punkte;
-            } else document.getElementById("punkteContainer").innerText = punkte();
+                document.getElementById("punkteContainer").innerText = (punkte() + Spielvariablen.punkte)+"";
+            } else document.getElementById("punkteContainer").innerText = punkte()+"";
         }
         ,
         navListener: function (e) {
@@ -437,16 +437,17 @@ function holen(displayElement) {
                 let tbody=document.createElement("tbody");
                 table.appendChild(tbody);
                 tbody.innerHTML="<tr><th>Platz</th><th>Name</th><th>Zeit</th><th>Punkte</th></tr>";
-                for (let i in tablecontent){
+                for (let i=0;i<tablecontent.length;i++){
                     let tr=document.createElement("tr");
                     let platz=document.createElement("td");
                     let name=document.createElement("td");
                     let zeit=document.createElement("td");
                     let punkte=document.createElement("td");
-                    platz.innerText=1+Number(i);
+                    platz.innerText=""+(1+Number(i));
                     name.innerText=tablecontent[i].name;
+                    //noinspection JSUnresolvedVariable
                     zeit.innerText=tablecontent[i].zeit;
-                    punkte.innerText=Math.round(tablecontent[i].punkte);
+                    punkte.innerText=""+Math.round(tablecontent[i].punkte);
                     tr.appendChild(platz);
                     tr.appendChild(name);
                     tr.appendChild(zeit);
@@ -637,7 +638,7 @@ function controller_spielende() {
     let endeDiv=document.getElementById("ende");
     endeDiv.innerHTML=zustand.spielerName+'<br>Gesamtzeit:'+time(Spielvariablen.gesamtzeit)+'<br>Gesamtpunkte:'+Spielvariablen.punkte+'<br>Return drücken für Neustart';
     endeDiv.classList.remove("inaktiv");
-    window.addEventListener("keydown",function(){
+    window.addEventListener("keydown",function(e){
         if(e.keyCode==13)
         location.reload();
     });
@@ -1347,4 +1348,4 @@ class astar {
         return dx + dy;
     }
 }
-//}());
+}());

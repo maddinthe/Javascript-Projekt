@@ -636,7 +636,14 @@ function controller_Seitenaufbau() {
 }
 function controller_spielende() {
     let endeDiv=document.getElementById("ende");
-    endeDiv.innerHTML=zustand.spielerName+'<br>Gesamtzeit:'+time(Spielvariablen.gesamtzeit)+'<br>Gesamtpunkte:'+Spielvariablen.punkte+'<br>Return drücken für Neustart';
+    endeDiv.innerHTML='<h3>Spielende</h3><hr>' +
+        '<table><tbody>' +
+        '<tr><td>Name:</td><td>'+zustand.spielerName+'</td></tr>' +
+        '<tr><td>Gesamtzeit:</td><td>'+time(Spielvariablen.gesamtzeit)+'</td></tr>' +
+        '<tr><td>Gesamtpunkte:</td><td>'+Spielvariablen.punkte+'</td></tr>' +
+        '</tbody>' +
+        '</table>' +
+        '<h3>Return drücken für Neustart</h3>';
     endeDiv.classList.remove("inaktiv");
     window.addEventListener("keydown",function(e){
         if(e.keyCode==13)

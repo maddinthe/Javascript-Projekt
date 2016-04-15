@@ -315,6 +315,18 @@ tr:nth-child(even){
     animation: blinken 1s linear;
     animation-iteration-count: infinite;
 }
+#ende table{
+    padding: 40px 0;
+    margin: auto;
+}
+#ende h3{
+   text-align: center;
+}
+#ende td {
+    text-align: left;
+    width: 175px;
+    padding: 2px;
+}
 
 /*-------------------------------------------------------------------*/
 /*----------------------------@ Elemente-----------------------------*/

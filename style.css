@@ -181,6 +181,9 @@ tr:nth-child(even){
 #geisterFeld {
     position: absolute;
 }
+#pillenFeld{
+    position: absolute;
+}
 
 
 #reverseBlinker {

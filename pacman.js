@@ -534,14 +534,17 @@
         let spielFeld = document.getElementById("spielFeld");
         let pacManFeld = document.getElementById("pacmanFeld");
         let Geistfeld = document.getElementById("geisterFeld");
+        let PillenFeld = document.getElementById("pillenFeld");
         spielFeld.width = zustand.spielFeldGroesse;
         spielFeld.height = zustand.spielFeldGroesse;
         Geistfeld.width = zustand.spielFeldGroesse;
         Geistfeld.height = zustand.spielFeldGroesse;
         pacManFeld.width = zustand.spielFeldGroesse;
         pacManFeld.height = zustand.spielFeldGroesse;
+        PillenFeld.height = zustand.spielFeldGroesse;
+        PillenFeld.width = zustand.spielFeldGroesse;
         pacManFeld.style.zIndex = 0;
-        Spielvariablen.spielFlaeche = new SpielFlaeche(spielFeld, pacManFeld, Geistfeld, Spielvariablen.level[Spielvariablen.levelstand]);
+        Spielvariablen.spielFlaeche = new SpielFlaeche(spielFeld, pacManFeld, Geistfeld, PillenFeld, Spielvariablen.level[Spielvariablen.levelstand]);
         if (Spielvariablen.listener == null) {
             Spielvariablen.listener = window.addEventListener("keydown", Spielvariablen.funtionen.keylistener);
             Spielvariablen.listener = Spielvariablen.funtionen.keylistener;
@@ -893,11 +896,12 @@
 
     }
     class SpielFlaeche {
-        constructor(levelCanvas, pacManCanvas, geistCanvas, level) {
+        constructor(levelCanvas, pacManCanvas, geistCanvas, pillenCanvas, level) {
             this.pacManCanvas = pacManCanvas;
             this.levelContext = levelCanvas.getContext("2d");
             this.pacManContext = pacManCanvas.getContext("2d");
             this.geistContext = geistCanvas.getContext("2d");
+            this.pillenContext = pillenCanvas.getContext("2d");
             this.width = levelCanvas.width;
             this.height = levelCanvas.height;
             this.level = level;
@@ -1048,7 +1052,12 @@
 
             this.pacManContext.clearRect(0, 0, this.width, this.height);
             this.geistContext.clearRect(0, 0, this.width, this.height);
+            if (this.animationCount % 10 == 0) {
+                this.pillenContext.clearRect(0, 0, this.width, this.height);
+                for (let i = 0; i < this.pillen.length; i++)
+                    this.pillenContext.putImageData(this.pillen[i].imageData, this.pillen[i].posX * this.factor, this.pillen[i].posY * this.factor);
             //pacman richtung wechseln und animation
+            }
             if (this.animationCount++ % 10 == 0 && !zustand.pause && Spielvariablen.Spielstart) {
                 if (++this.animationFrame > 2)this.animationFrame = 0;
             }
@@ -1061,8 +1070,6 @@
 
             //pacman richtung wechseln und animation ende
 
-            for (let i = 0; i < this.pillen.length; i++)
-                this.pacManContext.putImageData(this.pillen[i].imageData, this.pillen[i].posX * this.factor, this.pillen[i].posY * this.factor);
 
             this.geistContext.drawImage(this.geist.image, this.geist.posX * this.factor + this.geist.offsetX, this.geist.posY * this.factor + this.geist.offsetY, this.factor, this.factor);
             if (this.pacMan.offsetX > 0)this.pacMan.offsetX -= this.offsetDivPac;

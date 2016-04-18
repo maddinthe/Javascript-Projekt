@@ -573,6 +573,7 @@
         let start = document.getElementById("start");
         start.classList.add("inaktiv");
         Spielvariablen.Spielstart = true;
+        zustand.pause=false;
         Spielvariablen.intervalle.abgelaufeneZeit = setInterval(function () {
             if (!zustand.pause)Spielvariablen.abgelaufeneZeit = Spielvariablen.abgelaufeneZeit + 10;
         }, 10);
@@ -775,7 +776,7 @@
         zustand.status = 0;
     });
     window.addEventListener("unload", function () {
-            if(Spielvariablen.levelstand>1){
+            if(Spielvariablen.levelstand>0){
                 let save = [];
                 save.push(Spielvariablen.gesamtzeit);
                 save.push(Spielvariablen.punkte);
@@ -783,6 +784,9 @@
                 localStorage.setItem("REVPacAlterSpielstand", JSON.stringify(save));
             }else localStorage.removeItem("REVPacAlterSpielstand");
 
+    });
+    window.addEventListener("resize",function(){
+       zustand.pause=true;
     });
 //<<------------------Klassendefinition------------------>>
 

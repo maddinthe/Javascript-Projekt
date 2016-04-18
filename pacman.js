@@ -5,6 +5,7 @@
 "use strict";
 (function () {
     var zustand = {
+        reload: null,
         status: -1,
         pause: false,
         observer: null,
@@ -24,11 +25,17 @@
         let spielFeldGroesse = localStorage.getItem("REVPacSpielFeldGroesse");
         let schwierigkeit = localStorage.getItem("REVPacSchwierigkeit");
         let geistfarbe = localStorage.getItem("REVPacGeistfarbe");
+        let alterSpielstand = localStorage.getItem("REVPacAlterSpielstand");
         let ton = localStorage.getItem("REVPacTon");
         if (geistfarbe != null)zustand.geistfarbe = geistfarbe;
         if (spielerName != null)zustand.spielerName = spielerName;
         if (schwierigkeit != null)zustand.schwierigkeit = Number(schwierigkeit);
         if (spielFeldGroesse != null)zustand.spielFeldGroesse = Number(spielFeldGroesse);
+        if (alterSpielstand != null) {
+            if(confirm("Alter Spielstand gefunden, laden ?")){
+                zustand.reload=alterSpielstand;
+            }else zustand.reload=null;
+        }
         if (ton != null)zustand.ton = (ton == "true");
     }
     var Spielvariablen = {
@@ -520,6 +527,13 @@
 
 
     function controller_start() {
+        if(zustand.reload!=null){
+            let restore=JSON.parse(zustand.reload);
+            zustand.reload=null;
+            Spielvariablen.punkte=restore[1];
+            Spielvariablen.levelstand=restore[2];
+            Spielvariablen.gesamtzeit=restore[0];
+        }
         let gewonnenverloren = document.getElementsByClassName("gewonnenVerloren");
         for (let i = 0; i < gewonnenverloren.length; i++) {
             if (gewonnenverloren[i].id === "start") {
@@ -759,6 +773,16 @@
     });
     var load = window.addEventListener("load", function () {
         zustand.status = 0;
+    });
+    window.addEventListener("unload", function () {
+            if(Spielvariablen.levelstand>1){
+                let save = [];
+                save.push(Spielvariablen.gesamtzeit);
+                save.push(Spielvariablen.punkte);
+                save.push(Spielvariablen.levelstand);
+                localStorage.setItem("REVPacAlterSpielstand", JSON.stringify(save));
+            }else localStorage.removeItem("REVPacAlterSpielstand");
+
     });
 //<<------------------Klassendefinition------------------>>
 
@@ -1056,7 +1080,7 @@
                 this.pillenContext.clearRect(0, 0, this.width, this.height);
                 for (let i = 0; i < this.pillen.length; i++)
                     this.pillenContext.putImageData(this.pillen[i].imageData, this.pillen[i].posX * this.factor, this.pillen[i].posY * this.factor);
-            //pacman richtung wechseln und animation
+                //pacman richtung wechseln und animation
             }
             if (this.animationCount++ % 10 == 0 && !zustand.pause && Spielvariablen.Spielstart) {
                 if (++this.animationFrame > 2)this.animationFrame = 0;

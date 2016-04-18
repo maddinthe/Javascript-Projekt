@@ -8,6 +8,7 @@
     <script src="object-observe.js"></script>
 </head>
 <body>
+<!--Spielfiguren und Sounds laden-->
 <img src="grafik/pacman-ani.png" id="pacman" alt="" style="display: none">
 <img src="grafik/geist-blau.png" id="Geist-blau" class="geistBild" style="display: none">
 <img src="grafik/geist-rot.png" id="Geist-rot" class="geistBild" style="display: none">
@@ -22,7 +23,6 @@
 <div>
     <header>
         <img src="grafik/pacman-header.png" alt=""/>
-
         <div id="reverseBlinker">Reverse!!!</div>
         <div class="pacman">
             <img src="grafik/pacman-logo.png" alt=""/>
@@ -31,6 +31,7 @@
             <img src="grafik/geist-logo.png" alt=""/>
         </div>
     </header>
+    <!--Navigationsmenü-->
     <div>
         <nav class="breite" id="navList">
             <ul>
@@ -40,24 +41,35 @@
                 <li title="Spielerklärung">Info</li>
             </ul>
         </nav>
+        <!--Ergebniszusammenfassung, wenn durchgespielt-->
         <div id="result"></div>
         <section class="breite hoehe">
             <div class="pause inaktiv">Pause</div>
+
+            <!--Labels in Spielfeldmitte-->
             <div id="start" class="gewonnenVerloren">Press Return</div>
             <div id="verloren" class="gewonnenVerloren inaktiv">Verloren</div>
             <div id="gewonnen" class="gewonnenVerloren inaktiv">Gewonnen</div>
             <div id="ende" class="menuText breite hoehe inaktiv"></div>
+
+            <!--Spielangaben rechts (Spilername, Punkte, Zeit-->
             <div id="userLabelContainer">Spielername:</div>
             <div id="userNameContainer"></div>
             <div id="zeitLabelContainer">Zeit:</div>
             <div id="zeitContainer">00:00:00</div>
             <div id="punkteLabelContainer">Punkte:</div>
             <div id="punkteContainer">0</div>
+
+            <!--Logo wird eingeblendet, wenn PacMan den Geist fressen kann-->
             <img id="panik" class="inaktiv" src="grafik/panik.png">
+
+            <!--Spielfeld-->
             <canvas id="spielFeld">Ihr Browser kann kein HTML 5</canvas>
             <canvas id="pillenFeld"></canvas>
             <canvas id="pacmanFeld"></canvas>
             <canvas id="geisterFeld"></canvas>
+
+            <!--Container die eingeblendet werden, wenn Navigation genutzt wird -->
             <div class="inaktiv breite hoehe menuText" id="Name">
                 <form action="" method="post">
                     <input type="text" placeholder="Spielername eingeben" id="usernameEingabe" name="UserName"/><br/>
@@ -136,6 +148,8 @@
         </footer>
     </div>
 </div>
+
+<!--Einbinden des Javascripts-->
 <script src="pacman.js"></script>
 </body>
 </html>

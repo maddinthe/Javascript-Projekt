@@ -363,10 +363,9 @@
                             if (div.id == "Highscore") {
                                 holen(div);
                             }
-                        } else {
+                        } else
                             div.classList.add("inaktiv");
-                            //zustand.pause = false;
-                        }
+
                         for (let i = 0; i < menuTextDivs.length; i++) {
                             if (menuTextDivs[i] != undefined && menuTextDivs[i] != div) {
                                 menuTextDivs[i].classList.add("inaktiv");

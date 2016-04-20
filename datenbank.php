@@ -1,6 +1,5 @@
 <?php
 // Verbindungsaufbau und Auswahl der Datenbank
-
 $dbconn = pg_connect("host=localhost dbname=hs06-4 user=hs06-4 password=2HCFGtn2")
 or die('Verbindungsaufbau fehlgeschlagen: ' . pg_last_error());
 

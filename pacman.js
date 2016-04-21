@@ -270,8 +270,10 @@
                     case 37:
                     {
                         Spielvariablen.spielFlaeche.geist.richtungNeu = Spielvariablen.Richtungen.links;
-                        e.cancelBubble = true; //eventweiterreichung unterbinden um scollen zu verhindern
-                        e.returnValue = false; //dito
+                        if(!zustand.pause) {
+                            e.cancelBubble = true; //eventweiterreichung unterbinden um scollen zu verhindern
+                            e.returnValue = false; //dito
+                        }
                         break;
                     }
                     case 65:
@@ -282,8 +284,10 @@
                     case 38:
                     {
                         Spielvariablen.spielFlaeche.geist.richtungNeu = Spielvariablen.Richtungen.hoch;
-                        e.cancelBubble = true;
-                        e.returnValue = false;
+                        if(!zustand.pause) {
+                            e.cancelBubble = true;
+                            e.returnValue = false;
+                        }
                         break;
                     }
                     case 87:
@@ -295,8 +299,10 @@
                     case 39:
                     {
                         Spielvariablen.spielFlaeche.geist.richtungNeu = Spielvariablen.Richtungen.rechts;
-                        e.cancelBubble = true;
-                        e.returnValue = false;
+                        if(!zustand.pause) {
+                            e.cancelBubble = true;
+                            e.returnValue = false;
+                        }
                         break;
                     }
                     case 68:
@@ -307,8 +313,10 @@
                     case 40:
                     {
                         Spielvariablen.spielFlaeche.geist.richtungNeu = Spielvariablen.Richtungen.runter;
-                        e.cancelBubble = true;
-                        e.returnValue = false;
+                        if(!zustand.pause) {
+                            e.cancelBubble = true;
+                            e.returnValue = false;
+                        }
                         break;
                     }
                     case 83:
@@ -801,6 +809,14 @@
      * Grundlage des Navigationsgrids
      */
     class Knoten {
+        /**
+         *
+         * @param knotenOben Knoten der über diesem ist
+         * @param knotenLinks Knoten der Links von diesem ist
+         * @param posX X-Position des Knotens im Grid
+         * @param posY Y-Position des Knotens im Grid
+         * @param pille Pille die sich auf den Knoten befinden soll
+         */
         constructor(knotenOben, knotenLinks, posX, posY, pille) {
             this.knotenOben = knotenOben;
             this.knotenUnten = null;
@@ -821,6 +837,10 @@
             }
         }
 
+        /**
+         * Gibt die nachbarn eines knotens zuück
+         * @returns {Array} Array in dem alle nachbarn des knotens drin sind
+         */
         get nachbarn() {
             let ret = [];
             if (this.knotenLinks instanceof Knoten)ret.push(this.knotenLinks);
@@ -830,6 +850,11 @@
             return ret;
         }
 
+        /**
+         * Gibt die nächste richtung zurück bei vorgegebener richtung(für kurven)
+         * @param richtung Gewünschte richtung
+         * @returns {number} mögliche richtung
+         */
         nexthop(richtung) {
             switch (richtung) {
                 case Spielvariablen.Richtungen.hoch:
@@ -866,6 +891,9 @@
 
 
     }
+    /**
+     * Grundlageklasse für Pille,Geist und PacMan mit daten die alle haben
+     */
     class SpielObjekt {
         /**
          * Constructor für Spielobjekt
@@ -930,6 +958,9 @@
         }
 
     }
+    /**
+     * Klasse für das Befüllen des canvas und das bewegen der Figuren
+     */
     class SpielFlaeche {
         constructor(levelCanvas, pacManCanvas, geistCanvas, pillenCanvas, level) {
             this.pacManCanvas = pacManCanvas;
@@ -959,6 +990,9 @@
             this.figurenZeichnen();
         }
 
+        /**
+         * Zeichnet das Spielfeld neu und initialisiert das level entsprechend
+         */
         zeichnen() {
             for (let i = 0; i < this.level.length; i++) {
                 this.knoten[i] = [];
@@ -1041,11 +1075,17 @@
             }
         }
 
+        /**
+         * Schaltet pacman in den modus das er nichtmehr weglaufen darf und zurück
+         */
         pacManWeglaufentoggle() {
 
             this.pacMan.darfwegglaufen = !this.pacMan.darfwegglaufen;
         }
 
+        /**
+         * Schaltet das spiel in den Geist-ängstlich Modus und zurück
+         */
         toggleAengstlichLevel() {
             let panik = document.getElementById("panik");
             if (panik.classList.contains("inaktiv"))panik.classList.remove("inaktiv");
@@ -1068,6 +1108,9 @@
 
         }
 
+        /**
+         * zeichnet die figuren und ruft die bewegung dieser auf
+         */
         figurenZeichnen() {
             if (Spielvariablen.Spielstart && !zustand.pause) {
                 if (Spielvariablen.FrameCounterGeist++ >= this.tempoGeist) {
@@ -1124,21 +1167,24 @@
 
         }
 
+        /**
+         * Steuert die Bewegeungen von PacMan und beinhaltet die "KI"
+         */
         pacManBewegen() {
             let knoten = this.knoten;
             let geist = this.geist;
             let pacman = this.pacMan;
             let pillen = this.pillen;
-            if (!this.beendet) {
+            if (!this.beendet) {  //darf sich nur bewegen wenn das spiel noch nicht zuende ist
                 let PacManAltX = pacman.posX;
                 let PacManAltY = pacman.posY;
-                if (zustand.aengstlich) {
+                if (zustand.aengstlich) {  //jagdmodus pacman sucht hier den kürzesten weg zum geist um ihn zu jagen und beschreitet diesen
                     let zielRoute = astar.search(knoten, pacman.posX, pacman.posY, geist.posX, geist.posY);
                     pacman.posX = zielRoute[0].posX;
                     pacman.posY = zielRoute[0].posY;
 
 
-                } else if ((pacman.darfwegglaufen && pacman.getAbstand(geist.posX, geist.posY) < 6) || !geist.isMoving) {
+                } else if ((pacman.darfwegglaufen && pacman.getAbstand(geist.posX, geist.posY) < 6) || !geist.isMoving) { //pacman weglaufen lassen wenn der geist steht oder die Manhattandistanz kleiner als 6 ist
                     let aktKnoten = knoten[pacman.posY][pacman.posX];
                     let auswege = aktKnoten.nachbarn;
                     let bestnachbar = auswege[0];
@@ -1166,6 +1212,7 @@
                     }
 
                 }
+                //keine jagt und kein weglaufen also nächste pille suchen und essen ;-)
                 else {
                     //--nächste pille rausfinden mittels manhattan distanz rausfinden;
                     Spielvariablen.funtionen.shuffle(pillen);
@@ -1236,6 +1283,9 @@
 
         }
 
+        /**
+         * Steuert die Geistbewegungen durch abfragen der Bewegungsrichtung etc
+         */
         geistBewegen() {
             //variablen heranholen zur leichteren lesbarkeit
 
@@ -1246,7 +1296,7 @@
             let geistAltX = this.geist.posX;
             let geistAltY = this.geist.posY;
             geist.isMoving = false;
-            if (knoten[geist.posY][geist.posX].nexthop(geist.richtungNeu) == geist.richtungNeu) {
+            if (knoten[geist.posY][geist.posX].nexthop(geist.richtungNeu) == geist.richtungNeu) { //prüfung ob der nächste schritt ein feld ist auf das man sich bewegen darf
                 geist.richtung = geist.richtungNeu;
                 switch (geist.richtung) {
                     case Spielvariablen.Richtungen.hoch:
@@ -1273,7 +1323,8 @@
                         geist.posY++;
                         break;
                     }
-                }
+                } //richtungsänderung
+                //positionsänderung mit evtl. übersprung auf andere seite
                 if (geist.posX < 0)geist.posX = knoten[0].length - 1;
                 if (geist.posY < 0)geist.posY = knoten.length - 1;
                 if (geist.posX > knoten[0].length - 1)geist.posX = 0;
@@ -1283,6 +1334,7 @@
                 if (!(geist.posX == geistAltX && geist.posY == geistAltY))geist.isMoving = true;
 
             }
+            //ängstlich zurücksetzen wenn geist im haus
             if (level[geist.posY][geist.posX] == Spielvariablen.Feldtypen.geisterHaus || level[geist.posY][geist.posX] == Spielvariablen.Feldtypen.geistSpawn || level[geist.posY][geist.posX] == Spielvariablen.Feldtypen.tuer)zustand.aengstlich = false;
             geist.richtung = 5;
 
@@ -1293,6 +1345,9 @@
             }
         }
 
+        /**
+         * Spiel zuende zeichnen damit der pacman den geist auch optisch geschnappt hat bzw umgekehrt
+         */
         zuEndeZeichnen() {
             this.pacManContext.clearRect(0, 0, this.width, this.height);
             this.geistContext.clearRect(0, 0, this.width, this.height);
@@ -1329,6 +1384,9 @@
         }
 
     }
+    /**
+     * implementation vom A*-Routing für unsere Anforderungen
+     */
     class astar {
         //Astar bildet den Routingalgorythmus A* für unsere art Grid ab
         /**

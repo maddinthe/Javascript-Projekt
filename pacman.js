@@ -507,6 +507,7 @@
                         tbody.appendChild(tr);
                     }
                     div.appendChild(table);
+                    displayElement.innerHTML="";
                     displayElement.appendChild(div);
                 }
 

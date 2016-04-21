@@ -294,11 +294,6 @@ tr:nth-child(even){
     width: 96%;
 }
 
-#Highscore h3 {
-    padding: 10px;
-    width: 96%;
-}
-
 #Highscore table{
     border-collapse: collapse;
     margin: 20px auto;

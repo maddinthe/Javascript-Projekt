@@ -1,6 +1,7 @@
 /**
- * Created by mtheilen on 16.03.2016.
- * PacMan-Reverse gebaut von T_Kertz Cpt. T.Turner und Maddinthe
+ * Created by Theilen,Kertz,Dreher
+ * PacMan-Reverse gebaut von T_Kertz C_Dreher und M_Theilen
+ * die Namen in den weiteren Kommentaren geben an wer den großteil der Arbeit dort geleistet hat, gibt jedoch keinen Anspruch auf Vollständigkeit.
  */
 "use strict";
 //Kapselung keine globalen Variablen
@@ -22,7 +23,7 @@
         ton: true
     };
     //lokale Speicherabfrage zu vorhandenen Spieldaten
-    if (typeof(localStorage) !== "undefined") {
+    if (typeof(localStorage) !== "undefined") { //kertz
         let spielerName = localStorage.getItem("REVPacSpielerName");
         let spielFeldGroesse = localStorage.getItem("REVPacSpielFeldGroesse");
         let schwierigkeit = localStorage.getItem("REVPacSchwierigkeit");
@@ -447,7 +448,7 @@
         }
     };
 
-//datenbankanteil
+//datenbankanteil von Dreher
     /**
      * Berechnet den aktuellen Punktestand im aktuellen level
      * @returns {number} punktestand
@@ -540,7 +541,7 @@
 
 //datenbankanteil ende
 
-    //Lädt Spielfeld/Level
+    //Lädt Spielfeld/Level dreher
     function controller_start() {
         if(zustand.reload!=null){
             let restore=JSON.parse(zustand.reload);
@@ -582,7 +583,7 @@
         if (Spielvariablen.levelstand > 0)document.getElementById("levelwechsel").play();
         else document.getElementById("opening").play();
     }
-    //läuft während des Spiels und lädt aktive und inaktive Elemente
+    //läuft während des Spiels und lädt aktive und inaktive Elemente dreher
     function controller_spielen() {
         document.getElementById("waka").play();
         let start = document.getElementById("start");
@@ -603,7 +604,7 @@
         });
 
     }
-    //Levelübergang,  speichert Punkte Zeit etc. zwischen und setzt Intervalle zurück
+    //Levelübergang,  speichert Punkte Zeit etc. zwischen und setzt Intervalle zurück kertz
     function controller_levelende() {
         Spielvariablen.Spielstart = false;
         clearInterval((Spielvariablen.intervalle.abgelaufeneZeit));
@@ -646,7 +647,7 @@
             zustand.aengstlich = false;
         }
     }
-    // Canvas-Daten und Spielparameter initialisieren
+    // Canvas-Daten und Spielparameter initialisieren dreher
     function controller_Seitenaufbau() {
         let breite = document.getElementsByClassName("breite");
         let hoehe = document.getElementsByClassName("hoehe");
@@ -704,7 +705,7 @@
         });
         zustand.status = 1
     }
-    //Anzeige des erreichten Punktestands pro aktueller Spielsitzung (Spiel muss durchgespielt sein)
+    //Anzeige des erreichten Punktestands pro aktueller Spielsitzung (Spiel muss durchgespielt sein) kertz
     function controller_spielende() {
         let endeDiv = document.getElementById("ende");
         endeDiv.innerHTML = '<h3>Spielende</h3><hr>' +
@@ -724,7 +725,7 @@
         send(zustand.spielerName, Spielvariablen.gesamtzeit, Spielvariablen.punkte);
     }
 
-//observer überwacht Controllerzustände
+//observer überwacht Controllerzustände Kertz
     Object.observe(zustand, function (changes) {
         changes.forEach(function (change) {
             if (change.name === 'status') {
@@ -791,9 +792,9 @@
     //schaltet den Zustand auf Seitenaufbau nachdem die Seite komplett aufgerufen wurde um Fehler
     //durch ungeladene Objekte zu vermeiden
     var load = window.addEventListener("load", function () {
-        zustand.status = 0;
+        zustand.status = 0;  //theilen
     });
-    window.addEventListener("unload", function () {
+    window.addEventListener("unload", function () { //kertz
             if(Spielvariablen.levelstand>0){
                 let save = [];
                 save.push(Spielvariablen.gesamtzeit);
@@ -803,13 +804,13 @@
             }else localStorage.removeItem("REVPacAlterSpielstand");
 
     });
-    window.addEventListener("resize",function(){
+    window.addEventListener("resize",function(){ //theilen
        zustand.pause=true;
     });
 //<<------------------Klassendefinition------------------>>
-
     /**
      * Grundlage des Navigationsgrids
+     * von Theilen
      */
     class Knoten {
         /**
@@ -895,7 +896,7 @@
 
     }
     /**
-     * Grundlageklasse für Pille,Geist und PacMan mit daten die alle haben
+     * Grundlageklasse für Pille,Geist und PacMan mit daten die alle haben alles kertz
      */
     class SpielObjekt {
         /**
@@ -963,6 +964,7 @@
     }
     /**
      * Klasse für das Befüllen des canvas und das bewegen der Figuren
+     * von Theilen
      */
     class SpielFlaeche {
         constructor(levelCanvas, pacManCanvas, geistCanvas, pillenCanvas, level) {
@@ -1389,6 +1391,7 @@
     }
     /**
      * implementation vom A*-Routing für unsere Anforderungen
+     * von Theilen
      */
     class astar {
         //Astar bildet den Routingalgorythmus A* für unsere art Grid ab

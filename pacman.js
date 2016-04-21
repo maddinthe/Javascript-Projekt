@@ -270,8 +270,6 @@
                     case 65:
                     {
                         Spielvariablen.spielFlaeche.geist.richtungNeu = Spielvariablen.Richtungen.links;
-                        e.cancelBubble = true; //eventweiterreichung unterbinden um scollen zu verhindern
-                        e.returnValue = false; //dito
                         break;
                     }
                     case 38:
@@ -284,8 +282,6 @@
                     case 87:
                     {
                         Spielvariablen.spielFlaeche.geist.richtungNeu = Spielvariablen.Richtungen.hoch;
-                        e.cancelBubble = true;
-                        e.returnValue = false;
                         break;
 
                     }
@@ -299,8 +295,6 @@
                     case 68:
                     {
                         Spielvariablen.spielFlaeche.geist.richtungNeu = Spielvariablen.Richtungen.rechts;
-                        e.cancelBubble = true;
-                        e.returnValue = false;
                         break;
                     }
                     case 40:
@@ -313,8 +307,6 @@
                     case 83:
                     {
                         Spielvariablen.spielFlaeche.geist.richtungNeu = Spielvariablen.Richtungen.runter;
-                        e.cancelBubble = true;
-                        e.returnValue = false;
                         break;
                     }
                     case 32:

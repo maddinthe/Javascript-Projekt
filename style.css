@@ -154,7 +154,7 @@ tr:nth-child(even){
     position: absolute;
     top: 76px;
     z-index: 1000;
-    background-color: rgba(211,211,211,0.9);
+    background-color: rgba(211,211,211,0.95);
 }
 
 .gewonnenVerloren, .pause, #reverseBlinker{

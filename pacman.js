@@ -483,7 +483,7 @@
             if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
                 let tablecontent = JSON.parse(xmlhttp.responseText);
                 if (displayElement != undefined) {
-                    displayElement.innerHTML = "<h3>Reverse PacMan Bestenliste</h3>";
+                    displayElement.innerHTML = "<h3>Reverse PacMan Bestenliste</h3><hr/>";
                     let table = document.createElement("table");
                     let tbody = document.createElement("tbody");
                     table.appendChild(tbody);

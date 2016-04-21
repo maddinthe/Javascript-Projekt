@@ -3,6 +3,7 @@
  * PacMan-Reverse gebaut von T_Kertz Cpt. T.Turner und Maddinthe
  */
 "use strict";
+//Kapselung keine globalen Variablen
 (function () {
     var zustand = {
         reload: null,
@@ -20,6 +21,7 @@
         spielFeldGroesse: 500,
         ton: true
     };
+    //lokale Speicherabfrage zu vorhandenen Spieldaten
     if (typeof(localStorage) !== "undefined") {
         let spielerName = localStorage.getItem("REVPacSpielerName");
         let spielFeldGroesse = localStorage.getItem("REVPacSpielFeldGroesse");
@@ -38,6 +40,8 @@
         }
         if (ton != null)zustand.ton = (ton == "true");
     }
+    //Spieleparameter für den Aufbau des Spiels
+    //u.a. Canvas Daten, Leveldaten, Spielfiguren,Spielablauf(Zeit, Punkte)
     var Spielvariablen = {
         spielFlaeche: null,
         FrameCounterGeist: 0,
@@ -73,6 +77,7 @@
             grPille: "yellow",
             geistSpawn: "#0000FF"
         },
+        //Array zur Levelzeichnung(Zahlenstatus siehe Variable Feldtypen)
         level: [//level 1
             [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 0],
@@ -229,7 +234,8 @@
                 [0, 4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0],
                 [0, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]],
-
+        //Zeitintervalle für Spielmechanik(Flüchten und Jagen von Pacman) und Zeitanzeige auf
+        //Website sowie Variable abgelaufene Spielzeit zur späteren Punkteberechnung
         intervalle: {
             eins: null,
             zwei: null,
@@ -258,6 +264,7 @@
                 else zeitcontainer.innerHTML = time(zeit);
             }
             ,
+            //Tastatureingaben werden identifiziert
             keylistener: function (e) {
                 switch (e.keyCode) {
                     case 37:
@@ -328,6 +335,7 @@
                 }
             }
             ,
+            //Zufällige SPF-Richtungsberechnung
             shuffle: function (array) {
                 let zufall, temp;
                 for (let i = array.length; i > 0; i--) {
@@ -344,6 +352,7 @@
                 } else document.getElementById("punkteContainer").innerText = punkte() + "";
             }
             ,
+            //Menü oben Inhaltsaufruf
             navListener: function (e) {
                 if (e.target.tagName == "LI") {
                     let div = document.getElementById(e.target.innerText);
@@ -370,9 +379,12 @@
                 }
 
             },
+            // setzt aengstlich zurück nach abgelaufenen Timeout
+            // Pacman flüchtet danach wieder
             verwirrt: function () {
                 zustand.aengstlich = false;
             },
+            //Einstellungen ändern z.B. Schwierigkeitsgrad leicht: setzt Variable Schwierigkeit auf leicht
             einstellungenListener: function (e) {
                 if (e.target.name == "schwierigkeit") {
                     console.log(e.target.id);
@@ -395,6 +407,7 @@
                         }
 
                     }
+                    //Übergabe der Einstellungen s.u. an den lokalen Speicher
                     localStorage.setItem("REVPacSchwierigkeit", zustand.schwierigkeit);
                     Spielvariablen.schwierigkeitGeaendert = true;
 
@@ -516,7 +529,7 @@
 
 //datenbankanteil ende
 
-
+    //Lädt Spielfeld/Level
     function controller_start() {
         if(zustand.reload!=null){
             let restore=JSON.parse(zustand.reload);
@@ -558,7 +571,7 @@
         if (Spielvariablen.levelstand > 0)document.getElementById("levelwechsel").play();
         else document.getElementById("opening").play();
     }
-
+    //läuft während des Spiels und lädt aktive und inaktive Elemente
     function controller_spielen() {
         document.getElementById("waka").play();
         let start = document.getElementById("start");
@@ -579,7 +592,7 @@
         });
 
     }
-
+    //Levelübergang,  speichert Punkte Zeit etc. zwischen und setzt Intervalle zurück
     function controller_levelende() {
         Spielvariablen.Spielstart = false;
         clearInterval((Spielvariablen.intervalle.abgelaufeneZeit));
@@ -597,6 +610,7 @@
         zustand.zeitSpanne = Spielvariablen.abgelaufeneZeit;
         Spielvariablen.abgelaufeneZeit = 0;
         let element = null;
+        //prüft ob gewonnen oder verloren
         if (zustand.restpillen > 0 && !zustand.aengstlich) {
             element = document.getElementById("gewonnen");
             document.getElementById("gegessen").play();
@@ -621,7 +635,7 @@
             zustand.aengstlich = false;
         }
     }
-
+    // Canvas-Daten und Spielparameter initialisieren
     function controller_Seitenaufbau() {
         let breite = document.getElementsByClassName("breite");
         let hoehe = document.getElementsByClassName("hoehe");
@@ -679,7 +693,7 @@
         });
         zustand.status = 1
     }
-
+    //Anzeige des erreichten Punktestands pro aktueller Spielsitzung (Spiel muss durchgespielt sein)
     function controller_spielende() {
         let endeDiv = document.getElementById("ende");
         endeDiv.innerHTML = '<h3>Spielende</h3><hr>' +
@@ -699,7 +713,7 @@
         send(zustand.spielerName, Spielvariablen.gesamtzeit, Spielvariablen.punkte);
     }
 
-//observer
+//observer überwacht Controllerzustände
     Object.observe(zustand, function (changes) {
         changes.forEach(function (change) {
             if (change.name === 'status') {
@@ -763,6 +777,8 @@
             }
         });
     });
+    //schaltet den Zustand auf Seitenaufbau nachdem die Seite komplett aufgerufen wurde um Fehler
+    //durch ungeladene Objekte zu vermeiden
     var load = window.addEventListener("load", function () {
         zustand.status = 0;
     });

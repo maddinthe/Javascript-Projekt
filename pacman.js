@@ -2,6 +2,7 @@
  * Created by Theilen,Kertz,Dreher
  * PacMan-Reverse gebaut von T_Kertz C_Dreher und M_Theilen
  * die Namen in den weiteren Kommentaren geben an wer den großteil der Arbeit dort geleistet hat, gibt jedoch keinen Anspruch auf Vollständigkeit.
+ * Spielelogik von allen, Datenbankdesign u Anbindung Dreher, Webdesign Kertz, Javascriptumsetzung zum großteil Theilen
  */
 "use strict";
 //Kapselung keine globalen Variablen

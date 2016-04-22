@@ -14,7 +14,7 @@
         aengstlich: false,
         gesamtpillen: 100,
         restpillen: 5,
-        spielerName: "",
+        spielerName: "Unbekannter NR.1",
         startZeit: 0,
         zeitSpanne: 5,
         geistfarbe: "blau",
@@ -395,8 +395,7 @@
             },
             //Einstellungen ändern z.B. Schwierigkeitsgrad leicht: setzt Variable Schwierigkeit auf leicht
             einstellungenListener: function (e) {
-                if (e.target.name == "schwierigkeit") {
-                    console.log(e.target.id);
+                if (e.target.name == "schwierigkeit"){
                     switch (e.target.id) {
                         case "normal":
                         {
@@ -422,7 +421,6 @@
 
                 }
                 else if (e.target.name == "farbe") {
-                    console.log(e.target.id);
                     zustand.geistfarbe = e.target.id;
                     localStorage.setItem("REVPacGeistfarbe", zustand.geistfarbe);
                 }
@@ -484,7 +482,7 @@
             if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
                 let tablecontent = JSON.parse(xmlhttp.responseText);
                 if (displayElement != undefined) {
-                    let div=document.createElement("div")
+                    let div=document.createElement("div");
                     div.innerHTML = "<h3>Reverse PacMan Bestenliste</h3><hr/>";
                     let table = document.createElement("table");
                     let tbody = document.createElement("tbody");
@@ -691,7 +689,7 @@
                 break;
             }
         }
-        if (zustand.spielerName === "")
+        if (zustand.spielerName === "Unbekannter NR.1")
             document.getElementById("Name").classList.remove("inaktiv");
 
 
@@ -795,7 +793,7 @@
         zustand.status = 0;  //theilen
     });
     window.addEventListener("unload", function () { //kertz
-            if(Spielvariablen.levelstand>0){
+            if(Spielvariablen.levelstand>0&&!Spielvariablen.schwierigkeitGeaendert){
                 let save = [];
                 save.push(Spielvariablen.gesamtzeit);
                 save.push(Spielvariablen.punkte);

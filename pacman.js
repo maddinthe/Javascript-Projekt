@@ -243,7 +243,10 @@
             zwei: null,
             abgelaufeneZeit: null,
             zeitAnzeige: null,
-            punktAnzeige: null
+            punktAnzeige: null,
+            flucht:null,
+            nonflucht:null,
+            verwirrt:null,
         },
         abgelaufeneZeit: 0,
         listener: null,
@@ -609,8 +612,8 @@
         clearInterval((Spielvariablen.intervalle.abgelaufeneZeit));
         clearInterval((Spielvariablen.intervalle.zeitAnzeige));
         clearInterval(Spielvariablen.intervalle.punktAnzeige);
-        clearTimeout(Spielvariablen.funtionen.flucht());
-        clearTimeout(Spielvariablen.funtionen.nonflucht());
+        clearTimeout(Spielvariablen.intervalle.flucht);
+        clearTimeout(Spielvariablen.intervalle.nonflucht);
         document.getElementById("waka").pause();
         zustand.restpillen = Spielvariablen.spielFlaeche.pillen.length;
         console.log(time(Spielvariablen.abgelaufeneZeit));
@@ -1205,13 +1208,13 @@
 
                     if (!this.toogleTimerAn) {
                         //noinspection JSCheckFunctionSignatures
-                        clearTimeout(Spielvariablen.funtionen.flucht);
+                        clearTimeout(Spielvariablen.intervalle.flucht);
                         //noinspection JSCheckFunctionSignatures
-                        clearTimeout(Spielvariablen.funtionen.nonflucht);
+                        clearTimeout(Spielvariablen.intervalle.nonflucht);
                         //noinspection JSCheckFunctionSignatures
-                        setTimeout(Spielvariablen.funtionen.flucht, 5000);
+                        Spielvariablen.intervalle.flucht=setTimeout(Spielvariablen.funtionen.flucht, 5000);
                         //noinspection JSCheckFunctionSignatures
-                        setTimeout(Spielvariablen.funtionen.nonflucht, 7000);
+                        Spielvariablen.intervalle.nonflucht=setTimeout(Spielvariablen.funtionen.nonflucht, 7000);
                         this.toogleTimerAn = true;
                     }
 
@@ -1247,9 +1250,9 @@
                     if (pille.isGross) {
                         zustand.aengstlich = true;
                         //noinspection JSCheckFunctionSignatures
-                        clearTimeout(Spielvariablen.funtionen.verwirrt);
+                        clearTimeout(Spielvariablen.intervalle.verwirrt);
                         //noinspection JSCheckFunctionSignatures
-                        setTimeout(Spielvariablen.funtionen.verwirrt, 10000);
+                        Spielvariablen.intervalle.verwirrt=setTimeout(Spielvariablen.funtionen.verwirrt, 10000);
                     }
                 }
 

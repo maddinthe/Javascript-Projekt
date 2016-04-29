@@ -480,11 +480,13 @@
      */
     function holen(displayElement) {
         let xmlhttp = new XMLHttpRequest();
-        xmlhttp.open('POST', 'datenbank.php', true);
+        xmlhttp.open('POST', 'datenbank-my.php', true);
         xmlhttp.addEventListener('readystatechange', function () {
 
             if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                console.log(xmlhttp.responseText);
                 let tablecontent = JSON.parse(xmlhttp.responseText);
+                console.log(tablecontent);
                 if (displayElement != undefined) {
                     let div=document.createElement("div");
                     div.innerHTML = "<h3>Reverse PacMan Bestenliste</h3><hr/>";
@@ -499,10 +501,10 @@
                         let zeit = document.createElement("td");
                         let punkte = document.createElement("td");
                         platz.innerText = "" + (1 + Number(i));
-                        name.innerText = tablecontent[i].name;
+                        name.innerText = tablecontent[i][1];
                         //noinspection JSUnresolvedVariable
-                        zeit.innerText = tablecontent[i].zeit;
-                        punkte.innerText = "" + Math.round(tablecontent[i].punkte);
+                        zeit.innerText = tablecontent[i][2];
+                        punkte.innerText = "" + Math.round(tablecontent[i][3]);
                         tr.appendChild(platz);
                         tr.appendChild(name);
                         tr.appendChild(zeit);
@@ -529,7 +531,7 @@
      */
     function send(name, zeit, punkte) {
         let xmlhttp = new XMLHttpRequest();
-        xmlhttp.open('POST', 'datenbank.php', true);
+        xmlhttp.open('POST', 'datenbank-my.php', true);
         xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xmlhttp.addEventListener('readystatechange', function () {
 

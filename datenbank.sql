@@ -1,0 +1,8 @@
+CREATE TABLE t_highscore
+(
+    pk BIGINT UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    name VARCHAR(30) NOT NULL,
+    zeit TIME NOT NULL,
+    punkte INT NOT NULL
+);
+CREATE UNIQUE INDEX pk ON t_highscore (pk);
